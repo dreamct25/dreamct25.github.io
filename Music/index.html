@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <title>Musical instrument sounds</title>
+</head>
+<style>
+    html {
+        background-image: url('https://unsplash.com/photos/K2kI2g-Wi6s/download?force=true&w=1920');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+    }
+    
+    .wrap {
+        margin: 0 auto;
+        max-width: 960px;
+    }
+    
+    .header,
+    .explain {
+        /* 內容滑出前位置樣式 */
+        opacity: 0;
+        transform: translateY(100px);
+        transition: 1s ease;
+    }
+    
+    .header h1 {
+        padding: 90px 0 100px 0;
+        text-align: center;
+        color: white;
+        font-style: italic;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+    }
+    
+    .explain-text {
+        /* 提示訊息樣式 */
+        color: white;
+        text-align: center;
+        font-size: 25px;
+        font-style: italic;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+        position: absolute;
+        left: 0;
+        right: 0;
+        transition: .5s ease;
+        opacity: 1;
+        transform: translateY(160px);
+    }
+    
+    .explain-text-alert {
+        /* 提示訊息滑出動畫樣式 */
+        transform: translateY(-100px);
+        opacity: 0;
+        transition: .5s ease;
+    }
+    
+    .style-outer {
+        /* 彈出圖示外框架樣式 */
+        display: flex;
+        justify-content: center;
+        margin-top: 180px;
+    }
+    
+    .style-ms {
+        /* 彈出圖示內容樣式 */
+        text-align: center;
+        opacity: 0;
+        transform: scale(1);
+        transition: .5s ease;
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        color: white;
+        border: 3px solid white;
+        box-shadow: inset 0 0 2px rgba(0, 0, 0, .7), 0 0 5px rgba(0, 0, 0, .7);
+        position: relative;
+    }
+    
+    .style-ms-alert {
+        /* 彈出圖示彈出時內容樣式 */
+        opacity: 1;
+        transform: scale(4);
+        transition: .5s ease;
+    }
+    
+    .main {
+        /* 按鈕外框架樣式 */
+        display: flex;
+        justify-content: center;
+        position: relative;
+        margin: 300px 0 120px 0;
+        transition: 1s ease;
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    
+    .key-style {
+        /* 按鈕樣式 */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        margin: 0 7px 0 7px;
+        padding: 10px 15px 10px 15px;
+        background-color: rgba(0, 0, 0, .7);
+        border-radius: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, .7);
+        transition: .5s ease;
+    }
+    
+    kbd {
+        font-size: 25px;
+        color: white;
+    }
+    
+    .key-text {
+        display: block;
+        font-size: 13px;
+        color: white;
+    }
+    
+    .control-outer {
+        /* 音量控制樣式 */
+        position: absolute;
+        top: 75%;
+        left: 50%;
+        padding: 5px;
+        opacity: 0;
+        transition: 1s ease;
+        background-color: rgba(0, 0, 0, .5);
+        border-radius: 20px;
+        transform: rotate(-90deg) translateY(486px);
+    }
+    
+    .control-outer:hover {
+        opacity: 1;
+    }
+    
+    .control-outer-in {
+        /* 音量內容滑入 */
+        opacity: 0.5;
+        transition: 1s ease;
+        transform: rotate(-90deg) translateY(374px);
+    }
+    
+    .control-text {
+        z-index: 1;
+        text-align: center;
+        color: white;
+        font-weight: bold;
+        position: absolute;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
+        transform: rotate(90deg) translateX(-28px) translateY(50px);
+    }
+    
+    .border-style {
+        transform: translateY(-20px) scale(1.2);
+        background-color: rgba(0, 204, 255, 0.7);
+        transition: .5s ease;
+    }
+    
+    .border-style-remove {
+        transform: translateY(0px) scale(1);
+        transition: .5s ease;
+    }
+    
+    .show-in {
+        /* 內容滑入後位置樣式 */
+        transform: translateY(0px);
+        opacity: 1;
+        transition: 1s ease;
+    }
+    
+    .icon-dtop {
+        margin-top: 16px;
+    }
+    
+    .text-dtop {
+        margin: 0 auto;
+    }
+</style>
+
+<body>
+    <div class="wrap">
+        <div class="content">
+            <div class="header">
+                <h1>Musical instrument sounds</h1>
+            </div>
+            <div class="explain">
+                <h2 class="explain-text">Press the same key with screen on the keyboard<br>then you can hear voice .</h2>
+            </div>
+            <div class="style-outer">
+                <div class="style-ms"></div>
+            </div>
+            <div class="main">
+                <div class="key-style" data-keycode="65">
+                    <kbd>A</kbd>
+                    <span class="key-text">Clap</span>
+                </div>
+                <div class="key-style" data-keycode="83">
+                    <kbd>S</kbd>
+                    <span class="key-text">Hihat</span>
+                </div>
+                <div class="key-style" data-keycode="68">
+                    <kbd>D</kbd>
+                    <span class="key-text">Kick</span>
+                </div>
+                <div class="key-style" data-keycode="70">
+                    <kbd>F</kbd>
+                    <span class="key-text">Openhat</span>
+                </div>
+                <div class="key-style" data-keycode="71">
+                    <kbd>G</kbd>
+                    <span class="key-text">Boom</span>
+                </div>
+                <div class="key-style" data-keycode="72">
+                    <kbd>H</kbd>
+                    <span class="key-text">Ride</span>
+                </div>
+                <div class="key-style" data-keycode="74">
+                    <kbd>J</kbd>
+                    <span class="key-text">Snare</span>
+                </div>
+                <div class="key-style" data-keycode="75">
+                    <kbd>K</kbd>
+                    <span class="key-text">Tom</span>
+                </div>
+                <div class="key-style" data-keycode="76">
+                    <kbd>L</kbd>
+                    <span class="key-text">Tink</span>
+                </div>
+            </div>
+            <div class="control-outer">
+                <p class="control-text"></p>
+                <form action="" name="form">
+                    <input type="range" class="control" name="vul" min="0" max="10" value="10">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--按下對應按鈕時串接音訊檔-->
+    <audio data-keycode="65" src="../music/sounds/clap.wav"></audio>
+    <audio data-keycode="83" src="../music/sounds/hihat.wav"></audio>
+    <audio data-keycode="68" src="../music/sounds/kick.wav"></audio>
+    <audio data-keycode="70" src="../music/sounds/openhat.wav"></audio>
+    <audio data-keycode="71" src="../music/sounds/boom.wav"></audio>
+    <audio data-keycode="72" src="../music/sounds/ride.wav"></audio>
+    <audio data-keycode="74" src="../music/sounds/snare.wav"></audio>
+    <audio data-keycode="75" src="../music/sounds/tom.wav"></audio>
+    <audio data-keycode="76" src="../music/sounds/tink.wav"></audio>
+
+    <script>
+        // 設定 plays 函式內容 e 為參數
+        function plays(e) {
+            const audio = document.querySelector(`audio[data-keycode="${e.keyCode}"]`)
+            const styles = document.querySelector(`div[data-keycode="${e.keyCode}"]`)
+            let styleMs = document.querySelector('.style-ms')
+            let explain = document.querySelector('.explain-text')
+                // 當按下對應按鍵時播放音樂
+            if (audio) {
+                audio.currentTime = 0 // 播放延遲 0
+                audio.play() // play() 播放音檔
+            }
+            // 當按下對應按鍵時加 class 效果
+            if (styles) {
+                styles.classList.add('border-style')
+                styles.classList.remove('border-style-remove')
+                explain.classList.add('explain-text-alert')
+                styleMs.classList.add('style-ms-alert')
+            }
+            // 按下對應按鍵時加上動畫效果
+            switch (e.keyCode) {
+                case 65:
+                    styleMs.innerHTML = `<i class="fas fa-drum icon-dtop fa-3x"></i><p class="text-dtop">Clap</p>`
+                    break;
+                case 83:
+                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Hihat</p>`
+                    break;
+                case 68:
+                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Kick</p>`
+                    break;
+                case 70:
+                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Openhat</p>`
+                    break;
+                case 71:
+                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Boom</p>`
+                    break;
+                case 72:
+                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Ride</p>`
+                    break;
+                case 74:
+                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">snare</p>`
+                    break;
+                case 75:
+                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Tom</p>`
+                    break;
+                case 76:
+                    styleMs.innerHTML = `<i class="fas fa-ear fa-3x icon-dtop"></i><p class="text-dtop">Tink</p>`
+                    break;
+                default:
+                    // 按下非對應按鍵時跳出錯誤提示
+                    styleMs.innerHTML = `<i class="fas fa-times fa-3x icon-dtop"></i><p class="text-dtop">Wrong key</p>`
+                    styleMs.classList.add('style-ms-alert')
+                    explain.classList.add('explain-text-alert')
+                        // 按下非對應按鍵時跳出錯誤提示，並於 0.5 秒後刪除動畫
+                    setTimeout(() => {
+                        styleMs.classList.remove('style-ms-alert')
+                        explain.classList.remove('explain-text-alert')
+                    }, 500)
+            }
+        }
+        // 設定 removeKey_style 函式內容 e 為參數
+        function removeKey_style(e) {
+            const styleMs = document.querySelector('.style-ms')
+            const explain = document.querySelector('.explain-text')
+                // 當 class 名稱等於 transform 執行刪除動畫
+            if (e.propertyName === 'transform') {
+                e.currentTarget.classList.remove('border-style')
+                e.currentTarget.classList.add('border-style-remove')
+                styleMs.classList.remove('style-ms-alert')
+                explain.classList.remove('explain-text-alert')
+            }
+        }
+        // 設定滑桿滑動時透過 switch 比對滑桿數値，並透過滑桿數値控制音量大小與提示文字
+        function voice() {
+            const voice = document.querySelector('.control')
+            const text = document.querySelector('.control-text')
+            document.querySelectorAll('audio').forEach((key) => {
+                switch (voice.value) {
+                    case '0':
+                        key.volume = 0
+                        text.innerHTML = `Voice<br>0%`
+                        break;
+                    case '1':
+                        key.volume = 0.1
+                        text.innerHTML = `Voice<br>10%`
+                        break;
+                    case '2':
+                        key.volume = 0.2
+                        text.innerHTML = `Voice<br>20%`
+                        break;
+                    case '3':
+                        key.volume = 0.3
+                        text.innerHTML = `Voice<br>30%`
+                        break;
+                    case '4':
+                        key.volume = 0.4
+                        text.innerHTML = `Voice<br>40%`
+                        break;
+                    case '5':
+                        key.volume = 0.5
+                        text.innerHTML = `Voice<br>50%`
+                        break;
+                    case '6':
+                        key.volume = 0.6
+                        text.innerHTML = `Voice<br>60%`
+                        break;
+                    case '7':
+                        key.volume = 0.7
+                        text.innerHTML = `Voice<br>70%`
+                        break;
+                    case '8':
+                        key.volume = 0.8
+                        text.innerHTML = `Voice<br>80%`
+                        break;
+                    case '9':
+                        key.volume = 0.9
+                        text.innerHTML = `Voice<br>90%`
+                        break;
+                    case '10':
+                        key.volume = 1
+                        text.innerHTML = `Voice<br>100%`
+                        break;
+                }
+            })
+        }
+
+        // 監聽使用者按鍵，按下時觸發 plays 函式
+        document.addEventListener('keydown', plays)
+
+        // 監聽使用者每一個帶有 key-style 的 class 名稱的按鍵，按下時觸發 removeKey_style 函式，key為參數
+        document.querySelectorAll('.key-style').forEach((key) => {
+            key.addEventListener('transitionend', removeKey_style)
+        })
+
+        // 監聽音量滑桿變化
+        document.querySelector('.control').addEventListener('change', voice)
+
+
+        // 監聽使用者載入視窗時，按下時觸發內容載入函式
+        window.addEventListener('load', () => {
+            // 音量文字載入時變更
+            document.querySelector('.control-text').innerHTML = `Voice<br>100%`
+                // 載入第一個
+            document.querySelector('.header').classList.add('show-in')
+                // 1 秒後載入第二個
+            setTimeout(() => document.querySelector('.explain').classList.add('show-in'), 1000)
+                // 2 秒後載入第三個
+            setTimeout(() => document.querySelector('.main').classList.add('show-in'), 2000)
+                // 3 秒後載入第四個
+            setTimeout(() => document.querySelector('.control-outer').classList.add('control-outer-in'), 3000)
+        })
+    </script>
+</body>
+
+</html>
