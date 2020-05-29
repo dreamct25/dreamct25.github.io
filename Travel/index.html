@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Travel/Travel.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <title>Travel information</title>
+</head>
+
+<body>
+    <div class="header">
+        <h1 class="title1">高雄旅遊資訊</h1>
+        <h3 class="title2">Kaohsiung Travel Information</h3>
+        <select id="block" class="block"></select>
+    </div>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-10" style="margin: auto;">
+                    <div class="menu">
+                        <h4>熱門景點</h4>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <a href="#苓雅區" class="box1 box">苓雅區</a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#三民區" class="box2 box">三民區</a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#新興區" class="box3 box">新興區</a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#左營區" class="box4 box">左營區</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="main">
+        <div class="dashed d-flex justify-content-center"><i class="far fa-caret-circle-down fa-2x arrow"></i></div>
+        <div class="container-fluid">
+            <div class="row display">
+                <div class="col-10 mx-auto">
+                    <div class="row content d-block">
+                        <div class="col-md-12">
+                            <h2 class="ct-title display-show"></h2>
+                        </div>
+                        <div class="row card display-show">
+                            <div class="load-Center">
+                                <i class="fad fa-spinner-third fa-3x mx-4 load"></i>
+                                <div class="load-font">
+                                    <h5 class="ml-1">Loading</h5>
+                                    <p class="point">‧</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="top top-hide"><i class="fal fa-chevron-double-up"></i></div>
+    <footer>
+        <div class="footer">
+            <h4>高雄旅遊網</h4>
+            <h5>資料來源：高雄市政府</h5>
+            <h6>&copy Copyright Chen</h6>
+        </div>
+    </footer>
+    <script src="../Travel/Travel.js"></script>
+</body>
+
+</html>
