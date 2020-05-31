@@ -246,168 +246,167 @@
     </div>
 
     <!--按下對應按鈕時串接音訊檔-->
-    <audio data-keycode="65" src="../music/sounds/clap.wav"></audio>
-    <audio data-keycode="83" src="../music/sounds/hihat.wav"></audio>
-    <audio data-keycode="68" src="../music/sounds/kick.wav"></audio>
-    <audio data-keycode="70" src="../music/sounds/openhat.wav"></audio>
-    <audio data-keycode="71" src="../music/sounds/boom.wav"></audio>
-    <audio data-keycode="72" src="../music/sounds/ride.wav"></audio>
-    <audio data-keycode="74" src="../music/sounds/snare.wav"></audio>
-    <audio data-keycode="75" src="../music/sounds/tom.wav"></audio>
-    <audio data-keycode="76" src="../music/sounds/tink.wav"></audio>
-
-    <script>
-        // 設定 plays 函式內容 e 為參數
-        function plays(e) {
-            const audio = document.querySelector(`audio[data-keycode="${e.keyCode}"]`)
-            const styles = document.querySelector(`div[data-keycode="${e.keyCode}"]`)
-            let styleMs = document.querySelector('.style-ms')
-            let explain = document.querySelector('.explain-text')
-                // 當按下對應按鍵時播放音樂
-            if (audio) {
-                audio.currentTime = 0 // 播放延遲 0
-                audio.play() // play() 播放音檔
-            }
-            // 當按下對應按鍵時加 class 效果
-            if (styles) {
-                styles.classList.add('border-style')
-                styles.classList.remove('border-style-remove')
-                explain.classList.add('explain-text-alert')
-                styleMs.classList.add('style-ms-alert')
-            }
-            // 按下對應按鍵時加上動畫效果
-            switch (e.keyCode) {
-                case 65:
-                    styleMs.innerHTML = `<i class="fas fa-drum icon-dtop fa-3x"></i><p class="text-dtop">Clap</p>`
-                    break;
-                case 83:
-                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Hihat</p>`
-                    break;
-                case 68:
-                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Kick</p>`
-                    break;
-                case 70:
-                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Openhat</p>`
-                    break;
-                case 71:
-                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Boom</p>`
-                    break;
-                case 72:
-                    styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Ride</p>`
-                    break;
-                case 74:
-                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">snare</p>`
-                    break;
-                case 75:
-                    styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Tom</p>`
-                    break;
-                case 76:
-                    styleMs.innerHTML = `<i class="fas fa-ear fa-3x icon-dtop"></i><p class="text-dtop">Tink</p>`
-                    break;
-                default:
-                    // 按下非對應按鍵時跳出錯誤提示
-                    styleMs.innerHTML = `<i class="fas fa-times fa-3x icon-dtop"></i><p class="text-dtop">Wrong key</p>`
-                    styleMs.classList.add('style-ms-alert')
-                    explain.classList.add('explain-text-alert')
-                        // 按下非對應按鍵時跳出錯誤提示，並於 0.5 秒後刪除動畫
-                    setTimeout(() => {
-                        styleMs.classList.remove('style-ms-alert')
-                        explain.classList.remove('explain-text-alert')
-                    }, 500)
-            }
-        }
-        // 設定 removeKey_style 函式內容 e 為參數
-        function removeKey_style(e) {
-            const styleMs = document.querySelector('.style-ms')
-            const explain = document.querySelector('.explain-text')
-                // 當 class 名稱等於 transform 執行刪除動畫
-            if (e.propertyName === 'transform') {
-                e.currentTarget.classList.remove('border-style')
-                e.currentTarget.classList.add('border-style-remove')
-                styleMs.classList.remove('style-ms-alert')
-                explain.classList.remove('explain-text-alert')
-            }
-        }
-        // 設定滑桿滑動時透過 switch 比對滑桿數値，並透過滑桿數値控制音量大小與提示文字
-        function voice() {
-            const voice = document.querySelector('.control')
-            const text = document.querySelector('.control-text')
-            document.querySelectorAll('audio').forEach((key) => {
-                switch (voice.value) {
-                    case '0':
-                        key.volume = 0
-                        text.innerHTML = `Voice<br>0%`
-                        break;
-                    case '1':
-                        key.volume = 0.1
-                        text.innerHTML = `Voice<br>10%`
-                        break;
-                    case '2':
-                        key.volume = 0.2
-                        text.innerHTML = `Voice<br>20%`
-                        break;
-                    case '3':
-                        key.volume = 0.3
-                        text.innerHTML = `Voice<br>30%`
-                        break;
-                    case '4':
-                        key.volume = 0.4
-                        text.innerHTML = `Voice<br>40%`
-                        break;
-                    case '5':
-                        key.volume = 0.5
-                        text.innerHTML = `Voice<br>50%`
-                        break;
-                    case '6':
-                        key.volume = 0.6
-                        text.innerHTML = `Voice<br>60%`
-                        break;
-                    case '7':
-                        key.volume = 0.7
-                        text.innerHTML = `Voice<br>70%`
-                        break;
-                    case '8':
-                        key.volume = 0.8
-                        text.innerHTML = `Voice<br>80%`
-                        break;
-                    case '9':
-                        key.volume = 0.9
-                        text.innerHTML = `Voice<br>90%`
-                        break;
-                    case '10':
-                        key.volume = 1
-                        text.innerHTML = `Voice<br>100%`
-                        break;
-                }
-            })
-        }
-
-        // 監聽使用者按鍵，按下時觸發 plays 函式
-        document.addEventListener('keydown', plays)
-
-        // 監聽使用者每一個帶有 key-style 的 class 名稱的按鍵，按下時觸發 removeKey_style 函式，key為參數
-        document.querySelectorAll('.key-style').forEach((key) => {
-            key.addEventListener('transitionend', removeKey_style)
-        })
-
-        // 監聽音量滑桿變化
-        document.querySelector('.control').addEventListener('change', voice)
-
-
-        // 監聽使用者載入視窗時，按下時觸發內容載入函式
-        window.addEventListener('load', () => {
-            // 音量文字載入時變更
-            document.querySelector('.control-text').innerHTML = `Voice<br>100%`
-                // 載入第一個
-            document.querySelector('.header').classList.add('show-in')
-                // 1 秒後載入第二個
-            setTimeout(() => document.querySelector('.explain').classList.add('show-in'), 1000)
-                // 2 秒後載入第三個
-            setTimeout(() => document.querySelector('.main').classList.add('show-in'), 2000)
-                // 3 秒後載入第四個
-            setTimeout(() => document.querySelector('.control-outer').classList.add('control-outer-in'), 3000)
-        })
-    </script>
+    <audio data-keycode="65" src="../Day1/sounds/clap.wav"></audio>
+    <audio data-keycode="83" src="../Day1/sounds/hihat.wav"></audio>
+    <audio data-keycode="68" src="../Day1/sounds/kick.wav"></audio>
+    <audio data-keycode="70" src="../Day1/sounds/openhat.wav"></audio>
+    <audio data-keycode="71" src="../Day1/sounds/boom.wav"></audio>
+    <audio data-keycode="72" src="../Day1/sounds/ride.wav"></audio>
+    <audio data-keycode="74" src="../Day1/sounds/snare.wav"></audio>
+    <audio data-keycode="75" src="../Day1/sounds/tom.wav"></audio>
+    <audio data-keycode="76" src="../Day1/sounds/tink.wav"></audio>
 </body>
+
+<script>
+    // 設定 plays 函式內容 e 為參數
+    function plays(e) {
+        const audio = document.querySelector(`audio[data-keycode="${e.keyCode}"]`)
+        const styles = document.querySelector(`div[data-keycode="${e.keyCode}"]`)
+        let styleMs = document.querySelector('.style-ms')
+        let explain = document.querySelector('.explain-text')
+            // 當按下對應按鍵時播放音樂
+        if (audio) {
+            audio.currentTime = 0 // 播放延遲 0
+            audio.play() // play() 播放音檔
+        }
+        // 當按下對應按鍵時加 class 效果
+        if (styles) {
+            styles.classList.add('border-style')
+            styles.classList.remove('border-style-remove')
+            explain.classList.add('explain-text-alert')
+            styleMs.classList.add('style-ms-alert')
+        }
+        // 按下對應按鍵時加上動畫效果
+        switch (e.keyCode) {
+            case 65:
+                styleMs.innerHTML = `<i class="fas fa-drum icon-dtop fa-3x"></i><p class="text-dtop">Clap</p>`
+                break;
+            case 83:
+                styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Hihat</p>`
+                break;
+            case 68:
+                styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Kick</p>`
+                break;
+            case 70:
+                styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Openhat</p>`
+                break;
+            case 71:
+                styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Boom</p>`
+                break;
+            case 72:
+                styleMs.innerHTML = `<i class="fas fa-compact-disc fa-3x icon-dtop"></i><p class="text-dtop">Ride</p>`
+                break;
+            case 74:
+                styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">snare</p>`
+                break;
+            case 75:
+                styleMs.innerHTML = `<i class="fas fa-drum fa-3x icon-dtop"></i><p class="text-dtop">Tom</p>`
+                break;
+            case 76:
+                styleMs.innerHTML = `<i class="fas fa-ear fa-3x icon-dtop"></i><p class="text-dtop">Tink</p>`
+                break;
+            default:
+                // 按下非對應按鍵時跳出錯誤提示
+                styleMs.innerHTML = `<i class="fas fa-times fa-3x icon-dtop"></i><p class="text-dtop">Wrong key</p>`
+                styleMs.classList.add('style-ms-alert')
+                explain.classList.add('explain-text-alert')
+                    // 按下非對應按鍵時跳出錯誤提示，並於 0.5 秒後刪除動畫
+                setTimeout(() => {
+                    styleMs.classList.remove('style-ms-alert')
+                    explain.classList.remove('explain-text-alert')
+                }, 500)
+        }
+    }
+    // 設定 removeKey_style 函式內容 e 為參數
+    function removeKey_style(e) {
+        const styleMs = document.querySelector('.style-ms')
+        const explain = document.querySelector('.explain-text')
+            // 當 class 名稱等於 transform 執行刪除動畫
+        if (e.propertyName === 'transform') {
+            e.currentTarget.classList.remove('border-style')
+            e.currentTarget.classList.add('border-style-remove')
+            styleMs.classList.remove('style-ms-alert')
+            explain.classList.remove('explain-text-alert')
+        }
+    }
+    // 設定滑桿滑動時透過 switch 比對滑桿數値，並透過滑桿數値控制音量大小與提示文字，此處的 this 指向監聽 range 的値
+    function voice() {
+        const text = document.querySelector('.control-text')
+        document.querySelectorAll('audio').forEach((key) => {
+            switch (this.value) {
+                case '0':
+                    key.volume = 0
+                    text.innerHTML = `Voice<br>0%`
+                    break;
+                case '1':
+                    key.volume = 0.1
+                    text.innerHTML = `Voice<br>10%`
+                    break;
+                case '2':
+                    key.volume = 0.2
+                    text.innerHTML = `Voice<br>20%`
+                    break;
+                case '3':
+                    key.volume = 0.3
+                    text.innerHTML = `Voice<br>30%`
+                    break;
+                case '4':
+                    key.volume = 0.4
+                    text.innerHTML = `Voice<br>40%`
+                    break;
+                case '5':
+                    key.volume = 0.5
+                    text.innerHTML = `Voice<br>50%`
+                    break;
+                case '6':
+                    key.volume = 0.6
+                    text.innerHTML = `Voice<br>60%`
+                    break;
+                case '7':
+                    key.volume = 0.7
+                    text.innerHTML = `Voice<br>70%`
+                    break;
+                case '8':
+                    key.volume = 0.8
+                    text.innerHTML = `Voice<br>80%`
+                    break;
+                case '9':
+                    key.volume = 0.9
+                    text.innerHTML = `Voice<br>90%`
+                    break;
+                case '10':
+                    key.volume = 1
+                    text.innerHTML = `Voice<br>100%`
+                    break;
+            }
+        })
+    }
+
+    // 監聽使用者按鍵，按下時觸發 plays 函式
+    document.addEventListener('keydown', plays)
+
+    // 監聽使用者每一個帶有 key-style 的 class 名稱的按鍵，按下時觸發 removeKey_style 函式，key為參數
+    document.querySelectorAll('.key-style').forEach((key) => {
+        key.addEventListener('transitionend', removeKey_style)
+    })
+
+    // 監聽音量滑桿變化，使用 mousemove 即時更新音量%數値變化
+    document.querySelector('.control').addEventListener('mousemove', voice)
+
+
+    // 監聽使用者載入視窗時，按下時觸發內容載入函式
+    window.addEventListener('load', () => {
+        // 音量文字載入時變更
+        document.querySelector('.control-text').innerHTML = `Voice<br>100%`
+            // 載入第一個
+        document.querySelector('.header').classList.add('show-in')
+            // 1 秒後載入第二個
+        setTimeout(() => document.querySelector('.explain').classList.add('show-in'), 1000)
+            // 2 秒後載入第三個
+        setTimeout(() => document.querySelector('.main').classList.add('show-in'), 2000)
+            // 3 秒後載入第四個
+        setTimeout(() => document.querySelector('.control-outer').classList.add('control-outer-in'), 3000)
+    })
+</script>
 
 </html>
