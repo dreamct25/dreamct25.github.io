@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Image Controller</title>
 </head>
 <style>
-     :root {
+    html {
+        /* 設定變數數値內容 */
         --color: #000000;
         --spacing: 0px;
         --blur: 0px;
@@ -28,6 +29,7 @@
     }
     
     .color-change {
+        /* 文字樣式 */
         opacity: 0;
         color: var(--color);
         text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
@@ -36,6 +38,7 @@
     }
     
     .color-change-in {
+        /* 文字觸發樣式 */
         opacity: 1;
         transform: translateY(17px);
         transition: 1s ease;
@@ -66,6 +69,7 @@
     }
     
     .controls-outer {
+        /* 滑桿組外框架樣式 */
         display: flex;
         justify-content: center;
         margin-bottom: 30px;
@@ -75,12 +79,14 @@
     }
     
     .controls-outer-in {
+        /* 滑桿組外框架觸發樣式 */
         opacity: 1;
         transform: translateY(37px);
         transition: 1s ease;
     }
     
     .controls {
+        /* 滑桿組樣式 */
         display: flex;
         margin-bottom: 50px;
     }
@@ -92,6 +98,7 @@
     }
     
     .control {
+        /* 滑桿樣式 */
         margin-right: 5px;
         border-radius: 5px;
     }
@@ -114,6 +121,7 @@
     }
     
     img {
+        /* 圖片樣式 */
         z-index: 2;
         padding: var(--spacing);
         background: var(--color);
@@ -127,11 +135,13 @@
     }
     
     .img-in {
+        /* 圖片觸發樣式 */
         opacity: 1;
         transform: scale(1);
     }
     
     .img-text {
+        /* 圖片詳情文字樣式 */
         margin-top: var(--spacing);
         display: block;
         text-align: center;
@@ -143,6 +153,7 @@
     }
     
     .img-text-in {
+        /* 圖片詳情文字觸發樣式 */
         opacity: 1;
         transition: 1s ease;
         transform: translateY(20px);
@@ -155,6 +166,7 @@
     }
     
     .img-outer {
+        /* 圖框外框架樣式 */
         position: absolute;
         width: 940px;
         height: 560px;
@@ -170,6 +182,7 @@
     }
     
     .cross {
+        /* 關閉鈕框樣式 */
         z-index: 2;
         position: absolute;
         opacity: 0;
@@ -183,11 +196,13 @@
     }
     
     .cross-click {
+        /* 關閉鈕框滑過動畫樣式 */
         transform: scale(0.7) !important;
         transition: .5s ease !important;
     }
     
     .cross-in {
+        /* 關閉鈕框觸發動畫樣式 */
         opacity: 1;
         transform: rotate(0deg) scale(1);
         transition: 1s ease;
@@ -220,6 +235,7 @@
     }
     
     .upload-outer {
+        /* 檔案選取內容框樣式 */
         position: relative;
         width: 940px;
         height: 560px;
@@ -237,12 +253,14 @@
     }
     
     .upload-outer-in {
+        /* 檔案選取內容框載入樣式 */
         opacity: 1;
         transform: scale(1);
         transition: 1s ease;
     }
     
     .fileUpload-outer {
+        /* 檔案選取外框架樣式 */
         position: absolute;
         z-index: 2;
         top: 35%;
@@ -258,6 +276,7 @@
     }
     
     .fileUpload {
+        /* 檔案選取樣式 */
         opacity: 0;
         display: block;
         width: 530px;
@@ -285,6 +304,7 @@
     }
     
     .url {
+        /* 網址樣式 */
         position: absolute;
         z-index: 1;
         top: 68%;
@@ -294,6 +314,7 @@
         font-size: 20px;
         border-radius: 10px;
         padding: 3px 10px 0 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, .7);
     }
     
     @media screen and (max-width: 768px) {
@@ -316,6 +337,7 @@
     }
     
     .wrong-type {
+        /* 提示訊息樣式 */
         text-align: center;
         opacity: 0;
         font-size: 25px;
@@ -324,13 +346,8 @@
         transition: 1s ease;
     }
     
-    .false {
-        opacity: 1;
-        color: rgb(255, 0, 0);
-        transition: 1s ease;
-    }
-    
     .type-false {
+        /* 提示訊息觸發樣式 */
         opacity: 1;
         color: rgb(255, 0, 0);
         transform: scale(1) translateY(226px);
@@ -338,6 +355,7 @@
     }
     
     .footer-text {
+        /* 頁尾樣式 */
         opacity: 0;
         margin-top: 55px;
         text-align: center;
@@ -347,6 +365,7 @@
     }
     
     .footer-text-in {
+        /* 頁尾觸發樣式 */
         opacity: 1;
         color: var(--color);
         transform: translateY(0px);
@@ -415,86 +434,13 @@
     const uploadOuter = document.querySelector('.upload-outer')
     const file = document.querySelector('.fileUpload')
     const url = document.querySelector('.url')
-    const urlAlert = document.querySelector('.url-alert')
     const WrongType = document.querySelector('.wrong-type')
 
-    // 讀取瀏覽圖片
-    function showLocalphoto() {
-        let file = this.files[0]
-        console.log(file)
-        let showFile = window.URL.createObjectURL(file);
-        if (this.value !== '') {
-            if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
-                WrongType.textContent = 'Wrong image type the type just can jpg / jpeg！'
-                WrongType.classList.add('type-false')
-                uploadOuter.classList.remove('upload-outer-in')
-                setTimeout(() => WrongType.classList.remove('type-false'), 2000);
-                setTimeout(() => uploadOuter.classList.add('upload-outer-in'), 3000);
-            } else {
-                img.setAttribute('src', `${showFile}`)
-                img.classList.add('img-in')
-                imgText.textContent = `File name：${file.name} / Size：${file.size} byte / Modified date：${file.lastModifiedDate}`
-                imgText.classList.add('img-text-in')
-                crossIcon.classList.add('cross-in')
-                uploadOuter.classList.remove('upload-outer-in')
-                setTimeout(() => img.style.transition = '0s ease', 500)
-                crossIcon.addEventListener('click', () => {
-                    if (this.value !== '') {
-                        img.classList.remove('img-in')
-                        img.style.transition = '1s ease'
-                        imgText.classList.remove('img-text-in')
-                        crossIcon.classList.remove('cross-in')
-                        uploadOuter.classList.add('upload-outer-in')
-                        setTimeout(() => img.setAttribute('src', '#'), 1000)
-                    }
-                })
-                crossIcon.addEventListener('mouseover', () => {
-                    crossIcon.classList.add('cross-click')
-                    setTimeout(() => crossIcon.classList.remove('cross-click'), 500);
-                })
-            }
-        }
-    }
-
-    function showLinkphoto() {
-        // let link = url.value
-        if (this.value !== '' && this.value.length >= 30) {
-            console.log(this.value)
-            img.setAttribute('src', `${this.value}`)
-            img.classList.add('img-in')
-            imgText.textContent = `Url：${this.value}`
-            imgText.classList.add('img-text-in')
-            crossIcon.classList.add('cross-in')
-            uploadOuter.classList.remove('upload-outer-in')
-            setTimeout(() => img.style.transition = '0s ease', 500)
-            crossIcon.addEventListener('click', () => {
-                if (this.value !== '') {
-                    img.classList.remove('img-in')
-                    img.style.transition = '1s ease'
-                    imgText.classList.remove('img-text-in')
-                    crossIcon.classList.remove('cross-in')
-                    uploadOuter.classList.add('upload-outer-in')
-                    this.value = null
-                    setTimeout(() => img.setAttribute('src', '#'), 1000)
-                }
-            })
-            crossIcon.addEventListener('mouseover', () => {
-                crossIcon.classList.add('cross-click')
-                setTimeout(() => crossIcon.classList.remove('cross-click'), 500);
-            })
-        } else {
-            img.setAttribute('src', '#')
-            WrongType.textContent = 'Url address invalid！'
-            WrongType.classList.add('type-false')
-            uploadOuter.classList.remove('upload-outer-in')
-            setTimeout(() => WrongType.classList.remove('type-false'), 2000);
-            setTimeout(() => uploadOuter.classList.add('upload-outer-in'), 3000);
-            this.value = null
-        }
-    }
-
+    // 設定滑桿數値內容
     function change() {
+        // 設定 css var 屬性增加的數値為指定的 input 內的 name 與 値當 input 內的 data 名稱 px 符合時就將值加上 px 單位，若不符合就不加  
         document.documentElement.style.setProperty('--' + this.name, this.value + (this.dataset.px || ''))
+            // 當指定的 name 名稱相符時就顯示指定 px 數値  
         switch (this.name) {
             case 'spacing':
                 document.querySelector('.spacing').textContent = this.value
@@ -509,6 +455,7 @@
                 document.querySelector('.radius').textContent = this.value
                 break
         }
+        // 當 select 指定的値與選項名稱相符時替換 css 樣式  
         switch (this.value) {
             case 'None':
                 img.style.border = 'none'
@@ -524,15 +471,93 @@
                 break
         }
     }
+
+    // 設定讀取瀏覽本地圖片顯示於畫面上
+    function showLocalphoto() {
+        let file = this.files[0]
+        console.log(file)
+        let showFile = window.URL.createObjectURL(file);
+        // 判斷圖片副名檔類型，如果不是就跳出提示訊息，是就跳出圖片
+        if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+            WrongType.textContent = 'Wrong image type the type just can jpg / jpeg！'
+            WrongType.classList.add('type-false')
+            uploadOuter.classList.remove('upload-outer-in')
+            setTimeout(() => WrongType.classList.remove('type-false'), 2000);
+            setTimeout(() => uploadOuter.classList.add('upload-outer-in'), 3000);
+        } else {
+            img.setAttribute('src', `${showFile}`)
+            img.classList.add('img-in')
+            imgText.textContent = `File name：${file.name} / Size：${file.size} byte / Modified date：${file.lastModifiedDate}`
+            imgText.classList.add('img-text-in')
+            crossIcon.classList.add('cross-in')
+            uploadOuter.classList.remove('upload-outer-in')
+            setTimeout(() => img.style.transition = '0s ease', 500)
+                // 圖片上的關閉按鈕
+            crossIcon.addEventListener('click', () => {
+                    img.classList.remove('img-in')
+                    img.style.transition = '1s ease'
+                    imgText.classList.remove('img-text-in')
+                    crossIcon.classList.remove('cross-in')
+                    uploadOuter.classList.add('upload-outer-in')
+                    setTimeout(() => img.setAttribute('src', '#'), 1000)
+                })
+                // 圖片上的關閉按鈕滑鼠滑入時動畫
+            crossIcon.addEventListener('mouseover', () => {
+                crossIcon.classList.add('cross-click')
+                setTimeout(() => crossIcon.classList.remove('cross-click'), 500);
+            })
+        }
+    }
+
+    // 設定讀取瀏覽線上網址圖片顯示於畫面上
+    function showLinkphoto() {
+        // 判斷圖片網址是否為空並且字串長度大於等於 30，如果不是就跳出提示訊息，並將值清空，是就跳出圖片
+        if (this.value !== '' && this.value.length >= 30) {
+            console.log(this.value)
+            img.setAttribute('src', `${this.value}`)
+            img.classList.add('img-in')
+            imgText.textContent = `Url：${this.value}`
+            imgText.classList.add('img-text-in')
+            crossIcon.classList.add('cross-in')
+            uploadOuter.classList.remove('upload-outer-in')
+            setTimeout(() => img.style.transition = '0s ease', 500)
+                // 圖片上的關閉按鈕，點擊後將值清空
+            crossIcon.addEventListener('click', () => {
+                img.classList.remove('img-in')
+                img.style.transition = '1s ease'
+                imgText.classList.remove('img-text-in')
+                crossIcon.classList.remove('cross-in')
+                uploadOuter.classList.add('upload-outer-in')
+                this.value = null
+                setTimeout(() => img.setAttribute('src', '#'), 1000)
+            })
+            crossIcon.addEventListener('mouseover', () => {
+                crossIcon.classList.add('cross-click')
+                setTimeout(() => crossIcon.classList.remove('cross-click'), 500);
+            })
+        } else {
+            img.setAttribute('src', '#')
+            WrongType.textContent = 'Url address invalid！'
+            WrongType.classList.add('type-false')
+            uploadOuter.classList.remove('upload-outer-in')
+            setTimeout(() => WrongType.classList.remove('type-false'), 2000);
+            setTimeout(() => uploadOuter.classList.add('upload-outer-in'), 3000);
+            this.value = null
+        }
+    }
+    // 監聽 input 檔案按鈕，發生內容變動時觸發 showLocalphoto 函式
     file.addEventListener('change', showLocalphoto)
 
+    // 監聽 input 網址欄位，發生內容變動時觸發 showLinkphoto 函式
     url.addEventListener('change', showLinkphoto)
 
+    // 監聽 DOM 上的每個 control class 名稱，發生內容變動與滑鼠滑動時觸發 change 函式
     document.querySelectorAll('.control').forEach((type) => {
         type.addEventListener('change', change)
         type.addEventListener('mousemove', change)
     })
 
+    // 載入內容動畫
     window.addEventListener('load', () => {
         document.querySelector('.color-change').classList.add('color-change-in')
         setTimeout(() => document.querySelector('.controls-outer').classList.add('controls-outer-in'), 1000);
