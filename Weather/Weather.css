@@ -66,10 +66,16 @@ body {
 
 @media screen and (max-width: 414px) {
     .bg-text {
-        transform: translate(-44px, -68px);
+        transform: translate(-79px, -68px);
     }
     .bg-text-change {
         transform: translate(-44px, -9px);
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .bg-text-in {
+        transform: translate(-44px, -68px);
     }
 }
 
@@ -92,10 +98,16 @@ body {
 
 @media screen and (max-width: 414px) {
     .control {
-        transform: translate(-35px, -70px);
+        transform: translate(-70px, -70px);
     }
     .control-change {
         transform: translate(-35px, -10px);
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .control-in {
+        transform: translate(-35px, -70px);
     }
 }
 
@@ -369,6 +381,7 @@ body {
 }
 
 .loading-icon {
+    position: relative;
     animation-name: loadIcon;
     animation-duration: 1s;
     animation-timing-function: linear;
@@ -381,12 +394,30 @@ body {
     }
 }
 
+.loading-icons {
+    position: absolute;
+    left: 32%;
+    top: 10%;
+    font-size: 31px;
+    animation-name: loadIcons;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes loadIcons {
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
 .tomorrow-day {
     color: white;
     text-align: center;
     font-size: 24px;
     position: absolute;
     left: 50%;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
     opacity: 0;
     transform: translate(-48px, -85px);
     transition: 1s ease;

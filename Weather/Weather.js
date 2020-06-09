@@ -401,13 +401,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[5].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[5].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[5].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[5].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -435,13 +435,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[16].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[16].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[16].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[16].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -471,13 +471,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[15].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[15].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[15].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[15].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -505,13 +505,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[9].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[9].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[9].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[9].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -541,13 +541,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[19].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[19].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[19].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[19].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -575,13 +575,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[10].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[10].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[10].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[10].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -611,13 +611,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[14].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[14].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[14].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[14].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -645,13 +645,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[7].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[7].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[7].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[7].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -697,13 +697,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[17].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[17].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[17].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[17].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -731,13 +731,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[13].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[13].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[13].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[13].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -767,13 +767,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[0].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[0].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[0].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[0].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -801,13 +801,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[1].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[1].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[1].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[1].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -844,7 +844,7 @@ function allBlock() {
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
-                        <span class="tomorrow-day my-3">明日天氣</span>
+                        <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
                         <div class="row mb-3 no-gutters">
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentFt-in">
@@ -853,13 +853,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[20].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[20].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[20].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[20].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -887,13 +887,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[21].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[21].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[21].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[21].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -923,13 +923,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[18].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[18].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[18].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[18].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -957,13 +957,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[12].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[12].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[12].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[12].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -993,13 +993,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[6].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[6].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[6].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[6].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1045,13 +1045,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[11].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[11].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[11].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[11].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1079,13 +1079,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[3].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[3].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[3].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[3].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1131,13 +1131,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[2].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[2].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[2].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[2].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1165,13 +1165,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[4].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[4].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[4].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[4].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1201,13 +1201,13 @@ function allBlock() {
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[8].weatherElement[8].time[0].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[0].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[8].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[1].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="row justify-content-center">
                                                 <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[8].weatherElement[8].time[1].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                                <span class="date">${allDatas[8].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1358,12 +1358,12 @@ window.addEventListener('load', () => {
     }, 1000)
     setTimeout(() => document.querySelector('.clock').classList.add('clock-in'), 2000)
     setTimeout(() => document.querySelector('.in-title').classList.add('in-title-in'), 1000)
-    setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 1000)
-    setTimeout(() => document.querySelector('.text-in').innerHTML = `<span class="loading loading-in"><i class="fal fa-circle-notch loading-icon fa-2x"></i></i><br>Loading</span>`, 2000)
+    setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 2000)
+    setTimeout(() => document.querySelector('.text-in').innerHTML = `<span class="loading loading-in"><i class="fal fa-circle-notch loading-icon fa-2x"></i><i class="fal fa-circle-notch loading-icons"></i><br>Loading</span>`, 3000)
     setTimeout(() => {
         document.querySelector('.loading').classList.remove('loading-in')
         document.querySelector('.loading').classList.add('loading-out')
-    }, 6000)
+    }, 7000)
     setTimeout(() => document.querySelector('.footer').classList.add('footer-in'), 3000)
-    setTimeout(() => select.classList.add('select-in'), 7000)
+    setTimeout(() => select.classList.add('select-in'), 8000)
 })
