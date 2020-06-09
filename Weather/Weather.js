@@ -10,7 +10,6 @@ xhr.onload = () => {
     }
     let jsion = JSON.parse(xhr.responseText)
     jsonData = jsion.records.locations[0].location
-    console.log(jsonData)
     cityType()
 }
 
