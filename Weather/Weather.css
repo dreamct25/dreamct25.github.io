@@ -69,7 +69,7 @@ body {
         transform: translate(-79px, -68px);
     }
     .bg-text-change {
-        transform: translate(-44px, -9px);
+        transform: translate(-44px, -9px) !important;
     }
 }
 
@@ -101,7 +101,7 @@ body {
         transform: translate(-70px, -70px);
     }
     .control-change {
-        transform: translate(-35px, -10px);
+        transform: translate(-35px, -10px) !important;
     }
 }
 
@@ -396,9 +396,9 @@ body {
 
 .loading-icons {
     position: absolute;
-    left: 32%;
+    left: 33%;
     top: 10%;
-    font-size: 31px;
+    font-size: 30px;
     animation-name: loadIcons;
     animation-duration: 1s;
     animation-timing-function: linear;
