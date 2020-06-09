@@ -49,7 +49,7 @@ function callAll() {
 
 function content() {
     switch (this.textContent) {
-        case '本日天氣':
+        case '目前天氣':
             today()
             document.querySelector('.now').classList.add('btn-active')
             document.querySelector('.now').classList.add('btn-color')
@@ -87,7 +87,7 @@ function today() {
                         <div class="row no-gutters">
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentFt-in">
-                                    <span class="text-center">本日氣溫</span>
+                                    <span class="text-center">目前氣溫</span>
                                     <p class="mb-0 my-2 text-center">${keyWord.weatherElement[8].time[0].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[0].elementValue[0].value}&degC</p>
                                     <p class="mb-0 text-center">舒適度：${keyWord.weatherElement[3].time[0].elementValue[0].value} ~ ${keyWord.weatherElement[7].time[0].elementValue[0].value}</p> 
                                 </div>
@@ -96,7 +96,7 @@ function today() {
                                 <div class="board mx-1 weather-contentSd-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">本日降雨機率</span>
+                                            <span class="text-center">目前降雨機率</span>
                                         </div>
                                     </div>
                                     <div class="row my-3">
@@ -113,7 +113,7 @@ function today() {
                         <div class="row no-gutters">
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentTd-in">
-                                    <p class="mt-2 mb-3 text-center">本日均溫：${keyWord.weatherElement[1].time[0].elementValue[0].value}&degC</p>
+                                    <p class="mt-2 mb-3 text-center">目前均溫：${keyWord.weatherElement[1].time[0].elementValue[0].value}&degC</p>
                                     <p class="my-4 text-center">紫外線：${keyWord.weatherElement[9].time[0].elementValue[0].value}&nbsp${keyWord.weatherElement[9].time[0].elementValue[1].value}</p>
                                     <p class="my-4 text-center">體感溫度：${keyWord.weatherElement[11].time[0].elementValue[0].value}&degC ~ ${keyWord.weatherElement[5].time[0].elementValue[0].value}&degC</p>
                                     <p class="mt-3 mb-2 text-center">濕度：${keyWord.weatherElement[2].time[0].elementValue[0].value}%</p>
@@ -123,7 +123,7 @@ function today() {
                                 <div class="board mx-1 weather-contentFort-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">本日天氣概況</span>
+                                            <span class="text-center">目前天氣概況</span>
                                         </div>
                                     </div>
                                     <div class="row no-gutters">
