@@ -1,842 +1,881 @@
 span {
-  display: block;
+    display: block;
 }
 
 .date {
-  text-align: center;
+    text-align: center;
 }
 
 html {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  transition: 0.7s ease;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    transition: 0.7s ease;
 }
 
 .moring {
-  background-image: url("https://unsplash.com/photos/FBLGvhgVYQM/download?force=true&w=1920");
+    background-image: url("https://unsplash.com/photos/FBLGvhgVYQM/download?force=true&w=1920");
 }
 
 .night {
-  background-image: url("https://unsplash.com/photos/NORa8-4ohA0/download?force=true&w=1920");
+    background-image: url("https://unsplash.com/photos/NORa8-4ohA0/download?force=true&w=1920");
 }
 
 body {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .header {
-  color: white;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
-  position: fixed;
-  top: -15%;
-  right: 0;
-  left: 0;
-  z-index: 1;
-  opacity: 0;
-  font-style: italic;
-  transition: 1s ease;
+    color: white;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: -15%;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 0;
+    font-style: italic;
+    transition: 1s ease;
 }
 
 .header-active {
-  opacity: 1;
-  top: 0%;
+    opacity: 1;
+    top: 0%;
 }
 
 .location {
-  opacity: 0;
-  color: white;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    color: white;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
 }
 
 .bg-text {
-  color: white;
-  font-size: 20px;
-  font-style: italic;
-  opacity: 0;
-  transform: translateX(-90px);
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
-  transition: 0.7s ease;
+    color: white;
+    font-size: 20px;
+    font-style: italic;
+    opacity: 0;
+    transform: translateX(-90px);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    transition: 0.7s ease;
 }
 
 .bg-text-in {
-  opacity: 1;
-  transform: translateX(-70px);
+    opacity: 1;
+    transform: translateX(-70px);
 }
 
 @media screen and (max-width: 414px) {
-  .bg-text {
-    transform: translate(-44px, -68px);
-  }
-
-  .bg-text-change {
-    transform: translate(-44px, -9px);
-  }
+    .bg-text {
+        transform: translate(-44px, -68px);
+    }
+    .bg-text-change {
+        transform: translate(-44px, -9px);
+    }
 }
+
 .control {
-  padding: 10px 25px 10px 25px;
-  background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 10px;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-  position: relative;
-  transition: 0.7s ease;
-  opacity: 0;
-  transform: translateX(-80px);
-  cursor: pointer;
+    padding: 10px 25px 10px 25px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    position: relative;
+    transition: 0.7s ease;
+    opacity: 0;
+    transform: translateX(-80px);
+    cursor: pointer;
 }
 
 .control-in {
-  opacity: 1;
-  transform: translateX(-60px);
+    opacity: 1;
+    transform: translateX(-60px);
 }
 
 @media screen and (max-width: 414px) {
-  .control {
-    transform: translate(-35px, -70px);
-  }
-
-  .control-change {
-    transform: translate(-35px, -10px);
-  }
+    .control {
+        transform: translate(-35px, -70px);
+    }
+    .control-change {
+        transform: translate(-35px, -10px);
+    }
 }
+
 .control-active {
-  background-color: rgba(0, 119, 255, 0.7);
+    background-color: rgba(0, 119, 255, 0.7);
 }
 
 .control-point {
-  position: absolute;
-  padding: 10px;
-  background-color: white;
-  border-radius: 50%;
-  top: 2%;
-  left: 0%;
-  transition: 0.7s ease;
+    position: absolute;
+    padding: 10px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2%;
+    left: 0%;
+    transition: 0.7s ease;
 }
 
 .control-point-active {
-  left: 60%;
+    left: 60%;
 }
 
 .now,
 .tomorrow,
 .week {
-  text-align: center;
-  margin: 10px 50px 10px 50px;
-  padding: 5px 0 5px 0;
-  border-radius: 10px;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: 1s ease;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    text-align: center;
+    margin: 10px 50px 10px 50px;
+    padding: 5px 0 5px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 1s ease;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
 }
 
 .now-in {
-  opacity: 1;
-  transform: translateY(0px);
-  transition: 1s ease;
+    opacity: 1;
+    transform: translateY(0px);
+    transition: 1s ease;
 }
 
 .tomorrow-in {
-  opacity: 1;
-  transform: translateY(0px);
-  transition: 1s ease;
+    opacity: 1;
+    transform: translateY(0px);
+    transition: 1s ease;
 }
 
 .week-in {
-  opacity: 1;
-  transform: translateY(0px);
-  transition: 1s ease;
+    opacity: 1;
+    transform: translateY(0px);
+    transition: 1s ease;
 }
 
 .btn-active {
-  transform: translateY(0px) scale(0.8);
-  transition: 0.5s ease;
+    transform: translateY(0px) scale(0.8);
+    transition: 0.5s ease;
 }
 
 .btn-color {
-  background-color: rgba(255, 255, 255, 0.7);
-  color: black;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: black;
 }
 
 .clock {
-  opacity: 0;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
-  transform: translateX(-80px);
-  transition: 1s ease;
+    opacity: 0;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    transform: translateX(-80px);
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .clock {
-    transform: translate(-13px, -192px);
-  }
-
-  .clock-change {
-    transform: translate(-13px, 0px) !important;
-  }
+    .clock {
+        transform: translate(-13px, -192px);
+    }
+    .clock-change {
+        transform: translate(-13px, 0px) !important;
+    }
 }
+
 .clock-in {
-  opacity: 1;
-  transform: translateX(-40px);
+    opacity: 1;
+    transform: translateX(-40px);
 }
 
 @media screen and (max-width: 414px) {
-  .clock-in {
-    transform: translate(-13px, -222px);
-  }
+    .clock-in {
+        transform: translate(-13px, -222px);
+    }
 }
+
 .text-in {
-  position: relative;
+    position: relative;
 }
 
 .select {
-  z-index: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  opacity: 0;
-  padding: 4px 60px 4px 133px;
-  border-radius: 20px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -100%);
-  transition: 1s ease;
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    padding: 4px 60px 4px 133px;
+    border-radius: 20px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -100%);
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .select {
-    margin-top: -70px;
-    border-radius: 0px;
-  }
+    .select {
+        margin-top: -70px;
+        border-radius: 0px;
+    }
 }
+
 .select-in {
-  opacity: 1;
-  top: 69%;
+    opacity: 1;
+    top: 69%;
 }
 
 @media screen and (max-width: 414px) {
-  .select-in {
-    top: 86%;
-  }
+    .select-in {
+        top: 86%;
+    }
 }
+
 .select-toggle {
-  opacity: 0;
-  top: 75%;
-  transition: 1s ease;
+    opacity: 0;
+    top: 75%;
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .select-toggle {
-    top: 95%;
-  }
+    .select-toggle {
+        top: 95%;
+    }
 }
+
 .week-board,
 .board {
-  background: linear-gradient(140deg, rgba(40, 40, 40, 0.7), rgba(20, 20, 20, 0.7), rgba(0, 0, 0, 0.7));
-  margin: 1% 0 1% 0;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  color: white;
+    background: linear-gradient(140deg, rgba(40, 40, 40, 0.7), rgba(20, 20, 20, 0.7), rgba(0, 0, 0, 0.7));
+    margin: 1% 0 1% 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    color: white;
 }
 
 .back {
-  z-index: 2;
-  color: white;
-  cursor: pointer;
-  text-align: center;
-  padding: 5px 10px 5px 10px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: 1s ease;
+    z-index: 2;
+    color: white;
+    cursor: pointer;
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 1s ease;
 }
 
 .back-toggle {
-  opacity: 1;
-  transform: translateY(0px);
-  transition: 1s ease;
+    opacity: 1;
+    transform: translateY(0px);
+    transition: 1s ease;
 }
 
 .in-title {
-  opacity: 0;
-  color: white;
-  position: absolute;
-  font-size: 50px;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
-  transform: translateY(134px) scale(1.5);
-  transition: 1s ease;
+    opacity: 0;
+    color: white;
+    position: absolute;
+    font-size: 50px;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    transform: translateY(134px) scale(1.5);
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .in-title {
-    transform: translateY(-40px) scale(1.5);
-  }
+    .in-title {
+        transform: translateY(-40px) scale(1.5);
+    }
 }
+
 .in-title-in {
-  opacity: 1;
-  transform: translateY(134px) scale(1);
-  transition: 1s ease;
+    opacity: 1;
+    transform: translateY(134px) scale(1);
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .in-title-in {
-    transform: translateY(-40px) scale(1);
-  }
+    .in-title-in {
+        transform: translateY(-40px) scale(1);
+    }
 }
+
 .loading {
-  color: white;
-  text-align: center;
-  font-size: 25px;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    font-size: 25px;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
 }
 
 .loading-in {
-  animation-name: loadingIn;
-  animation-duration: 1s;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
+    animation-name: loadingIn;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
 }
 
 @keyframes loadingIn {
-  0% {
-    opacity: 0;
-    transform: translateY(205px) scale(1.5);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(205px) scale(1);
-  }
-}
-@media screen and (max-width: 414px) {
-  @keyframes loadingIn {
     0% {
-      opacity: 0;
-      transform: translateY(10px) scale(1.5);
+        opacity: 0;
+        transform: translateY(205px) scale(1.5);
     }
     100% {
-      opacity: 1;
-      transform: translateY(10px) scale(1);
+        opacity: 1;
+        transform: translateY(205px) scale(1);
     }
-  }
 }
+
+@media screen and (max-width: 414px) {
+    @keyframes loadingIn {
+        0% {
+            opacity: 0;
+            transform: translateY(10px) scale(1.5);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(10px) scale(1);
+        }
+    }
+}
+
 .loading-out {
-  animation-name: loadingOut;
-  animation-duration: 1s;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
+    animation-name: loadingOut;
+    animation-duration: 1s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
 }
 
 @keyframes loadingOut {
-  0% {
-    opacity: 1;
-    transform: translateY(205px) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(205px) scale(1.5);
-  }
-}
-@media screen and (max-width: 414px) {
-  @keyframes loadingOut {
     0% {
-      opacity: 1;
-      transform: translateY(10px) scale(1);
+        opacity: 1;
+        transform: translateY(205px) scale(1);
     }
     100% {
-      opacity: 0;
-      transform: translateY(10px) scale(1.5);
+        opacity: 0;
+        transform: translateY(205px) scale(1.5);
     }
-  }
 }
+
+@media screen and (max-width: 414px) {
+    @keyframes loadingOut {
+        0% {
+            opacity: 1;
+            transform: translateY(10px) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(10px) scale(1.5);
+        }
+    }
+}
+
 .loading-icon {
-  animation-name: loadIcon;
-  animation-duration: 1s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+    animation-name: loadIcon;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 }
 
 @keyframes loadIcon {
-  100% {
-    transform: rotate(360deg);
-  }
+    100% {
+        transform: rotate(360deg);
+    }
 }
+
 .tomorrow-day {
-  color: white;
-  text-align: center;
-  font-size: 24px;
-  position: absolute;
-  left: 50%;
-  opacity: 0;
-  transform: translate(-48px, -85px);
-  transition: 1s ease;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    transform: translate(-48px, -85px);
+    transition: 1s ease;
 }
 
 @media screen and (max-width: 414px) {
-  .tomorrow-day {
-    transform: translate(-48px, -150px);
-  }
+    .tomorrow-day {
+        transform: translate(-48px, -150px);
+    }
 }
+
 .tomorrow-day-in {
-  animation-name: tomorrowDayin;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
+    animation-name: tomorrowDayin;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes tomorrowDayin {
-  0% {
-    transform: translate(-48px, -85px);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-48px, -115px);
-    opacity: 1;
-  }
-}
-@media screen and (max-width: 414px) {
-  @keyframes tomorrowDayin {
     0% {
-      transform: translate(-48px, -150px);
-      opacity: 0;
+        transform: translate(-48px, -85px);
+        opacity: 0;
     }
     100% {
-      transform: translate(-48px, -180px);
-      opacity: 1;
+        transform: translate(-48px, -115px);
+        opacity: 1;
     }
-  }
 }
+
+@media screen and (max-width: 414px) {
+    @keyframes tomorrowDayin {
+        0% {
+            transform: translate(-48px, -150px);
+            opacity: 0;
+        }
+        100% {
+            transform: translate(-48px, -180px);
+            opacity: 1;
+        }
+    }
+}
+
 .sidebar-outer {
-  position: relative;
+    position: relative;
 }
 
 .tomorrow-day-out {
-  animation-name: tomorrowDayout;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
+    animation-name: tomorrowDayout;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes tomorrowDayout {
-  0% {
-    transform: translate(-48px, -115px);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-48px, -85px);
-    opacity: 0;
-  }
+    0% {
+        transform: translate(-48px, -115px);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-48px, -85px);
+        opacity: 0;
+    }
 }
+
 .sidebar-outer {
-  position: relative;
-  z-index: 2;
+    position: relative;
+    z-index: 2;
 }
 
 .sidebar {
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 15px;
-  border-radius: 5px 0 0 5px;
-  position: fixed;
-  right: 0%;
-  bottom: 34%;
-  transform: translateX(72px);
-  transition: 0.5s ease;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 5px 0 0 5px;
+    position: fixed;
+    right: 0%;
+    bottom: 34%;
+    transform: translateX(72px);
+    transition: 0.5s ease;
 }
 
 .sidebar-icon {
-  cursor: pointer;
-  transform: rotate(-90deg);
-  padding: 10px 1px 5px 1px;
-  color: rgba(255, 255, 255, 0.5);
-  transition: 0.5s ease;
+    cursor: pointer;
+    transform: rotate(-90deg);
+    padding: 10px 1px 5px 1px;
+    color: rgba(255, 255, 255, 0.5);
+    transition: 0.5s ease;
 }
 
 .sidebar-icon-outer {
-  position: absolute;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  font-size: 20px;
-  padding: 5px 5px 5px 6px;
-  border-radius: 5px 0 0 5px;
-  top: 37%;
-  right: 100%;
-  transition: 0.5s ease;
+    position: absolute;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    font-size: 20px;
+    padding: 5px 5px 5px 6px;
+    border-radius: 5px 0 0 5px;
+    top: 37%;
+    right: 100%;
+    transition: 0.5s ease;
 }
 
 .sidebar-text {
-  padding: 5px;
-  margin: 5px auto;
-  color: white;
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.3) !important;
-  cursor: pointer;
+    padding: 5px;
+    margin: 5px auto;
+    color: white;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    cursor: pointer;
 }
 
 .sidebar-hide {
-  right: -3%;
+    right: -3%;
 }
 
 @media screen and (max-width: 414px) {
-  .sidebar-hide {
-    right: -7%;
-  }
+    .sidebar-hide {
+        right: -7%;
+    }
 }
+
 .sidebar-active {
-  transform: translateX(4px);
+    transform: translateX(4px);
 }
 
 .sidebar-icon-active {
-  transform: rotate(-270deg);
+    transform: rotate(-270deg);
 }
 
 .sidebar-icon-active-trans {
-  background-color: rgba(0, 0, 0, 0.7) !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 .sidebar-arrow-trans {
-  color: white;
+    color: white;
 }
 
 .weather-title-in {
-  animation: weatherTitlein;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherTitlein;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherTitlein {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .weather-title-out {
-  animation: weatherTitleout;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
+    animation: weatherTitleout;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 
 @keyframes weatherTitleout {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
 }
+
 .weather-contentFt-in {
-  animation: weatherFtin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherFtin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherFtin {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .weather-contentSd-in {
-  animation: weatherSdin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherSdin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherSdin {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .weather-contentTd-in {
-  animation: weatherTdin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherTdin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherTdin {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .weather-contentFort-in {
-  animation: weatherFortin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherFortin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherFortin {
-  0% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentFt-in {
-  animation: weekFtin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 0.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekFtin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 0.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekFtin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentSd-in {
-  animation: weekSdin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekSdin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekSdin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentTd-in {
-  animation: weekTdin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 1.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekTdin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 1.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekTdin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentFort-in {
-  animation: weekFortin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 2s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekFortin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 2s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekFortin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentFvt-in {
-  animation: weekFvtin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 2.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekFvtin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 2.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekFvtin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentSxt-in {
-  animation: weekSxtin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 3s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekSxtin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 3s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekSxtin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-week-contentSvt-in {
-  animation: weekSvtin;
-  animation-timing-function: ease;
-  animation-duration: 1.5s;
-  animation-delay: 3.5s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekSvtin;
+    animation-timing-function: ease;
+    animation-duration: 1.5s;
+    animation-delay: 3.5s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekSvtin {
-  0% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
 }
+
 .weather-content-out {
-  animation: weatherContentout;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weatherContentout;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weatherContentout {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.5);
-    opacity: 0;
-  }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
 }
+
 .weather-week-content-out {
-  animation: weekContentout;
-  animation-timing-function: ease;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  opacity: 0;
+    animation: weekContentout;
+    animation-timing-function: ease;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    opacity: 0;
 }
 
 @keyframes weekContentout {
-  0% {
-    transform: translateY(0px);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
+    0% {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
 }
+
 .top {
-  color: white;
-  position: fixed;
-  right: 3%;
-  bottom: -5%;
-  padding: 7px 11px 5px 9px;
-  background-color: rgba(0, 0, 0, 0.7);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
-  border-radius: 50%;
-  opacity: 0;
-  transform: rotate(-47deg) scale(0.5);
-  cursor: pointer;
-  transition: 1s ease;
+    color: white;
+    position: fixed;
+    right: 3%;
+    bottom: -5%;
+    padding: 7px 11px 5px 9px;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    opacity: 0;
+    transform: rotate(-47deg) scale(0.5);
+    cursor: pointer;
+    transition: 1s ease;
 }
 
 .top-active {
-  opacity: 1;
-  bottom: 3%;
-  transform: rotate(-47deg) scale(1);
+    opacity: 1;
+    bottom: 3%;
+    transform: rotate(-47deg) scale(1);
 }
 
 @media screen and (max-width: 414px) {
-  .top-active {
-    bottom: 2%;
-  }
+    .top-active {
+        bottom: 2%;
+    }
 }
+
 .footer {
-  margin-top: 330px;
-  margin-bottom: 23px;
-  opacity: 0;
-  transform: translateY(50px);
-  transition: 1s ease;
+    margin-top: 330px;
+    margin-bottom: 23px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: 1s ease;
 }
 
 .footer-in {
-  opacity: 1;
-  transform: translateY(0px);
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+@media screen and (max-width: 768px) {
+    .footer {
+        margin-top: 520px;
+    }
 }
 
 @media screen and (max-width: 414px) {
-  .footer {
-    margin-top: 160px;
-  }
+    .footer {
+        margin-top: 160px;
+    }
 }
+
 .footer-active {
-  margin-top: 0px;
+    margin-top: 0px;
 }
 
 .footer-text {
-  color: white;
-  text-align: center;
-  font-style: italic;
-  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    font-style: italic;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
 }
