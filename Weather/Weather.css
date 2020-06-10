@@ -790,26 +790,6 @@ body {
     }
 }
 
-.weather-week-contentSvt-in {
-    animation: weekSvtin;
-    animation-timing-function: ease;
-    animation-duration: 1.5s;
-    animation-delay: 3.5s;
-    animation-fill-mode: forwards;
-    opacity: 0;
-}
-
-@keyframes weekSvtin {
-    0% {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
-}
-
 .weather-content-out {
     animation: weatherContentout;
     animation-timing-function: ease;

@@ -216,13 +216,12 @@ function tomorrow() {
 function week() {
     allDatas.forEach(keyWord => {
         if (select.value == keyWord.locationName) {
-            let dateI = keyWord.weatherElement[0].time[1].startTime
-            let dateII = keyWord.weatherElement[0].time[3].startTime
-            let dateIII = keyWord.weatherElement[0].time[5].startTime
-            let dateIV = keyWord.weatherElement[0].time[7].startTime
-            let dateV = keyWord.weatherElement[0].time[9].startTime
-            let dateVI = keyWord.weatherElement[0].time[11].startTime
-            let dateVII = keyWord.weatherElement[0].time[13].startTime
+            let dateI = keyWord.weatherElement[0].time[2].startTime
+            let dateII = keyWord.weatherElement[0].time[4].startTime
+            let dateIII = keyWord.weatherElement[0].time[6].startTime
+            let dateIV = keyWord.weatherElement[0].time[8].startTime
+            let dateV = keyWord.weatherElement[0].time[10].startTime
+            let dateVI = keyWord.weatherElement[0].time[12].startTime
             document.querySelector('.location').textContent = keyWord.locationName
             document.querySelector('.text-in').innerHTML =
                 `
@@ -232,98 +231,98 @@ function week() {
                                 <div class="week-board mx-1 weather-week-contentFt-in">
                                     <span class="date">${dateI.substring(5, 7)}/${dateI.substring(8, 11)}</span>
                                     <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[1].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[1].elementValue[0].value}&degC</span>
+                                    <span class="date">${keyWord.weatherElement[8].time[2].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[2].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[1].elementValue[0].value}%</span>
+                                    <span class="date">${keyWord.weatherElement[0].time[2].elementValue[0].value}%</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentFt-in">
                                     <span class="date">${dateI.substring(5, 7)}/${dateI.substring(8, 11)}</span>
                                     <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[2].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[2].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${dateII.substring(5, 7)}/${dateII.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
                                     <span class="date">${keyWord.weatherElement[8].time[3].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[3].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[3].elementValue[0].value}%</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentSd-in">
                                     <span class="date">${dateII.substring(5, 7)}/${dateII.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
+                                    <span class="date">白天</span>
                                     <span class="date">${keyWord.weatherElement[8].time[4].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[4].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[4].elementValue[0].value}%</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${dateIII.substring(5, 7)}/${dateIII.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
+                                <div class="week-board mx-1 weather-week-contentSd-in">
+                                    <span class="date">${dateII.substring(5, 7)}/${dateII.substring(8, 11)}</span>
+                                    <span class="date">夜晚</span>
                                     <span class="date">${keyWord.weatherElement[8].time[5].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[5].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[5].elementValue[0].value}%</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentTd-in">
                                     <span class="date">${dateIII.substring(5, 7)}/${dateIII.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
+                                    <span class="date">白天</span>
                                     <span class="date">${keyWord.weatherElement[8].time[6].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[6].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[6].elementValue[0].value}%</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFort-in">
-                                    <span class="date">${dateIV.substring(5, 7)}/${dateIV.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
+                                <div class="week-board mx-1 weather-week-contentTd-in">
+                                    <span class="date">${dateIII.substring(5, 7)}/${dateIII.substring(8, 11)}</span>
+                                    <span class="date">夜晚</span>
                                     <span class="date">${keyWord.weatherElement[8].time[7].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[7].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[7].elementValue[0].value}%</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentFort-in">
                                     <span class="date">${dateIV.substring(5, 7)}/${dateIV.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
+                                    <span class="date">白天</span>
                                     <span class="date">${keyWord.weatherElement[8].time[8].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[8].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[8].elementValue[0].value}%</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
                             <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFvt-in">
-                                    <span class="date">${dateV.substring(5, 7)}/${dateV.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
+                                <div class="week-board mx-1 weather-week-contentFort-in">
+                                    <span class="date">${dateIV.substring(5, 7)}/${dateIV.substring(8, 11)}</span>
+                                    <span class="date">夜晚</span>
                                     <span class="date">${keyWord.weatherElement[8].time[9].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[9].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[9].elementValue[0].value}%</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row my-3 no-gutters">
+                            <div class="col-md-6">
+                                <div class="week-board mx-1 weather-week-contentFvt-in">
+                                    <span class="date">${dateV.substring(5, 7)}/${dateV.substring(8, 11)}</span>
+                                    <span class="date">白天</span>
+                                    <span class="date">${keyWord.weatherElement[8].time[10].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[10].elementValue[0].value}&degC</span>
+                                    <span class="date">降雨機率</span>
+                                    <span class="date">${keyWord.weatherElement[0].time[10].elementValue[0].value}%</span>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentFvt-in">
                                     <span class="date">${dateV.substring(5, 7)}/${dateV.substring(8, 11)}</span>
                                     <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[10].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[10].elementValue[0].value}&degC</span>
+                                    <span class="date">${keyWord.weatherElement[8].time[11].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[11].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[10].elementValue[0].value}%</span>
+                                    <span class="date">${keyWord.weatherElement[0].time[11].elementValue[0].value}%</span>
                                 </div>
                             </div>
                         </div>
@@ -332,38 +331,18 @@ function week() {
                                 <div class="week-board mx-1 weather-week-contentSxt-in">
                                     <span class="date">${dateVI.substring(5, 7)}/${dateVI.substring(8, 11)}</span>
                                     <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[11].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[11].elementValue[0].value}&degC</span>
+                                    <span class="date">${keyWord.weatherElement[8].time[12].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[12].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[11].elementValue[0].value}%</span>
+                                    <span class="date">${keyWord.weatherElement[0].time[12].elementValue[0].value}%</span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="week-board mx-1 weather-week-contentSxt-in">
                                     <span class="date">${dateVI.substring(5, 7)}/${dateVI.substring(8, 11)}</span>
                                     <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[12].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[12].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[12].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSvt-in">
-                                    <span class="date">${dateVII.substring(5, 7)}/${dateVII.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
                                     <span class="date">${keyWord.weatherElement[8].time[13].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[13].elementValue[0].value}&degC</span>
                                     <span class="date">降雨機率</span>
                                     <span class="date">${keyWord.weatherElement[0].time[13].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSvt-in">
-                                    <span class="date">${dateVII.substring(5, 7)}/${dateVII.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[14].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[14].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[14].elementValue[0].value}%</span>
                                 </div>
                             </div>
                         </div>
