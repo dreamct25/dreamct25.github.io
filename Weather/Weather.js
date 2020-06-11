@@ -1345,17 +1345,8 @@ document.querySelector('.top').addEventListener('click', scrolls)
 // 監聽頁面滾動，當滾動到指定位置時觸發函式內容
 window.addEventListener('scroll', () => {
     let height = document.documentElement.scrollTop || document.body.scrollTop;
-    if (height > 28) {
-        document.querySelector('.header').classList.remove('header-active')
-    } else {
-        document.querySelector('.header').classList.add('header-active')
-    }
-
-    if (height > 200) {
-        document.querySelector('.top').classList.add('top-active')
-    } else {
-        document.querySelector('.top').classList.remove('top-active')
-    }
+    height > 28 ? document.querySelector('.header').classList.remove('header-active') : document.querySelector('.header').classList.add('header-active')
+    height > 200 ? document.querySelector('.top').classList.add('top-active') : document.querySelector('.top').classList.remove('top-active')
 })
 
 // 監聽頁面載入，載入時觸發函式內容
