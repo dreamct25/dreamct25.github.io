@@ -422,12 +422,6 @@ body {
     animation-iteration-count: infinite;
 }
 
-@media screen and (max-width: 414px) {
-    .loading-icons {
-        left: 33%;
-    }
-}
-
 @keyframes loadIcons {
     100% {
         transform: rotate(-360deg);
