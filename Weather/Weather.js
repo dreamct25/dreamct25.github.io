@@ -1359,7 +1359,12 @@ window.addEventListener('load', () => {
     setTimeout(() => document.querySelector('.clock').classList.add('clock-in'), 2000)
     setTimeout(() => document.querySelector('.in-title').classList.add('in-title-in'), 1000)
     setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 2000)
-    setTimeout(() => document.querySelector('.text-in').innerHTML = `<span class="loading loading-in"><i class="fal fa-circle-notch loading-icon fa-2x"></i><i class="fal fa-circle-notch loading-icons"></i><br>Loading</span>`, 3000)
+    setTimeout(() => document.querySelector('.text-in').innerHTML = `
+        <span class="loading loading-in">
+            <span class="loading-icon"></span>
+            <span class="loading-icons"></span>
+            Loading
+        </span>`, 3000)
     setTimeout(() => {
         document.querySelector('.loading').classList.remove('loading-in')
         document.querySelector('.loading').classList.add('loading-out')
