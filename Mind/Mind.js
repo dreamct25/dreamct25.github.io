@@ -484,10 +484,17 @@ function addTimer() {
         }
     }, 900)
     setTimeout(() => {
-        chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-            'center'
-        chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-            'center'
+        if (window.innerWidth <= 414) {
+            chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
+                'center'
+            chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
+                'center'
+        } else {
+            chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
+                'center'
+            chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
+                'center'
+        }
     }, 910)
     setTimeout(() => array = [], 10)
     console.log(count)
@@ -660,10 +667,17 @@ function removeTimer() {
         }
     }, 900)
     setTimeout(() => {
-        chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-            'center'
-        chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-            'center'
+        if (window.innerWidth <= 414) {
+            chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
+                'center'
+            chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
+                'center'
+        } else {
+            chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
+                'center'
+            chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
+                'center'
+        }
     }, 910)
     console.log(count)
     console.log(newString)
