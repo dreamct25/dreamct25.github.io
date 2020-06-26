@@ -321,10 +321,12 @@ span {
 @media screen and (max-width: 414px) {
     @keyframes nextMove {
         0% {
-            transform: translate(-100px, 22px) scale(0.8);
+            opacity: 0;
+            transform: translateX(-100px, 22px) scale(0.8);
         }
 
         100% {
+            opacity: 1;
             transform: translate(-100px, 20px) scale(1);
         }
     }
@@ -349,10 +351,12 @@ span {
 @media screen and (max-width: 414px) {
     @keyframes nextOut {
         0% {
+            opacity: 1;
             transform: translate(-100px, 20px) scale(1);
         }
 
         100% {
+            opacity: 0;
             transform: translate(-100px, 20px) scale(0.8);
         }
     }
@@ -436,7 +440,7 @@ span {
     right: 50%;
     font-size: 20px;
     font-weight: bold;
-    transform: translate(55%, 50%);
+    transform: translate(50%, 50%);
     animation: shine 1s linear infinite;
 }
 
