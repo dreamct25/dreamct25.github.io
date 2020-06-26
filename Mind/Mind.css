@@ -78,6 +78,7 @@ span {
     transition: 0.5s ease;
     cursor: pointer;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 @media screen and (max-width: 414px) {
@@ -209,6 +210,7 @@ span {
     cursor: pointer;
     transition: 1s ease;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .prev {
@@ -307,23 +309,23 @@ span {
 @keyframes nextMove {
     0% {
         opacity: 0;
-        -webkit-transform: translate(-239px, 22px) scale(0.8);
+        transform: translate(-239px, 22px) scale(0.8);
     }
 
     100% {
         opacity: 1;
-        -webkit-transform: translate(-239px, 20px) scale(1);
+        transform: translate(-239px, 20px) scale(1);
     }
 }
 
 @media screen and (max-width: 414px) {
     @keyframes nextMove {
         0% {
-            -webkit-transform: translate(-100px, 22px) scale(0.8);
+            transform: translate(-100px, 22px) scale(0.8);
         }
 
         100% {
-            -webkit-transform: translate(-100px, 20px) scale(1);
+            transform: translate(-100px, 20px) scale(1);
         }
     }
 }
@@ -335,23 +337,23 @@ span {
 @keyframes nextOut {
     0% {
         opacity: 1;
-        -webkit-transform: translate(-239px, 20px) scale(1);
+        transform: translate(-239px, 20px) scale(1);
     }
 
     100% {
         opacity: 0;
-        -webkit-transform: translate(-239px, 20px) scale(0.8);
+        transform: translate(-239px, 20px) scale(0.8);
     }
 }
 
 @media screen and (max-width: 414px) {
     @keyframes nextOut {
         0% {
-            -webkit-transform: translate(-100px, 20px) scale(1);
+            transform: translate(-100px, 20px) scale(1);
         }
 
         100% {
-            -webkit-transform: translate(-100px, 20px) scale(0.8);
+            transform: translate(-100px, 20px) scale(0.8);
         }
     }
 }
@@ -397,21 +399,24 @@ span {
 @media screen and (max-width: 414px) {
     @keyframes circleIn {
         0% {
+            opacity: 1;
             transform: scale(1.2);
         }
 
         100% {
+            opacity: 0;
             transform: scale(1);
         }
     }
 }
 
 .circle-outer .circle {
+    position: absolute;
     top: 0;
     right: 50%;
     width: 180px;
     height: 180px;
-    transform: translate(6%, 0);
+    transform: translate(50%, 0);
     border-radius: 50%;
     border: 8px solid rgba(0, 0, 0, 0.5);
     border-top: 8px solid rgba(0, 162, 255, 0.7);
@@ -421,7 +426,7 @@ span {
 
 @keyframes circleRun {
     100% {
-        -webkit-transform: translate(6%, 0) rotate(360deg);
+        transform: translate(50%, 0) rotate(360deg);
     }
 }
 
@@ -465,12 +470,14 @@ span {
 }
 
 @media screen and (max-width: 414px) {
-    @keyframes circleIn {
+    @keyframes circleOut {
         0% {
+            opacity: 1;
             transform: scale(1);
         }
 
         100% {
+            opacity: 0;
             transform: scale(1.2);
         }
     }
