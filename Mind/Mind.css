@@ -416,7 +416,7 @@ span {
     right: 50%;
     width: 180px;
     height: 180px;
-    transform: translate(50%, 0);
+    transform: translate(50%, 0) rotate(0deg);
     border-radius: 50%;
     border: 8px solid rgba(0, 0, 0, 0.5);
     border-top: 8px solid rgba(0, 162, 255, 0.7);
