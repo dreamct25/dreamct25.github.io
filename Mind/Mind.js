@@ -292,14 +292,14 @@ function addTimer() {
             this.style.cssText = 'opacity: 1;'
         }, 1000)
         setTimeout(() => document.querySelector('.explain').style.display = 'none', 1001);
-        setTimeout(() => Qouter.style.display = 'flex', 1003);
+        setTimeout(() => Qouter.style.display = 'block', 1003);
     } else if (count == -2) {
         testText = ''
         newString = ''
         this.classList.add('next-move-out')
         typeTextContent.classList.add('type-text-content-hide')
         setTimeout(() => {
-            document.querySelector('.explain').style.display = 'flex'
+            document.querySelector('.explain').style.display = 'block'
             typeTextContent.textContent = ''
             this.classList.add('next-small')
         }, 990);
@@ -484,10 +484,10 @@ function addTimer() {
         }
     }, 900)
     setTimeout(() => {
-        chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify !important' : chooseFt.style.textAlign =
-            'center !important'
-        chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify !important' : chooseSd.style.textAlign =
-            'center !important'
+        chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
+            'center'
+        chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
+            'center'
     }, 910)
     setTimeout(() => array = [], 10)
     console.log(count)
