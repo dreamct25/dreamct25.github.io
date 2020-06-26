@@ -718,7 +718,7 @@ function typeDetails() {
         key.originsType == testText ? setTimeout(() => {
             typeTextContent.classList.add('type-text-content-in')
             typeTextContent.innerHTML = `
-                <div class="col-md-8">
+                <div class="row">
                     <div class="col-md-12">
                         <span class="type-title">您的類型</span>
                         <span class="type-origins">${key.originsType}</span>
