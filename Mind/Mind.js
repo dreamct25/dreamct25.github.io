@@ -513,7 +513,7 @@ function addTimer() {
     }, 900)
     setTimeout(() => {
         if (window.innerWidth <= 414) {
-            quest.textContent.length > 17 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+            quest.textContent.length > 16 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
                 'center'
             chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
@@ -698,7 +698,7 @@ function removeTimer() {
     }, 900)
     setTimeout(() => {
         if (window.innerWidth <= 414) {
-            quest.textContent.length > 17 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+            quest.textContent.length > 16 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
                 'center'
             chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
