@@ -253,12 +253,32 @@ function choose() {
 
 }
 
+
+
 function addTimer() {
-    // if (switchs !== false) {
-    //     console.log('點擊文字選項後繼續')
-    //     return
-    // } else 先關功能待測試完成後再復原
-    if (Qouter.classList.length >= 3) {
+    // 先關功能待測試完成後再復原
+    if (switchs !== false) {
+        const modalShow = document.querySelector('.modalC')
+        const modalContentShow = document.querySelector('.modal-bodyC')
+        const confirm = document.querySelector('.confirm')
+        modalShow.style.display = 'block'
+        modalShow.style.transition = '1s ease'
+        window.innerWidth <= 414 ? modalContentShow.style.maxWidth = '350px' : modalContentShow.style.maxWidth = '400px'
+
+        function modalHide() {
+            modalShow.classList.remove('modal-toggle')
+            modalContentShow.classList.remove('modal-body-toggle')
+            setTimeout(() => modalShow.style.display = 'none', 750)
+            confirm.removeEventListener('click', modalHide)
+        }
+        setTimeout(() => {
+            modalShow.classList.add('modal-toggle')
+            modalContentShow.classList.add('modal-body-toggle')
+        }, 100)
+
+        confirm.addEventListener('click', modalHide)
+        return
+    } else if (Qouter.classList.length >= 3) {
         Qouter.classList.remove('Qadd-in')
         Qouter.classList.add('Qadd-out')
         setTimeout(() => {
@@ -284,9 +304,11 @@ function addTimer() {
     }
 
     if (count == -1) {
+        switchs = false
         this.classList.add('next-trans')
         this.style.cssText = 'opacity: 0;'
         document.querySelector('.explain').classList.remove('explain-show')
+        window.removeEventListener('scroll', scrolls)
         setTimeout(() => {
             this.classList.remove('next-trans')
             this.style.cssText = 'opacity: 1;'
@@ -294,12 +316,15 @@ function addTimer() {
         setTimeout(() => document.querySelector('.explain').style.display = 'none', 1001);
         setTimeout(() => Qouter.style.display = 'block', 1003);
     } else if (count == -2) {
+        switchs = false
         testText = ''
         newString = ''
         this.classList.add('next-move-out')
         typeTextContent.classList.add('type-text-content-hide')
+        window.addEventListener('scroll', scrolls)
         setTimeout(() => {
             document.querySelector('.explain').style.display = 'block'
+            typeTextContent.style.display = 'none'
             typeTextContent.textContent = ''
             this.classList.add('next-small')
         }, 990);
@@ -473,6 +498,7 @@ function addTimer() {
                 break;
             case 28:
                 count = -2
+                switchs = false
                 clearTimeout(stopTimeSet)
                 setTimeout(() => finalSum(), 500)
                 this.classList.remove('next-active')
@@ -485,11 +511,15 @@ function addTimer() {
     }, 900)
     setTimeout(() => {
         if (window.innerWidth <= 414) {
+            quest.textContent.length > 17 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+                'center'
             chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
             chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
                 'center'
         } else {
+            quest.textContent.length > 27 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+                'center'
             chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
             chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
@@ -668,11 +698,15 @@ function removeTimer() {
     }, 900)
     setTimeout(() => {
         if (window.innerWidth <= 414) {
+            quest.textContent.length > 17 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+                'center'
             chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
             chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
                 'center'
         } else {
+            quest.textContent.length > 27 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
+                'center'
             chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
                 'center'
             chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
@@ -718,11 +752,15 @@ function finalSum() {
 
 function typeDetails() {
     Qouter.style.display = 'none'
-    typeTextContent.innerHTML = `
+    typeTextContent.style.display = 'flex'
+    setTimeout(() => {
+        typeTextContent.innerHTML = `
             <div class="circle-outer">
                 <div class="circle"></div>
                 <span class="circle-font">計算中</span>
             </div>`
+    }, 1000);
+
     setTimeout(() => {
         document.querySelector('.circle-outer').classList.add('circle-outer-out')
     }, 6000);
@@ -743,15 +781,24 @@ function typeDetails() {
                         <p class="type-content">${key.explainType}</p>
                     </div>
                 </div>`
-        }, 7500) : null
+        }, 8500) : null
         setTimeout(() => {
             setTimeout(() => {
                 next.classList.remove('next-trans-hide')
                 next.classList.add('next-move')
-            }, 200);
+            }, 1200);
             next.textContent = '重新測驗'
-        }, 11500);
+        }, 12500);
     })
+}
+
+
+function scrolls() {
+    const nextOuter = document.querySelector('.next-outer')
+    let windowTop = window.scrollY // 頁面視窗頂點
+    let windowBottom = window.innerHeight + windowTop // 頁面視窗底部 = 視窗頂點 + 視窗高度
+    let nextY = nextOuter.offsetTop + nextOuter.offsetHeight / 2
+    nextY < windowBottom ? next.classList.add('next-in') : next.classList.remove('next-in')
 }
 
 Qtext.forEach(key => {
@@ -759,6 +806,47 @@ Qtext.forEach(key => {
 })
 prev.addEventListener('click', removeTimer)
 next.addEventListener('click', addTimer)
+
+window.addEventListener('scroll', scrolls)
 window.addEventListener('load', () => {
     document.querySelector('.explain').classList.add('explain-show')
+    window.innerWidth <= 414 ? document.querySelector('.type-font-group').innerHTML = `
+    <p>
+       I . 心理能力的走向
+       <br>
+       你是「外向 E」( Extrovert )？
+       <br>
+       還是「內向 I」( Introvert )？
+       <br>
+       <br>
+       II . 認識外在世界的方法
+       <br>
+       你是「感覺 S」( Sensing )？
+       <br>
+       還是「直覺 N」( Intuition )？
+       <br>
+       <br>
+       III . 倚賴甚麼方式做決定
+       <br>
+       你是「理性 T」( Thinking )？
+       <br>
+       還是「情感 F」( Feeling )？
+       <br>
+       <br>
+       IV . 生活方式和處事態度
+       <br>
+       你是「判斷 J」( Judging )？
+       <br>
+       還是「理解 P」( Perceiving )？
+    </p>
+    <p class="mt-5">
+    請輕鬆作答便可
+    <br>
+    測驗結果可依個人官感參考
+    <br>也可當成玩樂性質
+    <br>
+    <br>
+    題目總共 28 題，請依直覺判斷喔~
+    <br>
+    感謝您的使用</p>` : null
 })
