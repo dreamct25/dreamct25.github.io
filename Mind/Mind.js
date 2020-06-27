@@ -189,7 +189,6 @@ function choose() {
     switchs = true
     if (switchs !== true) return;
     switchs = false
-    console.log(array)
     switch (this.dataset.choose) {
         case 'A':
             chooseFt.classList.add('texts-trans')
@@ -256,7 +255,7 @@ function choose() {
 
 
 function addTimer() {
-    // 先關功能待測試完成後再復原
+    count < 0 ? switchs = false : null
     if (switchs !== false) {
         const modalShow = document.querySelector('.modalC')
         const modalContentShow = document.querySelector('.modal-bodyC')
@@ -304,7 +303,6 @@ function addTimer() {
     }
 
     if (count == -1) {
-        switchs = false
         this.classList.add('next-trans')
         this.style.cssText = 'opacity: 0;'
         document.querySelector('.explain').classList.remove('explain-show')
@@ -316,7 +314,6 @@ function addTimer() {
         setTimeout(() => document.querySelector('.explain').style.display = 'none', 1001);
         setTimeout(() => Qouter.style.display = 'block', 1003);
     } else if (count == -2) {
-        switchs = false
         testText = ''
         newString = ''
         this.classList.add('next-move-out')
@@ -344,8 +341,6 @@ function addTimer() {
     switchs = true
     count += 1
     newString += array.join('')
-    console.log(array)
-    console.log(switchs)
     setTimeout(() => {
         switch (count) {
             case 0:
@@ -528,7 +523,6 @@ function addTimer() {
     }, 910)
     setTimeout(() => array = [], 10)
     console.log(count)
-    console.log(newString)
 }
 
 function removeTimer() {
@@ -714,7 +708,6 @@ function removeTimer() {
         }
     }, 910)
     console.log(count)
-    console.log(newString)
 }
 
 function finalSum() {
@@ -728,14 +721,14 @@ function finalSum() {
     let pCount = 0
     let finalText = newString.split('')
     finalText.forEach(key => {
-        key === 'E' ? console.log(eCount += 1) : null
-        key === 'I' ? console.log(iCount += 1) : null
-        key === 'S' ? console.log(sCount += 1) : null
-        key === 'N' ? console.log(nCount += 1) : null
-        key === 'T' ? console.log(tCount += 1) : null
-        key === 'F' ? console.log(fCount += 1) : null
-        key === 'J' ? console.log(jCount += 1) : null
-        key === 'P' ? console.log(pCount += 1) : null
+        key === 'E' ? eCount += 1 : null
+        key === 'I' ? iCount += 1 : null
+        key === 'S' ? sCount += 1 : null
+        key === 'N' ? nCount += 1 : null
+        key === 'T' ? tCount += 1 : null
+        key === 'F' ? fCount += 1 : null
+        key === 'J' ? jCount += 1 : null
+        key === 'P' ? pCount += 1 : null
     })
     setTimeout(() => {
         eCount >= 4 ? testText += 'E' : null
@@ -764,8 +757,6 @@ function typeDetails() {
     setTimeout(() => {
         document.querySelector('.circle-outer').classList.add('circle-outer-out')
     }, 6000);
-    console.log(testText)
-    console.log(typeof (testText))
     typeItems.forEach(key => {
         key.originsType == testText ? setTimeout(() => {
             typeTextContent.classList.add('type-text-content-in')
