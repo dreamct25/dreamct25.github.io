@@ -6,6 +6,7 @@ const chooseSd = document.querySelector('.text-second')
 const prev = document.querySelector('.prev')
 const next = document.querySelector('.next')
 const typeTextContent = document.querySelector('.type-text-content')
+const explainText = document.querySelector('.explain')
 
 const Qitems = {
     Q1T: 'Q1 . 我傾向從何處得到力量？',
@@ -265,9 +266,14 @@ function addTimer() {
         window.innerWidth <= 414 ? modalContentShow.style.maxWidth = '350px' : modalContentShow.style.maxWidth = '400px'
 
         function modalHide() {
-            modalShow.classList.remove('modal-toggle')
-            modalContentShow.classList.remove('modal-body-toggle')
-            setTimeout(() => modalShow.style.display = 'none', 750)
+            confirm.classList.add('confirm-active')
+            setTimeout(() => confirm.classList.remove('confirm-active'), 540);
+
+            setTimeout(() => {
+                modalShow.classList.remove('modal-toggle')
+                modalContentShow.classList.remove('modal-body-toggle')
+                setTimeout(() => modalShow.style.display = 'none', 750);
+            }, 1290)
             confirm.removeEventListener('click', modalHide)
         }
         setTimeout(() => {
@@ -305,13 +311,13 @@ function addTimer() {
     if (count == -1) {
         this.classList.add('next-trans')
         this.style.cssText = 'opacity: 0;'
-        document.querySelector('.explain').classList.remove('explain-show')
+        explainText.classList.remove('explain-show')
         window.removeEventListener('scroll', scrolls)
         setTimeout(() => {
             this.classList.remove('next-trans')
             this.style.cssText = 'opacity: 1;'
         }, 1000)
-        setTimeout(() => document.querySelector('.explain').style.display = 'none', 1001);
+        setTimeout(() => explainText.style.display = 'none', 1001);
         setTimeout(() => Qouter.style.display = 'block', 1003);
     } else if (count == -2) {
         testText = ''
@@ -320,13 +326,14 @@ function addTimer() {
         typeTextContent.classList.add('type-text-content-hide')
         window.addEventListener('scroll', scrolls)
         setTimeout(() => {
-            document.querySelector('.explain').style.display = 'block'
+            explainText.style.display = 'block'
             typeTextContent.style.display = 'none'
             typeTextContent.textContent = ''
             this.classList.add('next-small')
+            document.querySelector('.footer').classList.remove('footer-fix')
         }, 990);
         setTimeout(() => {
-            document.querySelector('.explain').classList.add('explain-show')
+            explainText.classList.add('explain-show')
             typeTextContent.classList.remove('type-text-content-hide')
             typeTextContent.classList.remove('type-text-content-in')
             this.classList.remove('next-move-out')
@@ -344,6 +351,7 @@ function addTimer() {
     setTimeout(() => {
         switch (count) {
             case 0:
+                document.querySelector('.footer').classList.add('footer-fix')
                 this.textContent = '下一題'
                 this.classList.add('btn-start')
                 quest.textContent = Qitems.Q1T
@@ -493,7 +501,6 @@ function addTimer() {
                 break;
             case 28:
                 count = -2
-                switchs = false
                 clearTimeout(stopTimeSet)
                 setTimeout(() => finalSum(), 500)
                 this.classList.remove('next-active')
@@ -522,7 +529,6 @@ function addTimer() {
         }
     }, 910)
     setTimeout(() => array = [], 10)
-    console.log(count)
 }
 
 function removeTimer() {
@@ -707,7 +713,6 @@ function removeTimer() {
                 'center'
         }
     }, 910)
-    console.log(count)
 }
 
 function finalSum() {
@@ -748,14 +753,14 @@ function typeDetails() {
     typeTextContent.style.display = 'flex'
     setTimeout(() => {
         typeTextContent.innerHTML = `
-            <div class="circle-outer">
-                <div class="circle"></div>
-                <span class="circle-font">計算中</span>
+            <div class="loading-outer">
+                <div class="loading"></div>
+                <span class="loading-font">計算中</span>
             </div>`
     }, 1000);
 
     setTimeout(() => {
-        document.querySelector('.circle-outer').classList.add('circle-outer-out')
+        document.querySelector('.loading-outer').classList.add('loading-outer-out')
     }, 6000);
     typeItems.forEach(key => {
         key.originsType == testText ? setTimeout(() => {
@@ -786,11 +791,69 @@ function typeDetails() {
 
 function scrolls() {
     const nextOuter = document.querySelector('.next-outer')
-    let windowTop = window.scrollY // 頁面視窗頂點
-    let windowBottom = window.innerHeight + windowTop // 頁面視窗底部 = 視窗頂點 + 視窗高度
-    let nextY = nextOuter.offsetTop + nextOuter.offsetHeight / 2
+    const windowTop = window.scrollY
+    const windowBottom = window.innerHeight + windowTop
+    const nextY = nextOuter.offsetTop + nextOuter.offsetHeight / 2
     nextY < windowBottom ? next.classList.add('next-in') : next.classList.remove('next-in')
 }
+
+
+function loadIn() {
+    const title = document.querySelector('.title')
+    const titleString = 'MBTI16種性格測驗'
+    let strCountF = -1
+    let strCountB = 0
+    title.classList.add('title-in')
+    const strIn = setInterval(() => {
+        strCountF == 10 && strCountB == 11 ? clearInterval(strIn) : title.textContent += `${titleString.slice(strCountF+=1,strCountB+=1)}`
+    }, 300);
+    setTimeout(() => explainText.classList.add('explain-show'), 1790);
+    window.innerWidth <= 414 ? document.querySelector('.type-font-group').innerHTML = `
+        <ul class="listA">
+            <li>
+                I . 心理能力的走向<br>
+                你是「外向 E」( Extrovert )？
+                <br>
+                還是「內向 I」( Introvert )？
+            </li>
+            <li>
+                II . 認識外在世界的方法
+                <br>
+                你是「感覺 S」( Sensing )？
+                <br>
+                還是「直覺 N」( Intuition )？
+            </li>
+            <li>
+                III . 倚賴甚麼方式做決定
+                <br>
+                你是「理性 T」( Thinking )？
+                <br>
+                還是「情感 F」( Feeling )？
+            </li>
+            <li>
+                IV . 生活方式和處事態度
+                <br>
+                你是「判斷 J」( Judging )？
+                <br>
+                還是「理解 P」( Perceiving )？
+            </li>
+        </ul>
+        <ul class="listB mt-5">
+            <li>
+                請輕鬆作答便可
+                <br>
+                測驗結果可依個人官感參考
+                <br>
+                也可當成玩樂性質
+            </li>
+            <li>
+                題目總共 28 題，請依直覺判斷喔~
+                <br>
+                感謝您的使用
+            </li>
+        </ul>` : null
+}
+
 
 Qtext.forEach(key => {
     key.addEventListener('click', choose)
@@ -799,45 +862,4 @@ prev.addEventListener('click', removeTimer)
 next.addEventListener('click', addTimer)
 
 window.addEventListener('scroll', scrolls)
-window.addEventListener('load', () => {
-    document.querySelector('.explain').classList.add('explain-show')
-    window.innerWidth <= 414 ? document.querySelector('.type-font-group').innerHTML = `
-    <p>
-       I . 心理能力的走向
-       <br>
-       你是「外向 E」( Extrovert )？
-       <br>
-       還是「內向 I」( Introvert )？
-       <br>
-       <br>
-       II . 認識外在世界的方法
-       <br>
-       你是「感覺 S」( Sensing )？
-       <br>
-       還是「直覺 N」( Intuition )？
-       <br>
-       <br>
-       III . 倚賴甚麼方式做決定
-       <br>
-       你是「理性 T」( Thinking )？
-       <br>
-       還是「情感 F」( Feeling )？
-       <br>
-       <br>
-       IV . 生活方式和處事態度
-       <br>
-       你是「判斷 J」( Judging )？
-       <br>
-       還是「理解 P」( Perceiving )？
-    </p>
-    <p class="mt-5">
-    請輕鬆作答便可
-    <br>
-    測驗結果可依個人官感參考
-    <br>也可當成玩樂性質
-    <br>
-    <br>
-    題目總共 28 題，請依直覺判斷喔~
-    <br>
-    感謝您的使用</p>` : null
-})
+window.addEventListener('load', loadIn)
