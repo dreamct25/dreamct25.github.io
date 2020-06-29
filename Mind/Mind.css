@@ -31,7 +31,7 @@ span {
 }
 
 .title {
-    margin: 35px 0 70px 0;
+    margin: 50px 0 20px 0;
     letter-spacing: 3px;
     color: white;
     text-shadow: 0 2px 2px rgba(0, 0, 0, 0.5);
@@ -69,7 +69,7 @@ span {
     line-height: 1.8em;
     transform: translateY(50px);
     transition: 1s ease;
-    background-color: rgba(0, 0, 0, 0.7);
+    background: linear-gradient(150deg, rgba(80, 80, 80, 0.5), rgba(40, 40, 40, 0.5), rgba(0, 0, 0, 0.5));
     box-shadow: inset 0 0 8px 2px rgba(255, 255, 255, 0.5), 0 0 5px rgba(255, 255, 255, 0.7);
 }
 
@@ -112,16 +112,17 @@ span {
     margin: 55px 0 40px 0;
     padding: 70px 10px 35px 10px;
     display: none;
-    background-color: rgba(255, 255, 255, 0.5);
+    background: linear-gradient(120deg, rgba(195, 195, 195, 0.5), rgba(200, 200, 200, 0.5), rgba(255, 255, 255, 0.5));
     border-radius: 40px 20px 40px 20px;
     box-shadow: inset 0 0 8px 2px rgba(255, 255, 255, 0.5), 0 0 5px rgba(0, 0, 0, 0.7);
 }
 
 .Q-outer .quest {
+    color: white;
     font-weight: bold;
     font-size: 25px;
     margin-bottom: 30px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.7);
 }
 
 .Q-outer .texts {
@@ -757,7 +758,7 @@ span {
 .type-text-content .type-think-details-group .type-think-detailsB:nth-of-type(1),
 .type-text-content .type-think-details-group .type-think-detailsC:nth-of-type(1),
 .type-text-content .type-think-details-group .type-think-detailsD:nth-of-type(1) {
-    margin: 10px auto;
+    margin: 20px 0 5px 0;
     text-align: center;
     font-size: 20px;
     opacity: 0;
@@ -990,7 +991,6 @@ span {
 .type-text-content .type-content {
     margin-top: 30px;
     padding: 0 25px 0 25px;
-    line-height: 1.8em;
     list-style-type: none;
 }
 
@@ -998,13 +998,13 @@ span {
     text-align: center;
     margin-bottom: 22px;
     opacity: 0;
-    animation: typeObject 1s linear 9s forwards;
+    animation: typeObject 1s linear 11s forwards;
 }
 
 @keyframes typeObject {
     0% {
         opacity: 0;
-        transform: translateY(-30px);
+        transform: translateY(-15px);
     }
 
     100% {
@@ -1016,18 +1016,59 @@ span {
 @media screen and (max-width: 414px) {
     .type-text-content .type-content li {
         text-align: justify;
+        line-height: 2em;
     }
 }
 
-.type-text-content .type-content li:nth-of-type(1) {
+.type-text-content .type-content li:nth-of-type(3) {
+    text-align: center;
+    opacity: 0;
+    margin-bottom: 10px;
+    font-size: 25px;
+    animation: typeContentTitle 1s linear 10s forwards;
+}
+
+@keyframes typeContentTitle {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.type-text-content .type-content li:nth-of-type(2) {
     text-align: justify;
     margin-bottom: 22px;
     opacity: 0;
     line-height: 2em;
-    animation: typeContent 1s linear 8s forwards;
+    animation: typeContent 1s linear 9s forwards;
 }
 
 @keyframes typeContent {
+    0% {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.type-text-content .type-content li:nth-of-type(1) {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: typeObejectTitle 1s linear 8s forwards;
+}
+
+@keyframes typeObejectTitle {
     0% {
         opacity: 0;
         transform: translateY(-20px);
@@ -1049,7 +1090,7 @@ span {
 .type-text-content .type-love li {
     opacity: 0;
     line-height: 2em;
-    animation: typeLoveContent 1s linear 12s forwards;
+    animation: typeLoveContent 1s linear 14s forwards;
 }
 
 @keyframes typeLoveContent {
@@ -1067,8 +1108,9 @@ span {
 .type-text-content .type-love li:nth-of-type(1) {
     font-size: 25px;
     text-align: center;
+    margin-top: 40px;
     opacity: 0;
-    animation: typeLoveTitle 1s linear 10s forwards;
+    animation: typeLoveTitle 1s linear 12s forwards;
 }
 
 @keyframes typeLoveTitle {
@@ -1085,10 +1127,10 @@ span {
 
 .type-text-content .type-love li:nth-of-type(2) {
     font-size: 23px;
-    margin: 20px auto;
+    margin-top: 20px;
     text-align: center;
     opacity: 0;
-    animation: typeLove 1s linear 11s forwards;
+    animation: typeLove 1s linear 13s forwards;
 }
 
 @keyframes typeLove {
@@ -1114,7 +1156,7 @@ span {
     font-size: 16px;
     opacity: 0;
     line-height: 2em;
-    animation: typeFallContent 1s linear 14s forwards;
+    animation: typeFallContent 1s linear 16s forwards;
 }
 
 @keyframes typeFallContent {
@@ -1131,10 +1173,10 @@ span {
 
 .type-text-content .type-fall-love li:nth-of-type(1) {
     text-align: center;
-    margin-bottom: 22px;
+    margin: 25px 0 10px 0;
     font-size: 25px;
     opacity: 0;
-    animation: typeFallTitle 1s linear 13s forwards;
+    animation: typeFallTitle 1s linear 15s forwards;
 }
 
 @keyframes typeFallTitle {
@@ -1150,7 +1192,7 @@ span {
 }
 
 .type-text-content-in {
-    background-color: rgba(0, 0, 0, 0.7);
+    background: linear-gradient(150deg, rgba(80, 80, 80, 0.5), rgba(40, 40, 40, 0.5), rgba(0, 0, 0, 0.5));
     color: white;
     padding: 30px 0 40px 0;
     border-radius: 25px;
