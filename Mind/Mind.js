@@ -8,6 +8,7 @@ const next = document.querySelector('.next')
 const typeTextContent = document.querySelector('.type-text-content')
 const explainText = document.querySelector('.explain')
 
+// 題目資料
 const Qitems = {
     Q1T: 'Q1 . 我傾向從何處得到力量？',
     Q1A: '別人',
@@ -95,6 +96,7 @@ const Qitems = {
     Q28B: '享受同時進行好幾件事情'
 }
 
+// 解析資料
 const typeItems = [{
     originsType: 'ESTJ',
     nameType: '大男人型',
@@ -377,6 +379,7 @@ let switchs = false
 let stopTimeSet;
 next.textContent = '開始'
 
+// 設定點擊內容所加入的文字
 function choose() {
     switchs = true
     if (switchs !== true) return;
@@ -444,7 +447,8 @@ function choose() {
 
 }
 
-function addTimer() {
+// 設定點擊下一題時的函式內容
+function nextStep() {
     count < 0 ? switchs = false : null
     if (switchs !== false) {
         const modalShow = document.querySelector('.modalC')
@@ -462,7 +466,7 @@ function addTimer() {
                 modalShow.classList.remove('modal-toggle')
                 modalContentShow.classList.remove('modal-body-toggle')
                 setTimeout(() => modalShow.style.display = 'none', 750);
-            }, 1290)
+            }, 890)
             confirm.removeEventListener('click', modalHide)
         }
         setTimeout(() => {
@@ -502,6 +506,7 @@ function addTimer() {
         this.style.cssText = 'opacity: 0;'
         explainText.classList.remove('explain-show')
         window.removeEventListener('scroll', scrolls)
+        scrollTop()
         setTimeout(() => {
             this.classList.remove('next-trans')
             this.style.cssText = 'opacity: 1;'
@@ -514,6 +519,7 @@ function addTimer() {
         this.classList.add('next-move-out')
         typeTextContent.classList.add('type-text-content-hide')
         window.addEventListener('scroll', scrolls)
+        scrollTop()
         setTimeout(() => {
             explainText.style.display = 'block'
             typeTextContent.style.display = 'none'
@@ -719,7 +725,8 @@ function addTimer() {
     setTimeout(() => array = [], 10)
 }
 
-function removeTimer() {
+// 設定點擊上一題的函式內容
+function backStep() {
     count -= 1
     if (count >= 0) {
         this.classList.add('prev-trans-pos')
@@ -899,6 +906,7 @@ function removeTimer() {
     }, 910)
 }
 
+// 設定統計字數函式
 function finalSum() {
     let eCount = 0
     let iCount = 0
@@ -932,6 +940,7 @@ function finalSum() {
     setTimeout(() => typeDetails(), 1001)
 }
 
+// 設定載入解析內容前與後
 function typeDetails() {
     Qouter.style.display = 'none'
     typeTextContent.style.display = 'flex'
@@ -1016,11 +1025,11 @@ function typeDetails() {
                 next.classList.add('next-move')
             }, 200);
             next.textContent = '重新測驗'
-        }, 26900);
+        }, 26500);
     })
 }
 
-
+// 設定滾動到底部時顯示按鈕函式
 function scrolls() {
     const nextOuter = document.querySelector('.next-outer')
     const windowTop = window.scrollY
@@ -1029,7 +1038,22 @@ function scrolls() {
     nextY < windowBottom ? next.classList.add('next-in') : next.classList.remove('next-in')
 }
 
+// 設定返回頂部函式
+function scrollTop() {
+    let scrollToTop
+    cancelAnimationFrame(scrollToTop)
+    scrollToTop = requestAnimationFrame(function animation() {
+        let goTop = document.body.scrollTop || document.documentElement.scrollTop
+        if (goTop > 0) {
+            scrollTo(0, goTop - 8)
+            scrollToTop = requestAnimationFrame(animation)
+        } else {
+            cancelAnimationFrame(scrollToTop)
+        }
+    });
+}
 
+// 設定畫面載入時函式
 function loadIn() {
     const title = document.querySelector('.title')
     const titleString = 'MBTI16種性格測驗'
@@ -1038,8 +1062,8 @@ function loadIn() {
     title.classList.add('title-in')
     const strIn = setInterval(() => {
         strCountF == 10 && strCountB == 11 ? clearInterval(strIn) : title.textContent += `${titleString.slice(strCountF+=1,strCountB+=1)}`
-    }, 300);
-    setTimeout(() => explainText.classList.add('explain-show'), 1790);
+    }, 300)
+    explainText.classList.add('explain-show')
     window.innerWidth <= 414 ? document.querySelector('.type-font-group').innerHTML = `
         <ul class="listA">
             <li>
@@ -1086,10 +1110,19 @@ function loadIn() {
         </ul>` : null
 }
 
+// 監聽選項內按鈕
 Qtext.forEach(key => {
     key.addEventListener('click', choose)
 })
-prev.addEventListener('click', removeTimer)
-next.addEventListener('click', addTimer)
+
+// 監聽上一題按鈕
+prev.addEventListener('click', backStep)
+
+// 監聽下一題按鈕
+next.addEventListener('click', nextStep)
+
+// 監聽畫面滾動時
 window.addEventListener('scroll', scrolls)
+
+// 監聽載入時
 window.addEventListener('load', loadIn)
