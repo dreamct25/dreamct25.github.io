@@ -1124,6 +1124,4 @@ next.addEventListener('click', nextStep)
 
 // 監聽畫面滾動時
 window.addEventListener('scroll', scrolls)
-
-// 監聽載入時
 window.addEventListener('load', loadIn)
