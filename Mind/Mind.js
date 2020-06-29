@@ -965,6 +965,7 @@ function typeDetails() {
     }, 8000);
     typeItems.forEach(key => {
         key.originsType == testText ? setTimeout(() => {
+            scrollTop()
             typeTextContent.classList.add('type-text-content-in')
             typeTextContent.innerHTML = `
                 <div class="row">
