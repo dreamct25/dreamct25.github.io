@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Puzzle_Game/Puzzle_Game.css">
+    <title>Puzzle Game</title>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="back">
+            <div class="header">
+                <h1>Puzzle Game</h1>
+            </div>
+            <div class="explain">
+                <h2>How to play</h2>
+                <p>Click the button of bottom to choose you want to use image , recommended to use width and height the
+                    same image , make sure image doesn't transform , after enter the game , click the square block to
+                    make it move to right position on the board</p>
+            </div>
+            <div class="upload">
+                <label for="file">
+                    Choose Your Image
+                    <input id="file" type="file">
+                </label>
+            </div>
+        </div>
+        <div class="main">
+            <div class="puzzle-outer">
+                <canvas id="puzzle" width="650" height="650"></canvas>
+                <div class="display">
+                    <img src="#" alt="">
+                    <div class="counter">
+                        <div class="partI">
+                            <ul>
+                                <li>Cost Time：<span class="time-count">00：00</span></li>
+                                <li>Step Count：<span class="step-count">0</span></li>
+                            </ul>
+                        </div>
+                        <div class="partII">
+                            <span>Choose Level</span>
+                            <select class="set-level"></select>
+                        </div>
+                        <div class="partIII">
+                            <span class="go-back">Choose Another Image</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <h3>&copy Copyright Chen</h3>
+        </div>
+    </div>
+    <div class="modal">
+        <div class="modal-body">
+            <div class="modal-header">
+                <h2>Message</h2>
+            </div>
+            <div class="modal-content">
+                <ul>
+                    <li>You have finish the game.</li>
+                    <li>Do you want to play agian？You can choose another image or level to challenge.</li>
+                    <li>Thank for your playing.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <div class="btn cancel">No</div>
+                <div class="btn confirm">Yes</div>
+            </div>
+        </div>
+    </div>
+    <script src="../Puzzle_Game/Puzzle_Game.js"></script>
+</body>
+
+</html>
