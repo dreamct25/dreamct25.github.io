@@ -513,8 +513,14 @@ body .modal .modal-body .modal-footer .confirm:hover {
 
 body .modal .modal-body-toggle {
     opacity: 1;
-    transform: translate(0%, -50%) scale(1);
+    transform: translate(0%, -70%) scale(1);
     transition: 0.5s ease;
+}
+
+@media screen and (max-width: 414px) {
+    body .modal .modal-body-toggle {
+        transform: translate(0%, -50%) scale(1);
+    }
 }
 
 body .modal-toggle {
