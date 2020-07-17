@@ -511,6 +511,14 @@ body .modal .modal-body .modal-footer .confirm:hover {
     font-style: italic;
 }
 
+@media screen and (max-width: 768px) {
+
+    body .modal .modal-body .modal-footer .cancel,
+    body .modal .modal-body .modal-footer .confirm {
+        padding: 15px 0 14px 0;
+    }
+}
+
 body .modal .modal-body-toggle {
     opacity: 1;
     transform: translate(0%, -70%) scale(1);
