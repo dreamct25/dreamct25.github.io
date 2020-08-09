@@ -1,0 +1,22 @@
+{
+    "AC": [{
+            "userName": "Alex",
+            "userAccount": "test",
+            "userPassword": "test",
+            "userPhone": "0966666666",
+            "userEmail": "123@ccc.com",
+            "userAddress": "ab市bc區ef路gh號",
+            "master": true,
+            "id": 1
+        },
+        {
+            "userName": "customer",
+            "userAccount": "aaa",
+            "userPassword": "aaa",
+            "userPhone": "123123",
+            "userEmail": "123@xyz.zyx",
+            "userAddress": "sfsdfsdf",
+            "id": 2
+        }
+    ]
+}
