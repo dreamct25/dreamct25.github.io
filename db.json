@@ -1,0 +1,144 @@
+{
+    "AC": [{
+            "userName": "Alex",
+            "userAccount": "test",
+            "userPassword": "test",
+            "userPhone": "0966666666",
+            "userEmail": "123@ccc.com",
+            "userAddress": "ab市bc區ef路gh號",
+            "master": true,
+            "id": 1
+        },
+        {
+            "userName": "customer",
+            "userAccount": "aaa",
+            "userPassword": "aaa",
+            "userPhone": "123123",
+            "userEmail": "123@xyz.zyx",
+            "userAddress": "sfsdfsdf",
+            "id": 2
+        }
+    ],
+    "CP": [{
+        "id": 0,
+        "couponName": "aaa",
+        "couponCode": "JH1ULZPSLW0FT1AXX44I",
+        "couponPercent": "50",
+        "couponAddDate": "2020/08/02",
+        "couponStatus": true
+    }],
+    "OT": [{
+            "orderProductImg": "https://unsplash.com/photos/DulFuY7K82g/download?force=true&w=640",
+            "orderProductName": "超神奇衣物猛",
+            "orderCount": 4,
+            "orderProductType": "M",
+            "orderAllCash": 356,
+            "id": 1
+        },
+        {
+            "orderProductImg": "https://unsplash.com/photos/DulFuY7K82g/download?force=true&w=640",
+            "orderProductName": "超神奇衣物猛",
+            "orderCount": 2,
+            "orderProductType": "XL",
+            "orderAllCash": 178,
+            "id": 2
+        },
+        {
+            "orderProductImg": "https://unsplash.com/photos/DulFuY7K82g/download?force=true&w=640",
+            "orderProductName": "超神奇衣物猛",
+            "orderCount": 8,
+            "orderProductType": "L",
+            "orderAllCash": 712,
+            "id": 3
+        },
+        {
+            "orderProductImg": "https://unsplash.com/photos/DulFuY7K82g/download?force=true&w=640",
+            "orderProductName": "超神奇衣物猛",
+            "orderCount": 10,
+            "orderProductType": "M",
+            "orderAllCash": 890,
+            "id": 4
+        }
+    ],
+    "PD": [{
+            "id": 0,
+            "orderNum": "0952365472",
+            "buyName": "bbb",
+            "buyEmail": "skd@jidjfsdf",
+            "buyTel": "2666",
+            "sendAddres": "308新竹縣寶山鄉dgdfg",
+            "payMethod": "郵局轉帳付款",
+            "payStatus": false,
+            "createdDate": "2020/08/01"
+        },
+        {
+            "orderNum": "0952365471",
+            "buyName": "aaa",
+            "buyEmail": "sjkd@jidjfsdf",
+            "buyTel": "2342",
+            "sendAddres": "308新竹縣寶山鄉dgdfg",
+            "payMethod": "郵局轉帳付款",
+            "payStatus": false,
+            "createdDate": "2020/08/02",
+            "id": 1
+        },
+        {
+            "orderNum": "0942656899",
+            "buyName": "fdsfsdf",
+            "buyEmail": "sdfsdf@sdfsdf",
+            "buyTel": "2343",
+            "sendAddres": "600嘉義市東區ewrer",
+            "payMethod": "郵局轉帳付款",
+            "payStatus": true,
+            "createdDate": "2020/08/03",
+            "id": 2
+        },
+        {
+            "orderNum": "0857788196",
+            "buyName": "asdasd",
+            "buyEmail": "asdasd@dfsfsdfs",
+            "buyTel": "234234",
+            "sendAddres": "621嘉義縣溪口鄉dfgfdg",
+            "payMethod": "郵寄貨到付款",
+            "payStatus": false,
+            "createdDate": "2020/08/03",
+            "id": 3
+        }
+    ],
+    "PT": [{
+            "id": 0,
+            "productImg": "https://unsplash.com/photos/DulFuY7K82g/download?force=true&w=640",
+            "productName": "超神奇衣物猛",
+            "productTypeName": "內搭衣",
+            "productTypeNum": 4,
+            "productNew": true,
+            "productOriginPrice": "75",
+            "productOnsalePrice": "89",
+            "productDescrip": "優質新貨",
+            "productPice": "100",
+            "productStatus": null,
+            "productAddDate": "2020/7/25",
+            "productOnDate": "",
+            "productOffDate": ""
+        },
+        {
+            "productImg": "",
+            "productName": "ccc",
+            "productTypeName": "",
+            "productTypeNum": 8,
+            "productNew": true,
+            "productOriginPrice": "443",
+            "productOnsalePrice": "333",
+            "productDescrip": "huhkl",
+            "productPice": "2",
+            "productStatus": true,
+            "productAddDate": "2020/08/09",
+            "productOnDate": "2020/08/09",
+            "productOffDate": "",
+            "id": 1
+        }
+    ],
+    "city": [{
+        "data": ["台北市", "基隆市", "新北市", "連江縣", "宜蘭縣", "新竹市", "新竹縣", "桃園市", "苗栗縣", "台中市", "彰化縣", "南投縣", "嘉義市", "嘉義縣", "雲林縣", "台南市", "高雄市", "澎湖縣", "金門縣", "屏東縣", "台東縣", "花蓮縣"]
+    }]
+}
