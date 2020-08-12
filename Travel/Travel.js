@@ -6,19 +6,6 @@ const topBlock = document.querySelector('.block')
 const ndTitle = document.querySelector('.ct-title')
 const main = document.querySelector('.card-show')
 const paginations = document.querySelector('.pagination')
-const topBtnGroup = [{
-    btnNum: 1,
-    btnName: '苓雅區'
-}, {
-    btnNum: 2,
-    btnName: '三民區'
-}, {
-    btnNum: 3,
-    btnName: '新興區'
-}, {
-    btnNum: 4,
-    btnName: '左營區'
-}]
 // ↓ 使用AJAX 抓取 Open data 資料 start ↓
 xhr.open('get', 'https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json', true)
 xhr.send(null)
