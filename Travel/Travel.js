@@ -1,303 +1,204 @@
-var Data;
-var DataShow;
-var xhr = new XMLHttpRequest();
-var theSameData;
-var topBlock = document.querySelector('#block')
-var ndTitle = document.querySelector('.ct-title')
-var main = document.querySelector('.card')
-var topBtn_1 = document.querySelector('.box1')
-var topBtn_2 = document.querySelector('.box2')
-var topBtn_3 = document.querySelector('.box3')
-var topBtn_4 = document.querySelector('.box4')
-
+let Data;
+let DataShow;
+let xhr = new XMLHttpRequest();
+let theSameData;
+const topBlock = document.querySelector('.block')
+const ndTitle = document.querySelector('.ct-title')
+const main = document.querySelector('.card-show')
+const paginations = document.querySelector('.pagination')
+const topBtnGroup = [{
+    btnNum: 1,
+    btnName: '苓雅區'
+}, {
+    btnNum: 2,
+    btnName: '三民區'
+}, {
+    btnNum: 3,
+    btnName: '新興區'
+}, {
+    btnNum: 4,
+    btnName: '左營區'
+}]
 // ↓ 使用AJAX 抓取 Open data 資料 start ↓
-xhr.open('get', 'https://data.kcg.gov.tw/api/action/datastore_search?resource_id=92290ee5-6e61-456f-80c0-249eae2fcc97', true)
+xhr.open('get', 'https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json', true)
 xhr.send(null)
-xhr.onload = function() {
-        if (xhr.status !== 200) { return; }
-        var jsion_Data = JSON.parse(xhr.responseText)
-        Data = jsion_Data.result.records
-        listData();
+xhr.onload = function () {
+    if (xhr.status !== 200) {
+        return;
     }
-    // ↑ 使用AJAX 抓取 Open data 資料 end ↑
+    var jsion_Data = JSON.parse(xhr.responseText)
+    Data = jsion_Data.result.records
+    setTimeout(() => pagination(Data, 1), 6000)
+    listData();
+}
+// ↑ 使用AJAX 抓取 Open data 資料 end ↑
 
 // ↓ Select 選單連動 jsion 資料顯示於選單中 start ↓
 function listData() {
-    var Datas = [];
-    for (var i = 0; i < Data.length; i++) {
-        Datas.push(Data[i].Zone);
-    }
-
+    let Datas = [];
+    let option = '';
+    Data.forEach(key =>
+        Datas.push(key.Zone)
+    );
     theSameData = Array.from(new Set(Datas))
-
-    var text = '';
-
-    text = `<option value="" selected>--請選擇行政區--</option>`;
-    for (var i = 0; i < theSameData.length; i++) {
-        text += `<option value="${theSameData[i]}">${theSameData[i]}</option>`
-    }
-    document.querySelector('#block').innerHTML = text
+    option = `<option value="" selected>--請選擇行政區--</option>`;
+    theSameData.forEach(key => option += `<option value="${key}">${key}</option>`)
+    topBlock.innerHTML = option
 }
 // ↑ Select 選單連動 jsion 資料顯示於選單中 end ↑ 
 
-// ↓ Select 選單連動 jsion 資料顯示標題文字 start ↓
-topBlock.addEventListener('change', function(x) {
-        var select = x.target.value;
-        var ndTitleCg = ''
-        for (var i = 0; i < theSameData.length; i++) {
-            if (select == theSameData[i]) {
-                ndTitleCg = theSameData[i]
-            }
-        }
-        ndTitle.innerHTML = ndTitleCg
-    })
-    // ↑ Select 選單連動 jsion 資料顯示標題文字 end ↑ 
-
-// ↓ 帶出 jsion 資料顯示於網頁上 start ↓ 
-topBlock.addEventListener('change', function(y) {
-    var mnCardSt = y.target.value;
-    var mnCard = '';
-    for (var i = 0; i < Data.length; i++) {
-        if (mnCardSt == Data[i].Zone) {
-            mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                    <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        }
-    }
-    main.innerHTML = mnCard
-});
-//  ↑ 帶出 jsion 資料顯示於網頁上 end ↑ 
-
-//  ↓ 頁面載入時帶出入左營區 jsion 資料顯示於網頁上 end ↓
-function show() {
-    var mnCard = '';
-    var block = '左營區'
-    for (var i = 0; i < Data.length; i++) {
-        if (Data[i].Zone == block) {
+// ↓ Select 選單連動 jsion 資料顯示標題文字與資料顯示於網頁上 start ↓
+function contentShow() {
+    let mnCard = '';
+    theSameData.forEach(key =>
+        this.value == key ? ndTitle.textContent = key : null
+    )
+    Data.forEach(key => {
+        if (this.value == key.Zone) {
             mnCard += `
             <div class="col-md-6 mb-4 px-2 display-show">
                 <div class="card-act">
                     <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
+                        <h5 class="font-fix-1">${key.Name}</h5>
+                        <h5 class="font-fix-2">${key.Zone}</h5>
+                        <div class="image" style="background-image:url(${key.Picture1});"></div>
                     </div>
                     <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
+                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${key.Opentime}</p>
+                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${key.Add}</p>
                         <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
+                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${key.Tel}</p>
+                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${key.Ticketinfo}</p>
                         </div>
                     </div>
                 </div>
             </div>`
-        };
-    };
-    var ndTitleCg = '';
-    for (var i = 0; i < theSameData.length; i++) {
-        if (theSameData[i] == block) {
-            ndTitleCg = theSameData[i]
-        };
-    };
-    ndTitle.innerHTML = ndTitleCg;
+            paginations.style.display = 'none'
+        }
+    })
+    main.innerHTML = mnCard
+}
+// ↑ Select 選單連動 jsion 資料顯示標題文字與資料顯示於網頁上 end ↑ 
+
+// ↓ 頂 bar 選擇按鈕 start ↓
+function topBarContentShow() {
+    let mnCard = '';
+    Data.forEach(key => key.Zone == this.textContent ? mnCard += `
+    <div class="col-md-6 mb-4 px-2 display-show">
+        <div class="card-act">
+            <div class="image-outer">
+                <h5 class="font-fix-1">${key.Name}</h5>
+                <h5 class="font-fix-2">${key.Zone}</h5>
+                <div class="image" style="background-image:url(${key.Picture1});"></div>
+            </div>
+            <div class="list pt-3 px-2">
+                <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${key.Opentime}</p>
+                <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${key.Add}</p>
+                <div class="d-flex justify-content-between">
+                    <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${key.Tel}</p>
+                    <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${key.Ticketinfo}</p>
+                </div>
+            </div>
+        </div>
+    </div>` : null)
+    theSameData.forEach(key => key == this.textContent ? ndTitle.textContent = key : null)
+    main.innerHTML = mnCard;
+    paginations.style.display = 'none'
+}
+// ↑ 頂 bar 選擇按鈕 end ↑
+function changePage(element) {
+    element.preventDefault();
+    if (element.target.nodeName !== 'A') return
+    const pageSet = element.target.dataset.pages
+    pagination(Data, pageSet)
+}
+
+function pagination(Data, nowPage) {
+    let onPage
+    window.innerWidth == 414 ? onPage = 10 : onPage = 8
+    const newArry = []
+    const dataLength = Data.length
+    const pageTotal = Math.ceil(dataLength / onPage)
+    let currentPage = nowPage
+    currentPage > pageTotal ? currentPage = pageTotal : null
+    const minNum = (currentPage * onPage) - onPage + 1
+    const maxNum = (currentPage * onPage)
+    Data.forEach((key, index) => {
+        const num = index + 1
+        num >= minNum && num <= maxNum ? newArry.push(key) : null
+    })
+    const page = {
+        pageTotal,
+        currentPage,
+        beforPage: currentPage > 1,
+        afterPage: currentPage < pageTotal
+    }
+    show(newArry)
+    paginationBtn(page)
+}
+
+function show(newArry) {
+    let mnCard = '';
+    ndTitle.textContent = '全部'
+    main.innerHTML = '';
+    newArry.forEach(key => mnCard += `
+    <div class="col-md-6 mb-4 px-2 display-show">
+        <div class="card-act">
+            <div class="image-outer">
+                <h5 class="font-fix-1">${key.Name}</h5>
+                <h5 class="font-fix-2">${key.Zone}</h5>
+                <div class="image" style="background-image:url(${key.Picture1});"></div>
+            </div>
+            <div class="list pt-3 px-2">
+                <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${key.Opentime}</p>
+                <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${key.Add}</p>
+                <div class="d-flex justify-content-between">
+                    <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${key.Tel}</p>
+                    <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${key.Ticketinfo}</p>
+                </div>
+            </div>
+        </div>
+    </div>`)
     main.innerHTML = mnCard;
     document.querySelector('.dashed').classList.add('dashed-in')
     document.querySelector('.arrow').classList.add('arrow-in')
 }
-window.addEventListener('load', function() {
-    DataShow = setTimeout(show, 6000)
-});
 
-//  ↑ 頁面載入時帶出入左營區 jsion 資料顯示於網頁上 end ↑
+function paginationBtn(page) {
+    let str = ''
+    const allPages = page.pageTotal
+    Number(page.beforPage) ? str += `<li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage)-1}"><i class="fal fa-angle-double-left"></i></a></li>` : str += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fal fa-angle-double-left"></i></a></li>`
+    for (let p = 1; p <= allPages; p++) {
+        Number(page.currentPage) === p ? str += `<li class="page-item active"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>` : str += `<li class="page-item"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>`
+    }
+    Number(page.afterPage) ? str += ` <li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage) + 1}"><i class="fal fa-angle-double-right"></i></a></li>` : str += `<li class="page-item disabled"><span class="page-link"><i class="fal fa-angle-double-right"></i></span></li>`
+    paginations.innerHTML = str
+}
 
-// ↓ 頂 bar 選擇按鈕 start ↓
-topBtn_1.addEventListener('click', function() {
-    var mnCard = '';
-    var block = '苓雅區'
-    for (var i = 0; i < Data.length; i++) {
-        if (Data[i].Zone == block) {
-            mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        };
-    };
-    var ndTitleCg = '';
-    for (var i = 0; i < theSameData.length; i++) {
-        if (theSameData[i] == block) {
-            ndTitleCg = theSameData[i]
-        };
-    };
-    ndTitle.innerHTML = ndTitleCg;
-    main.innerHTML = mnCard;
-});
+function changeLine() {
+    this.classList.toggle('arrow-act')
+    document.querySelector('.dashed').classList.toggle('dashed-sm')
+    document.querySelector('.display').classList.toggle('display-act')
+}
 
-topBtn_2.addEventListener('click', function() {
-    var mnCard = '';
-    var block = '三民區';
-    for (var i = 0; i < Data.length; i++) {
-        if (Data[i].Zone == block) {
-            mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        };
-    };
-    var ndTitleCg = '';
-    for (var i = 0; i < theSameData.length; i++) {
-        if (theSameData[i] == block) {
-            ndTitleCg = theSameData[i];
-        };
-    };
-    ndTitle.innerHTML = ndTitleCg
-    main.innerHTML = mnCard
-});
+function showBackBtn() {
+    this.scrollY > 100 ? document.querySelector('.top').classList.add('top-show') : document.querySelector('.top').classList.remove('top-show')
+}
 
-topBtn_3.addEventListener('click', function() {
-    var mnCard = '';
-    var block = '新興區'
-    for (var i = 0; i < Data.length; i++) {
-        if (Data[i].Zone == block) {
-            mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-        }
-    };
-    var ndTitleCg = '';
-    for (var i = 0; i < theSameData.length; i++) {
-        if (theSameData[i] == block) {
-            ndTitleCg = theSameData[i];
-        }
-    };
-    ndTitle.innerHTML = ndTitleCg;
-    main.innerHTML = mnCard;
-});
+paginations.addEventListener('click', changePage)
+topBlock.addEventListener('change', contentShow)
+document.querySelectorAll('.box').forEach(key => key.addEventListener('click', topBarContentShow))
+document.querySelector('.arrow').addEventListener('click', changeLine)
+window.addEventListener('scroll', showBackBtn)
+window.addEventListener('load', () => {
+    document.querySelector('.title1').classList.add('fadeIn-rt')
+    document.querySelector('.title2').classList.add('fadeIn-lt')
+})
 
-topBtn_4.addEventListener('click', function() {
-        var mnCard = '';
-        var block = '左營區';
-        for (var i = 0; i < Data.length; i++) {
-            if (Data[i].Zone == block) {
-                mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${Data[i].Name}</h5>
-                        <h5 class="font-fix-2">${Data[i].Zone}</h5>
-                        <div class="image" style="background-image:url(${Data[i].Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${Data[i].Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${Data[i].Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${Data[i].Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${Data[i].Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-            };
-        };
-        var ndTitleCg = '';
-        for (var i = 0; i < theSameData.length; i++) {
-            if (theSameData[i] == block) {
-                ndTitleCg = theSameData[i];
-            }
-        }
-        ndTitle.innerHTML = ndTitleCg;
-        main.innerHTML = mnCard;
-    })
-    // ↑ 頂 bar 選擇按鈕 end ↑
-
-$(document).ready(function() {
-    $('.arrow').click(function() {
-        $(this).toggleClass('arrow-act')
-    })
-    $('.arrow').click(function() {
-        $('.dashed').toggleClass('dashed-sm')
-    })
-    $('.arrow').click(function() {
-        $('.display').toggleClass('display-act')
-    })
-    $('#block').bind('change', function() {
-        $(this).focus().css('background', 'rgba(255,255,255,.6)').css('color', 'black').css('transform', 'scale(1.05)').css('transition', '1s ease')
-    })
-    $('.block').blur(function() {
-        $(this).css('background', 'rgba(0,0,0,.6)').css('color', 'white').css('transform', 'scale(1)').css('transition', '1s ease')
-    })
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 100) {
-            $('.top').addClass('top-show')
-            $('.top').removeClass('top-hide')
-        } else {
-            $('.top').addClass('top-hide')
-            $('.top').removeClass('top-show')
-        }
-    })
-    $('.top').click(function() {
-        $('html,body').animate({ scrollTop: 0 }, 3000)
-    })
-    $(window).bind('load', function() {
-        $('.title1').addClass('fadeIn-rt')
-        $('.title2').addClass('fadeIn-lt')
+$(document).ready(function () {
+    $('.top').click(function () {
+        $('html,body').animate({
+            scrollTop: 0
+        }, 3000)
     })
 })

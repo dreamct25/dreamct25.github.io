@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../Travel/Travel.css">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../css/Travel.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <title>Travel information</title>
 </head>
@@ -14,7 +17,7 @@
     <div class="header">
         <h1 class="title1">高雄旅遊資訊</h1>
         <h3 class="title2">Kaohsiung Travel Information</h3>
-        <select id="block" class="block"></select>
+        <select class="block"></select>
     </div>
     <section>
         <div class="container-fluid">
@@ -25,16 +28,16 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <a href="#苓雅區" class="box1 box">苓雅區</a>
+                                    <span class="box1 box">苓雅區</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#三民區" class="box2 box">三民區</a>
+                                    <span class="box2 box">三民區</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#新興區" class="box3 box">新興區</a>
+                                    <span class="box3 box">新興區</span>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="#左營區" class="box4 box">左營區</a>
+                                    <span class="box4 box">左營區</span>
                                 </div>
                             </div>
                         </div>
@@ -46,13 +49,13 @@
     <div class="main">
         <div class="dashed d-flex justify-content-center"><i class="far fa-caret-circle-down fa-2x arrow"></i></div>
         <div class="container-fluid">
-            <div class="row display">
-                <div class="col-10 mx-auto">
+            <div class="row display justify-content-center">
+                <div class="col-10">
                     <div class="row content d-block">
                         <div class="col-md-12">
                             <h2 class="ct-title display-show"></h2>
                         </div>
-                        <div class="row card display-show">
+                        <div class="row card-show display-show">
                             <div class="load-Center">
                                 <i class="fad fa-spinner-third fa-3x mx-4 load"></i>
                                 <div class="load-font">
@@ -64,9 +67,12 @@
                     </div>
                 </div>
             </div>
+            <nav aria-label="Page navigation ml-auto mr-auto">
+                <ul class="pagination justify-content-center"></ul>
+            </nav>
         </div>
     </div>
-    <div class="top top-hide"><i class="fal fa-chevron-double-up"></i></div>
+    <div class="top"><i class="fal fa-chevron-double-up"></i></div>
     <footer>
         <div class="footer">
             <h4>高雄旅遊網</h4>
@@ -74,7 +80,13 @@
             <h6>&copy Copyright Chen</h6>
         </div>
     </footer>
-    <script src="../Travel/Travel.js"></script>
+    <script src="../js/Travel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js "
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo " crossorigin="anonymous ">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js "
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6 " crossorigin="anonymous ">
+    </script>
 </body>
 
 </html>
