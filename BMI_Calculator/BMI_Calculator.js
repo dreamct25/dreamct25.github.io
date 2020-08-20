@@ -1,15 +1,14 @@
-var btn = document.querySelector('.btn');
-var btnChange = document.querySelector('.btn-change')
-var arrowShow = document.querySelector('.arrow-down')
-var textTurn = document.querySelector('.turn')
-var list = document.querySelector('.list');
-var heightBd = document.querySelector('.countH');
-var weightBd = document.querySelector('.countW');
-var ckMessageH = document.querySelector('.checkH')
-var ckMessageW = document.querySelector('.checkW')
-var data = JSON.parse(localStorage.getItem('objData')) || [];
-var body = document.querySelector('.body-value')
-var titleShow;
+const btn = document.querySelector('.btn');
+const btnChange = document.querySelector('.btn-change')
+const arrowShow = document.querySelector('.arrow-down')
+const textTurn = document.querySelector('.turn')
+const list = document.querySelector('.list');
+const heightBd = document.querySelector('.countH');
+const weightBd = document.querySelector('.countW');
+const ckMessageH = document.querySelector('.checkH')
+const ckMessageW = document.querySelector('.checkW')
+let data = JSON.parse(localStorage.getItem('objData')) || [];
+const body = document.querySelector('.body-value')
 
 // ↓ 頁面載入時讀取頁面暫存資料(localStorage) start ↓
 run(data);
@@ -18,12 +17,13 @@ run(data);
 // ↓ 設定點選計算按鈕時所觸發的內容 start ↓
 function check() {
     // ↓ 設定判斷値 start ↓
-    var height = document.querySelector('.countH').value;
-    var weight = document.querySelector('.countW').value;
+    let height = heightBd.value;
+    let weight = weightBd.value;
     run(data);
-    var heightCount = height / 100;
-    var weightCount = weight
-    var bmi = (weightCount / (heightCount * heightCount)).toFixed(2);
+    let heightCount = height / 100;
+    let weightCount = weight
+    let bmi = (weightCount / (heightCount * heightCount)).toFixed(2);
+    btnEffect(bmi, height, weight)
     if (bmi == 'NaN') {
         ckMessageH.classList.add('alert-txt')
         ckMessageW.classList.add('alert-txt')
@@ -78,17 +78,17 @@ function check() {
     // ↑ 設定 BMI 値界線 end ↑
 
     // ↓ 設定日期格式 start ↓
-    var date = new Date();
-    var Year = date.getFullYear();
-    var Month = (date.getMonth() + 1);
-    var Day = date.getDate();
-    var Hour = date.getHours();
-    var Minutes = date.getMinutes();
-    var TimeSet = `${Year}&nbsp/&nbsp${Month}&nbsp/&nbsp${Day}&nbsp&nbsp&nbsp${Hour}:${Minutes}`;
+    const date = new Date();
+    let Year = date.getFullYear();
+    let Month = `${date.getMonth() + 1 < 10 ? '0' : ''}${date.getMonth() + 1}`;
+    let Day = `${date.getDate() < 10 ? '0' : ''}${date.getDate()}`
+    let Hour = `${date.getHours() < 10 ? '0' : ''}${date.getHours()}`;
+    let Minutes = `${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`
+    let TimeSet = `${Year}&nbsp/&nbsp${Month}&nbsp/&nbsp${Day}&nbsp&nbsp&nbsp${Hour}:${Minutes}`;
     // ↑ 設定日期格式 end ↑
 
     // ↓ 設定上述値變數加入物件中 start ↓
-    var bmiObject = {
+    let bmiObject = {
         leftside: leftSide,
         woring: Woring,
         bmi: bmi,
@@ -107,46 +107,43 @@ function check() {
 
 // ↓ 加入頁面內容 start ↓
 function run(obj) {
-    var text = '';
-    for (var i = 0; i < obj.length; i++) {
-        text += `
-            <div class="row lists lists-show ${obj[i].leftside} my-4 mx-2" data-targets="${i}">
+    let text = '';
+    obj.forEach((key, index) => text += `
+            <div class="row lists lists-show ${key.leftside} my-4 mx-2" data-targets="${index}">
                 <div class="col-md-2">    
-                <div class="row">    
-                    <p class="text-big pl-2 py-2">${obj[i].woring}</p>
-                </div>
-                </div>
-                <div class="col-md-2">
-                <div class="row justify-content-center">
-                    <p class="py-3">BMI値&nbsp</p>
-                    <p class="text-big py-2">${obj[i].bmi}</p>
-                </div>
+                    <div class="row">    
+                        <p class="text-big pl-2 py-2">${key.woring}</p>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                <div class="row justify-content-center">
-                    <p class="py-3">身高&nbsp</p>
-                    <p class="text-big py-2">${obj[i].height}&nbspCm</p>
-                </div>
-                </div>
-                <div class="col-md-2">
-                <div class="row justify-content-center">
-                    <p class="py-3">體重&nbsp</p>
-                    <p class="text-big py-2">${obj[i].weight}&nbspKg</p>
-                </div>
+                    <div class="row justify-content-center">
+                        <p class="py-3">BMI値&nbsp</p>
+                        <p class="text-big py-2">${key.bmi}</p>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                <div class="row justify-content-center">    
-                    <p class="py-3">${obj[i].times}</p>
-                </div>
+                    <div class="row justify-content-center">
+                        <p class="py-3">身高&nbsp</p>
+                        <p class="text-big py-2">${key.height}&nbspCm</p>
+                    </div>
                 </div>
                 <div class="col-md-2">
-                <div class="row justify-content-center text-center">    
-                    <a href="#" class="ml-3 px-3 py-1 my-2 deleted">刪除</a>
+                    <div class="row justify-content-center">
+                        <p class="py-3">體重&nbsp</p>
+                        <p class="text-big py-2">${key.weight}&nbspKg</p>
+                    </div>
                 </div>
+                <div class="col-md-2">
+                    <div class="row justify-content-center">    
+                        <p class="py-3">${key.times}</p>
+                    </div>
                 </div>
-            </div> 
-            `
-    }
+                <div class="col-md-2">
+                    <div class="row justify-content-center text-center">    
+                        <a href="#" class="ml-3 px-3 py-1 my-2 deleted" data-targets="${index}">刪除</a>
+                    </div>
+                </div>
+            </div> `)
     list.innerHTML = text
 }
 
@@ -154,47 +151,29 @@ function run(obj) {
 
 // ↓ 刪除物件 start ↓
 function deleted(e) {
-    setTimeout(function() {
-        var targets = e.target.dataset.targets;
-        if (e.target.nodeName !== 'A') { return };
-        data.splice(targets, 1);
+    e.preventDefault();
+    let tag = e.target.dataset.targets;
+    let tagToNum = Number(tag)
+    document.querySelectorAll('.lists')[tagToNum].classList.add('lists-delete')
+    setTimeout(() => {
+        if (e.target.nodeName !== 'A') return;
+        data.splice(tagToNum, 1);
         localStorage.setItem('objData', JSON.stringify(data));
         run(data);
     }, 1500)
-    e.preventDefault();
-    var lists = document.querySelector('.lists')
-    lists.classList.add('lists-delete')
 }
 // ↑ 刪除物件 end ↑
 
-// ↓ 設定頁面載入時觸發動畫內容 start ↓
-function showFst() {
-    var titleFst = document.querySelector('.T1')
-    titleFst.classList.add('show')
-}
-
-function showSed() {
-    var titleSed = document.querySelector('.form')
-    titleSed.classList.add('show')
-}
-
-function showTrd() {
-    btn.classList.add('show')
-}
-// ↑ 設定頁面載入時觸發動畫內容 end ↑
-
 // ↓ 設定表單驗證提醒文字樣式 start ↓
 function Ht() {
-    var form = document.forms['form']
-    var heightTxt = form.elements.height.value
-    if (heightTxt == '') {
+    if (this.value == '') {
         ckMessageH.classList.add('alert-txt')
         ckMessageH.classList.remove('success-txt')
         heightBd.classList.add('alert')
         heightBd.classList.remove('success')
         ckMessageH.textContent = '請輸入您的身高 !'
         return;
-    } else if (heightTxt > 200 || heightTxt < 10) {
+    } else if (this.value > 200 || this.value < 10) {
         ckMessageH.classList.add('alert-txt')
         ckMessageH.classList.remove('success-txt')
         heightBd.classList.add('alert')
@@ -210,16 +189,14 @@ function Ht() {
 }
 
 function Wt() {
-    var form = document.forms['form']
-    var weightTxt = form.elements.weight.value
-    if (weightTxt == '') {
+    if (this.value == '') {
         ckMessageW.classList.add('alert-txt')
         ckMessageW.classList.remove('success-txt')
         weightBd.classList.add('alert')
         weightBd.classList.remove('success')
         ckMessageW.textContent = '請您輸入體重 !'
         return;
-    } else if (weightTxt > 200 || weightTxt < 10) {
+    } else if (this.value > 200 || this.value < 10) {
         ckMessageW.classList.add('alert-txt')
         ckMessageW.classList.remove('success-txt')
         weightBd.classList.add('alert')
@@ -238,9 +215,8 @@ function Wt() {
 
 // ↓ BMI參考值下拉選單設定 start ↓
 function bodyValue() {
-    var bodyAll = body.options[body.selectedIndex].value
-    var bodyShow = document.querySelector('.body-value-show')
-    switch (bodyAll) {
+    let bodyShow = document.querySelector('.body-value-show')
+    switch (this.value) {
         case '--參考值--':
             bodyShow.style.color = 'white'
             bodyShow.style.transition = 'none'
@@ -307,71 +283,52 @@ function bodyValue() {
 }
 // ↑ BMI參考值下拉選單設定 end ↑
 
+function startOnload() {
+    document.querySelector('.T2').classList.add('T2-in')
+    document.querySelector('.T3').classList.add('T3-in')
+    setTimeout(() => document.querySelector('.T1').classList.add('show'), 4000)
+    setTimeout(() => document.querySelector('.form').classList.add('show'), 5000)
+    setTimeout(() => btn.classList.add('show'), 6000)
+    setTimeout(() => {
+        document.querySelector('.header').classList.add('header-light')
+        document.querySelector('.footer').classList.add('footer-light')
+    }, 7000)
+}
+
+function whenLeave() {
+    document.querySelector('.turn').classList.remove('turn-animate')
+    document.querySelector('.turn').textContent = '計算'
+    btn.classList.remove('btn-hover')
+    document.querySelector('.arrow-down').classList.remove('arrow-down-act')
+}
+
+function btnEffect(bmi, height, weight) {
+    if (bmi == 'NaN' || height == "" || height > 200 || weight == "" || weight > 200) return
+    if (textTurn.textContent == '計算') {
+        textTurn.textContent = '看結果'
+        textTurn.classList.add('turn-animate')
+        arrowShow.classList.add('arrow-down-act')
+    }
+}
+
 // ↓ BMI參考值下拉選單內容變動後觸發 bodyValue() 函式 start ↓
 body.addEventListener('change', bodyValue)
-    // ↑ BMI參考值下拉選單內容變動後觸發 bodyValue() 函式 end ↑
-
-// ↓ 監聽計算按鈕點擊時觸發變更按鈕和箭頭內容與樣式 start ↓
-btnChange.addEventListener('click', function() {
-        if (textTurn.textContent == '計算') {
-            textTurn.textContent = '看結果'
-            textTurn.classList.add('turn-animate')
-            arrowShow.classList.add('arrow-down-act')
-        }
-    })
-    // ↑  監聽計算按鈕點擊時觸發變更按鈕內容與樣式 end ↑
+// ↑ BMI參考值下拉選單內容變動後觸發 bodyValue() 函式 end ↑
 
 // ↓ 監聽計算按鈕點擊時執行 check() 函數內容 start ↓
 btn.addEventListener('click', check)
-    // ↑ 監聽計算按鈕點擊時執行 check() 函數內容 end ↑
+// ↑ 監聽計算按鈕點擊時執行 check() 函數內容 end ↑
+
+// ↓ 監聽計算按鈕滑出後觸發移除按鈕樣式文字和移除箭頭 start ↓
+btn.addEventListener('mouseleave', whenLeave)
+// ↑ 監聽計算按鈕滑出後觸發移除按鈕樣式文字和移除箭頭 end ↑
 
 // ↓ 監聽刪除按鈕點擊時執行 deleted() 函數內容 start ↓
 list.addEventListener('click', deleted)
-    // ↑ 監聽刪除按鈕點擊時執行 deleted() 函數內容 end ↑
+// ↑ 監聽刪除按鈕點擊時執行 deleted() 函數內容 end ↑
 
-// ↓ 監聽畫面載入時執行 showFst()、showSed()、showTrd() 函數內容 start ↓
-window.addEventListener('load', function() {
-        document.querySelector('.T2').classList.add('T2-in')
-        document.querySelector('.T3').classList.add('T3-in')
-        titleShow = setTimeout(showFst, 4000)
-        titleShow = setTimeout(showSed, 5000)
-        titleShow = setTimeout(showTrd, 6000)
-        titleShow = setTimeout(function() {
-            document.querySelector('.header').classList.add('header-light')
-            document.querySelector('.footer').classList.add('footer-light')
-        }, 7000)
-
-    })
-    // ↑ 監聽畫面載入時執行 showFst()、showSed()、showTrd() 函數內容 end ↑
-$(document).ready(function() {
-    // ↓ 監聽表格內容變動時觸發 Ht()、Wt() 函式 start ↓
-    $('.countH').bind('change', Ht)
-    $('.countW').bind('change', Wt)
-        // ↑ 監聽表格內容變動時觸發 Ht()、Wt() 函式 end ↑
-
-    // ↓ 監聽計算按鈕滑出後觸發移除按鈕樣式文字和移除箭頭 start ↓
-    $('.btn').bind('mouseleave', function() {
-            $('.turn').removeClass('turn-animate').text('計算')
-            $('.btn').removeClass('btn-hover')
-            $('.arrow-down').removeClass('arrow-down-act')
-        })
-        // ↑ 監聽計算按鈕滑出後觸發移除按鈕樣式文字和移除箭頭 end ↑
-
-    // ↓ 監聽表格內容驗證正確與錯誤當達到下述條件時觸發按鈕動畫或移除按扭動畫 start ↓
-    $('.count').bind('change', function() {
-            var form = document.forms['form']
-            var heightTxt = form.elements.height.value
-            var weightTxt = form.elements.weight.value
-            if (heightTxt && weightTxt == '') {
-                $('.btn').removeClass('btn-hover')
-                return;
-            } else if (heightTxt && weightTxt > 200) {
-                $('.btn').removeClass('btn-hover')
-                return;
-            } else if (heightTxt && weightTxt < 10) {
-                $('.btn').removeClass('btn-hover')
-                return;
-            } else { $('.btn').addClass('btn-hover') }
-        })
-        // ↑ 監聽表格內容驗證正確與錯誤當達到下述條件時觸發按鈕動畫或移除按扭動畫 end ↑
-})
+// ↓ 監聽畫面載入時執行 start ↓
+window.addEventListener('load', startOnload)
+// ↑ 監聽畫面載入時執行 end ↑
+document.querySelector('.countH').addEventListener('input', Ht)
+document.querySelector('.countW').addEventListener('input', Wt)
