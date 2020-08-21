@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <title>Clock</title>
 </head>
 <style>
@@ -14,18 +15,18 @@
         background-size: cover;
         background-position: center center;
     }
-    
+
     .wrap {
         margin: 0 auto;
         max-width: 960px;
     }
-    
+
     .header {
         margin-top: 100px;
         font-style: italic;
         font-size: 22px;
     }
-    
+
     .title {
         text-align: center;
         color: white;
@@ -34,20 +35,20 @@
         transition: 1s ease;
         text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
     }
-    
+
     .title-in {
         /* 標題滑入動畫 */
         opacity: 1;
         transform: translateY(0px);
         transition: 1s ease;
     }
-    
+
     .content {
         /* 定位鐘面於中間 */
         display: flex;
         justify-content: center;
     }
-    
+
     .clock-outer {
         /* 時鐘外框架 */
         margin-top: 50px;
@@ -62,34 +63,34 @@
         transition: 1s ease;
         box-shadow: inset 0 0 7px 1px rgba(0, 0, 0, .7), inset 0 0 5px 1px rgb(255, 255, 255, .9), 0 0 1px 3px rgb(255, 255, 255, .9), 0 0 10px 2px rgba(0, 0, 0, .7);
     }
-    
+
     .clock-outer-in {
         /* 時鐘外框架滑入動畫 */
         opacity: 1;
         transform: translateY(0px) rotate(0deg);
         transition: 1s ease;
     }
-    
+
     @media (max-width: 768px) {
         .clock-outer {
             width: 350px;
             height: 350px;
         }
     }
-    
+
     .clock {
         width: 100%;
         height: 100%;
         position: relative;
     }
-    
+
     .line {
         /* 每根針樣式 */
         position: absolute;
         width: 100%;
         height: 100%;
     }
-    
+
     .seconds::after {
         /* 秒針樣式 */
         content: '';
@@ -103,7 +104,7 @@
         transform: translate(-50%, 0%);
         box-shadow: 0 0 5px rgba(255, 255, 255, .7);
     }
-    
+
     .minute::after {
         /* 分針樣式 */
         content: '';
@@ -117,7 +118,7 @@
         transform: translate(-50%, 0%);
         box-shadow: 0 0 5px rgba(255, 255, 255, .7);
     }
-    
+
     .hour::after {
         /* 時針樣式 */
         content: '';
@@ -131,7 +132,7 @@
         transform: translate(-50%, 0%);
         box-shadow: 0 0 5px rgba(255, 255, 255, .7);
     }
-    
+
     .time-show-day {
         /* 星期樣式 */
         display: block;
@@ -146,7 +147,7 @@
         transform: translateX(-100px);
         transition: 1s ease;
     }
-    
+
     .time-show {
         /* 日期樣式 */
         display: block;
@@ -161,7 +162,7 @@
         transform: translateX(100px);
         transition: 1s ease;
     }
-    
+
     .time-show-day-in,
     .time-show-in {
         /* 星期與日期滑入動畫 */
@@ -169,7 +170,7 @@
         transform: translateX(0px);
         transition: 1s ease;
     }
-    
+
     .point-icon-outer {
         /* 軸心外框架樣式 */
         position: absolute;
@@ -178,14 +179,14 @@
         transform: translate(-50%, -50%) rotate(45deg);
         z-index: 1;
     }
-    
+
     .point-icon {
         /* 軸心樣式 */
         font-size: 20px;
         color: white;
         text-shadow: 0 0 5px rgba(0, 0, 0, .8);
     }
-    
+
     .num {
         /* 鐘面上文字樣式與定位鐘面上 XI 文字位置 */
         position: absolute;
@@ -196,67 +197,67 @@
         color: white;
         text-shadow: 0 2px 2px rgba(0, 0, 0, .7);
     }
-    
+
     .num:nth-of-type(2) {
         /* 定位鐘面上 XII 文字位置 */
         top: 8%;
         left: 50%;
     }
-    
+
     .num:nth-of-type(3) {
         /* 定位鐘面上 I 文字位置 */
         top: 15%;
         left: 70%;
     }
-    
+
     .num:nth-of-type(4) {
         /* 定位鐘面上 II 文字位置 */
         top: 30%;
         left: 85%;
     }
-    
+
     .num:nth-of-type(5) {
         /* 定位鐘面上 III 文字位置 */
         top: 50%;
         left: 92%;
     }
-    
+
     .num:nth-of-type(6) {
         /* 定位鐘面上 IV 文字位置 */
         top: 70%;
         left: 85%;
     }
-    
+
     .num:nth-of-type(7) {
         /* 定位鐘面上 V 文字位置 */
         top: 85%;
         left: 70%;
     }
-    
+
     .num:nth-of-type(8) {
         /* 定位鐘面上 VI 文字位置 */
         top: 92%;
         left: 50%;
     }
-    
+
     .num:nth-of-type(9) {
         /* 定位鐘面上 VII 文字位置 */
         top: 85%;
         left: 30%;
     }
-    
+
     .num:nth-of-type(10) {
         /* 定位鐘面上 VIII 文字位置 */
         top: 70%;
         left: 15%;
     }
-    
+
     .num:nth-of-type(11) {
         /* 定位鐘面上 IX 文字位置 */
         top: 50%;
         left: 8%;
     }
-    
+
     .num:nth-of-type(12) {
         /* 定位鐘面上個 X 文字位置 */
         top: 30%;
@@ -307,6 +308,28 @@
         const timeShow = document.querySelector('.time-show')
         const pointIcon = document.querySelector('.point-icon')
         const dayShow = document.querySelector('.time-show-day')
+        const weekendTextItems = [{
+            weekNum: 1,
+            weekName: 'Monday'
+        }, {
+            weekNum: 2,
+            weekName: 'Tuesday'
+        }, {
+            weekNum: 3,
+            weekName: 'Wednesday'
+        }, {
+            weekNum: 4,
+            weekName: 'Thursday'
+        }, {
+            weekNum: 5,
+            weekName: 'Friday'
+        }, {
+            weekNum: 6,
+            weekName: 'Saturday'
+        }, {
+            weekNum: 0,
+            weekName: 'Sunday'
+        }]
 
         // 設定時間物件
         let time = new Date()
@@ -334,35 +357,11 @@
         pointIcon.style.transform = `rotate(${secondsDeg}deg)`
 
         // 顯示年月日時間
-        timeShow.innerHTML = `${time.getFullYear()} / ${monthShow} / ${dateShow}<br>${hoursShow}：${minutsShow}：${secondsShow}`
+        timeShow.innerHTML =
+            `${time.getFullYear()} / ${monthShow} / ${dateShow}<br>${hoursShow}：${minutsShow}：${secondsShow}`
 
         // 顯示星期
-        dayShow.textContent = `${time.getDay()}`
-
-        // 因星期為固定數字非文字，故使用 switch 比對當畫面數値文字為比對文字相符合時更換文字
-        switch (dayShow.textContent) {
-            case '1':
-                dayShow.textContent = 'Monday'
-                break;
-            case '2':
-                dayShow.textContent = 'Tuesday'
-                break;
-            case '3':
-                dayShow.textContent = 'Wednesday'
-                break;
-            case '4':
-                dayShow.textContent = 'Thursday'
-                break;
-            case '5':
-                dayShow.textContent = 'Friday'
-                break;
-            case '6':
-                dayShow.textContent = 'Saturday'
-                break;
-            case '0':
-                dayShow.textContent = 'Sunday'
-                break;
-        }
+        weekendTextItems.forEach(key => key.weekNum == Number(time.getDay()) ? dayShow.textContent = key.weekName : null)
     }
     // 啟用 timeSet 函式
     timeSet()
@@ -373,10 +372,8 @@
     // 視窗載入時啟用載入動畫
     window.addEventListener('load', () => {
         document.querySelector('.title').classList.add('title-in')
-
         setTimeout(() =>
             document.querySelector('.clock-outer').classList.add('clock-outer-in'), 1000);
-
         setTimeout(() => {
             document.querySelector('.time-show-day').classList.add('time-show-day-in')
             document.querySelector('.time-show').classList.add('time-show-in')
