@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 <style type="text/css">
@@ -14,27 +15,27 @@
         background: linear-gradient(120deg, rgb(0, 0, 0), rgba(0, 0, 0, .9), rgba(0, 0, 0, .8), rgba(0, 0, 0, .7));
         background-repeat: no-repeat;
     }
-    
+
     .wrap {
         max-width: 960px;
         margin: 0 auto;
     }
-    
+
     .container {
         padding-bottom: 290px;
     }
-    
+
     .col {
         display: flex;
         flex-direction: row;
         justify-content: center;
     }
-    
+
     .container {
         display: flex;
         justify-content: center;
     }
-    
+
     .main {
         width: 300px;
         margin-top: -100px;
@@ -45,13 +46,13 @@
         transition: 1s ease;
         transform: translateY(0px);
     }
-    
+
     .main-close {
         transform: translateY(-275px);
         opacity: 0;
         transition: 1s ease;
     }
-    
+
     .display {
         width: 330px;
         color: white;
@@ -62,7 +63,7 @@
         overflow: hidden;
         position: relative;
     }
-    
+
     .displays {
         display: block;
         background: transparent;
@@ -76,7 +77,7 @@
         transition: 1s ease;
         opacity: 0;
     }
-    
+
     .btn,
     .btn-another,
     .btns {
@@ -91,27 +92,27 @@
         cursor: pointer;
         user-select: none;
     }
-    
+
     .btn-effect {
         background-color: transparent;
         transition: .7s ease;
         box-shadow: 0 0 20px rgba(255, 255, 255, .7);
     }
-    
+
     .equal {
         border-radius: 0 0 7px 0;
     }
-    
+
     .zero {
         border-radius: 0 0 0 10px;
     }
-    
+
     .font-displayOn {
         transform: translateY(12px);
         opacity: 1;
         transition: 1s ease;
     }
-    
+
     .powerLink {
         background: white;
         color: rgb(40, 40, 40);
@@ -120,7 +121,7 @@
         transition: .7s ease;
         box-shadow: 0 0 5px rgba(255, 255, 255, .7);
     }
-    
+
     .icon {
         width: 18px;
         height: 18px;
@@ -133,29 +134,29 @@
         position: relative;
         box-shadow: 0 0 12px rgba(0, 0, 0, .7);
     }
-    
+
     .col-icon {
         display: flex;
         position: absolute;
         top: 8px;
         left: 8px;
     }
-    
+
     .close {
         cursor: pointer;
     }
-    
+
     .closed {
         opacity: 1;
         cursor: pointer;
     }
-    
+
     @media screen and (max-width: 320px) {
         .displays {
             left: -50px;
         }
     }
-    
+
     .disappear {
         opacity: 0;
         transform: translateY(0px);
@@ -165,45 +166,45 @@
         padding: 2px 1px 0 1px;
         margin-right: 0px;
     }
-    
+
     .appear {
         opacity: 1;
         transform: translateY(175px) scale(3);
         backface-visibility: hidden;
         transition: 1.5s ease;
     }
-    
+
     .disappear:hover {
         transform: translateY(175px) scale(1)rotate(-200deg);
         transition: 1s ease;
     }
-    
+
     .back-tital {
         opacity: 0;
         text-align: center;
         transform: translateY(270px);
         transition: all 1s;
     }
-    
+
     .back-titalChange {
         opacity: 1;
         transform: translateY(155px);
         transition: all 1s;
     }
-    
+
     .back-alert {
         opacity: 1;
         text-align: center;
         transform: translateY(290px);
         transition: 1s ease;
     }
-    
+
     .back-alertOf {
         opacity: 0;
         transform: translateY(390px);
         transition: 1s ease;
     }
-    
+
     .back-icon {
         position: absolute;
         top: 50%;
@@ -217,7 +218,8 @@
         <h1 style="text-align: center; margin: 56px auto;color: white;">Calculator</h1>
         <h2 class="back-tital" style="color:rgba(255, 255, 255, .7)">Go back !</h2>
         <h3 class="back-alert" style="color:rgba(255, 255, 255, .7)">Try to click this button !</h3>
-        <div class="icon disappear back-alertck back-again" style="background: rgb(22, 187, 0); margin: 0 auto;padding: 3px;">
+        <div class="icon disappear back-alertck back-again"
+            style="background: rgb(22, 187, 0); margin: 0 auto;padding: 3px;">
             <i class="fal fa-undo back-icon"></i>
         </div>
         <div class="container">
@@ -227,9 +229,16 @@
                         <div class="display">
                             <div class="row">
                                 <div class="col-icon">
-                                    <div class="icon close open" style="background: rgb(187, 0, 0);"><i class="fal fa-times" style="position: absolute;top: 50%;left: 50%; transform: translate(-53%,-46%);"></i></div>
-                                    <div class="icon" style="background: rgb(209, 178, 0);"><i class="fal fa-minus" style="position: absolute;top: 50%;left: 50%;transform: translate(-53%,-46%);"></i></div>
-                                    <div class="icon" style="background: rgb(42, 211, 0);"><i class="fal fa-expand-alt" style="position: absolute;top: 50%;left: 50%;transform: translate(-53%,-46%);"></i></div>
+                                    <div class="icon close open" style="background: rgb(187, 0, 0);"><i
+                                            class="fal fa-times"
+                                            style="position: absolute;top: 50%;left: 50%; transform: translate(-53%,-46%);"></i>
+                                    </div>
+                                    <div class="icon" style="background: rgb(209, 178, 0);"><i class="fal fa-minus"
+                                            style="position: absolute;top: 50%;left: 50%;transform: translate(-53%,-46%);"></i>
+                                    </div>
+                                    <div class="icon" style="background: rgb(42, 211, 0);"><i class="fal fa-expand-alt"
+                                            style="position: absolute;top: 50%;left: 50%;transform: translate(-53%,-46%);"></i>
+                                    </div>
                                 </div>
                             </div>
                             <span class="displays">0</span>
@@ -271,7 +280,8 @@
                 <div class="row">
                     <div class="col">
                         <div class="bts btn zero" style="width: 170px;">0</div>
-                        <div class="bts btn smpoint" style="padding-top: 7px; padding-bottom: 9px;" data-type=".">.</div>
+                        <div class="bts btn smpoint" style="padding-top: 7px; padding-bottom: 9px;" data-type=".">.
+                        </div>
                         <div class="bts equal btns count" data-math="=">=</div>
                     </div>
                 </div>
@@ -279,57 +289,19 @@
         </div>
     </div>
     <script>
-        $(document).ready(function() {
-            $('.bts').click(function() {
-                $(this).addClass('btn-effect')
-                setTimeout(function() {
-                    $('.bts').removeClass('btn-effect')
-                }, 400)
-            })
-            $('.power').click(function() {
-                $('.displays').toggleClass('font-displayOn')
-            })
-            $('.power').click(function() {
-                $(this).toggleClass('powerLink')
-            })
-            $('.close').click(function() {
-                $('.main').addClass('main-close')
-            })
-            $('.open').click(function() {
-                $('.disappear').addClass('appear')
-            })
-            $('.disappear').mouseenter(function() {
-                $('.back-tital').addClass('back-titalChange')
-            })
-            $('.disappear').click(function() {
-                setTimeout(function() {
-                    $('.back-tital').removeClass('back-titalChange')
-                    $('.disappear').removeClass('appear')
-                    $('.back-alert').removeClass('back-alertOf')
-                }, 1500)
-            })
-            $('.back-alertck').mouseenter(function() {
-                $('.back-alert').addClass('back-alertOf')
-            })
-            $('.back-again').click(function() {
-                $('.main').removeClass('main-close')
-            })
-        });
-        let btnZero = document.querySelector('.zero');
-        let btnSmpoint = document.querySelector('.smpoint');
-        let viewer = document.querySelector('.displays');
-        let btnAC = document.querySelector('.ac');
-        let btnBack = document.querySelector('.back');
-        let btnNum = document.querySelectorAll('.btn');
-        let btnCount = document.querySelectorAll('.count');
+        const btnZero = document.querySelector('.zero');
+        const btnSmpoint = document.querySelector('.smpoint');
+        const viewer = document.querySelector('.displays');
+        const btnAC = document.querySelector('.ac');
+        const btnBack = document.querySelector('.back');
+        const btnNum = document.querySelectorAll('.btn');
+        const btnCount = document.querySelectorAll('.count');
         let stayArry = [];
         let stayValue;
         let displayDF = '0';
-        viewer.addEventListener('change', function() {
-                setInterval(console.log(viewer.textContent))
-            })
-            // 使用for迴圈監聽數字按鈕
-        let getNum = function(e) {
+
+        // 使用for迴圈監聽數字按鈕
+        let getNum = function (e) {
             let stayNum = e.target.innerText;
             if (displayDF === '0') {
                 displayDF = '';
@@ -338,11 +310,9 @@
             viewer.innerText = displayDF
         };
 
-        for (let i = 0; i < btnNum.length; i++) {
-            btnNum[i].addEventListener('click', getNum, false)
-        };
+        btnNum.forEach(key => key.addEventListener('click', getNum))
         // 使用for迴圈監聽運算式符號按鈕
-        let getCount = function(e) {
+        let getCount = function (e) {
             let countIng = e.target.dataset.math;
             let stayNum = e.target.innerText;
             if (countIng == '+') {
@@ -378,41 +348,52 @@
             }
         }
 
-        for (let i = 0; i < btnCount.length; i++) {
-            btnCount[i].addEventListener('click', getCount, false)
-        };
-        // 開關機鍵將數字規 0
-        document.querySelector('.power').addEventListener('click', function() {
-                setTimeout(function() {
-                    displayDF = '0';
-                    stayValue = undefined;
-                    stayArry = [];
-                    viewer.innerText = displayDF;
-                }, 1000)
-            })
-            // 使用undefind，配合空陣列將內部數字清除
-        btnAC.addEventListener('click', function() {
+        function powerOff() {
+            document.querySelector('.displays').classList.toggle('font-displayOn')
+            this.classList.toggle('powerLink')
+            setTimeout(() => {
                 displayDF = '0';
                 stayValue = undefined;
                 stayArry = [];
                 viewer.innerText = displayDF;
-            }, false)
-            // 使用slice將內部數字長度-1
-        btnBack.addEventListener('click', function() {
+            }, 1000)
+        }
+
+        btnCount.forEach(key => key.addEventListener('click', getCount))
+        // 開關機鍵將數字歸 0
+        document.querySelector('.power').addEventListener('click', powerOff)
+
+        // 使用undefind，配合空陣列將內部數字清除
+        btnAC.addEventListener('click', () => {
+            displayDF = '0';
+            stayValue = undefined;
+            stayArry = [];
+            viewer.innerText = displayDF;
+        })
+        // 使用slice將內部數字長度-1
+        btnBack.addEventListener('click', () => {
             let backContent = displayDF.length;
             displayDF = displayDF.slice(0, backContent - 1);
-            if (displayDF === '') {
-                displayDF = '0';
-            };
+            displayDF === '' ? displayDF = '0' : null
             viewer.innerText = displayDF;
-        }, false);
+        });
         // 使用includes判斷內部値是否有無小數點，如果沒有就加上它
-        btnSmpoint.addEventListener('click', function(e) {
-            if (!displayDF.includes('.')) {
-                displayDF += '.';
-            };
+        btnSmpoint.addEventListener('click', () => {
+            !displayDF.includes('.') ? displayDF += '.' : null
             viewer.innerText = displayDF;
-        }, false)
+        })
+        document.querySelector('.close').addEventListener('click', () => document.querySelector('.main').classList.add('main-close'))
+        document.querySelector('.open').addEventListener('click', () => document.querySelector('.disappear').classList.add('appear'))
+        document.querySelector('.disappear').addEventListener('mouseenter', () => document.querySelector('.back-tital').classList.add('back-titalChange'))
+        document.querySelector('.disappear').addEventListener('click', () => {
+            setTimeout(() => {
+                document.querySelector('.back-tital').classList.remove('back-titalChange')
+                document.querySelector('.disappear').classList.remove('appear')
+                document.querySelector('.back-alert').classList.remove('back-alertOf')
+            }, 1500)
+        })
+        document.querySelector('.back-alertck').addEventListener('mouseenter', () => document.querySelector('.back-alert').classList.add('back-alertOf'))
+        document.querySelector('.back-again').addEventListener('click', () => document.querySelector('.main').classList.remove('main-close'))
     </script>
 </body>
 
