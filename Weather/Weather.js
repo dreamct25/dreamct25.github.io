@@ -1,20 +1,13 @@
-const xhr = new XMLHttpRequest();
 const select = document.querySelector('.select')
 let jsonData;
 let allDatas;
 
 // 抓取氣象站資料
-xhr.open('get', 'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B', true)
-xhr.send(null)
-xhr.onload = () => {
-    if (xhr.status !== 200) {
-        return;
-    }
-    let jsion = JSON.parse(xhr.responseText)
-    jsonData = jsion.records.locations[0].location
-    console.log(jsonData)
+
+fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => res.json()).then(res => {
+    jsonData = res.records.locations[0].location
     cityType()
-}
+}).catch(err => console.log(err))
 
 // 將各縣市名稱導入選單中資料，並透過 allDatas 將陣列中的値存起來，以便外部使用
 function cityType() {
@@ -25,7 +18,7 @@ function cityType() {
         array.push(key)
         city += `<option value="${key.locationName}">${key.locationName}</option>`
     });
-    document.querySelector('.select').innerHTML = city
+    select.innerHTML = city
     allDatas = Array.from(new Set(array))
 }
 
@@ -1256,6 +1249,85 @@ function bgChange() {
     }
 }
 
+function backGroundSet() {
+    this.classList.toggle('control-active')
+    document.querySelector('.control-point').classList.toggle('control-point-active')
+    let bgText = document.querySelector('.bg-text')
+    switch (bgText.textContent) {
+        case 'Moring':
+            bgText.textContent = 'Night'
+            document.querySelector('html').classList.add('night')
+            document.querySelector('html').classList.remove('moring')
+            break
+        case 'Night':
+            bgText.textContent = 'Moring'
+            document.querySelector('html').classList.remove('night')
+            document.querySelector('html').classList.add('moring')
+            break
+    }
+}
+
+function sideBarPart() {
+    document.querySelector('.sidebar').classList.toggle('sidebar-active')
+    this.classList.toggle('sidebar-icon-active')
+    document.querySelector('.sidebar-icon-outer').classList.add('sidebar-icon-active-trans')
+    setTimeout(() => document.querySelector('.sidebar-icon-outer').classList.remove('sidebar-icon-active-trans'), 10000)
+    this.classList.add('sidebar-arrow-trans')
+    setTimeout(() => this.classList.remove('sidebar-arrow-trans'), 10000)
+}
+
+function backAction() {
+    scrolls()
+    this.classList.remove('back-toggle')
+    document.querySelector('.now').classList.remove('now-in')
+    document.querySelector('.tomorrow').classList.remove('tomorrow-in')
+    document.querySelector('.week').classList.remove('week-in')
+    document.querySelector('.now').classList.remove('btn-color')
+    document.querySelector('.tomorrow').classList.remove('btn-color')
+    document.querySelector('.week').classList.remove('btn-color')
+    document.querySelector('.location').classList.add('weather-title-out')
+    document.querySelector('.location').classList.remove('weather-title-in')
+    document.querySelectorAll('.week-board').forEach(animate => animate.classList.add('weather-week-content-out'))
+    document.querySelectorAll('.board').forEach(animate => animate.classList.add('weather-content-out'))
+    document.querySelectorAll('.tomorrow-day').forEach(animate => animate.classList.add('tomorrow-day-out'))
+    document.querySelector('.footer').classList.toggle('footer-active')
+    document.querySelector('.clock').classList.toggle('clock-change')
+    document.querySelector('.control').classList.toggle('control-change')
+    document.querySelector('.bg-text').classList.toggle('bg-text-change')
+    document.querySelector('.sidebar').classList.toggle('sidebar-hide')
+    setTimeout(() => document.querySelector('.text-in').textContent = '', 2000)
+    setTimeout(() => select.classList.remove('select-toggle'), 1000)
+}
+
+function onloadAnimate() {
+    document.querySelector('.header').classList.add('header-active')
+    setTimeout(() => {
+        document.querySelector('.control').classList.add('control-in')
+        document.querySelector('.bg-text').classList.add('bg-text-in')
+    }, 1000)
+    setTimeout(() => document.querySelector('.clock').classList.add('clock-in'), 2000)
+    setTimeout(() => document.querySelector('.in-title').classList.add('in-title-in'), 1000)
+    setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 2000)
+    setTimeout(() => document.querySelector('.text-in').innerHTML = `
+        <span class="loading loading-in">
+            <span class="loading-icon"></span>
+            <span class="loading-icons"></span>
+            Loading
+        </span>`, 3000)
+    setTimeout(() => {
+        document.querySelector('.loading').classList.remove('loading-in')
+        document.querySelector('.loading').classList.add('loading-out')
+    }, 7000)
+    setTimeout(() => document.querySelector('.footer').classList.add('footer-in'), 3000)
+    setTimeout(() => select.classList.add('select-in'), 8000)
+}
+
+function switchTopBar() {
+    let height = document.documentElement.scrollTop || document.body.scrollTop;
+    height > 28 ? document.querySelector('.header').classList.remove('header-active') : document.querySelector('.header').classList.add('header-active')
+    height > 200 ? document.querySelector('.top').classList.add('top-active') : document.querySelector('.top').classList.remove('top-active')
+}
+
 // 畫面時間內容設定
 function time() {
     const date = new Date()
@@ -1279,96 +1351,25 @@ setTimeout(bgChange, 1)
 select.addEventListener('change', callAll)
 
 // 監聽背景控制器內容，點擊式觸發函式內容並同步更換控制器左側文字
-document.querySelector('.control').addEventListener('click', () => {
-    document.querySelector('.control').classList.toggle('control-active')
-    document.querySelector('.control-point').classList.toggle('control-point-active')
-    let bgText = document.querySelector('.bg-text')
-    switch (bgText.textContent) {
-        case 'Moring':
-            bgText.textContent = 'Night'
-            document.querySelector('html').classList.add('night')
-            document.querySelector('html').classList.remove('moring')
-            break
-        case 'Night':
-            bgText.textContent = 'Moring'
-            document.querySelector('html').classList.remove('night')
-            document.querySelector('html').classList.add('moring')
-            break
-    }
-})
+document.querySelector('.control').addEventListener('click', backGroundSet)
 
 // 監聽 navbar 內容，點擊式觸發 content 函式
-document.querySelectorAll('.weather').forEach(weather => {
-    weather.addEventListener('click', content)
-})
+document.querySelectorAll('.weather').forEach(weather => weather.addEventListener('click', content))
 
 // 監聽 sidebar 圖形按鈕，點擊時觸發函式內容
-document.querySelector('.sidebar-icon').addEventListener('click', () => {
-    document.querySelector('.sidebar').classList.toggle('sidebar-active')
-    document.querySelector('.sidebar-icon').classList.toggle('sidebar-icon-active')
-    document.querySelector('.sidebar-icon-outer').classList.add('sidebar-icon-active-trans')
-    setTimeout(() => document.querySelector('.sidebar-icon-outer').classList.remove('sidebar-icon-active-trans'), 10000)
-    document.querySelector('.sidebar-icon').classList.add('sidebar-arrow-trans')
-    setTimeout(() => document.querySelector('.sidebar-icon').classList.remove('sidebar-arrow-trans'), 10000)
-})
+document.querySelector('.sidebar-icon').addEventListener('click', sideBarPart)
 
 // 監聽每個 sidebar 文字，點擊時觸發 allBlock 函式
 document.querySelectorAll('.sidebar-text').forEach(keyWord => keyWord.addEventListener('click', allBlock))
 
 // 監聽 back 按鈕，點擊時觸發函式內容
-document.querySelector('.back').addEventListener('click', () => {
-    document.querySelector('.back').classList.remove('back-toggle')
-    document.querySelector('.now').classList.remove('now-in')
-    document.querySelector('.tomorrow').classList.remove('tomorrow-in')
-    document.querySelector('.week').classList.remove('week-in')
-    document.querySelector('.now').classList.remove('btn-color')
-    document.querySelector('.tomorrow').classList.remove('btn-color')
-    document.querySelector('.week').classList.remove('btn-color')
-    document.querySelector('.location').classList.add('weather-title-out')
-    document.querySelector('.location').classList.remove('weather-title-in')
-    document.querySelectorAll('.week-board').forEach(animate => animate.classList.add('weather-week-content-out'))
-    document.querySelectorAll('.board').forEach(animate => animate.classList.add('weather-content-out'))
-    document.querySelectorAll('.tomorrow-day').forEach(animate => animate.classList.add('tomorrow-day-out'))
-    document.querySelector('.footer').classList.toggle('footer-active')
-    document.querySelector('.clock').classList.toggle('clock-change')
-    document.querySelector('.control').classList.toggle('control-change')
-    document.querySelector('.bg-text').classList.toggle('bg-text-change')
-    document.querySelector('.sidebar').classList.toggle('sidebar-hide')
-    scrolls()
-    setTimeout(() => document.querySelector('.text-in').textContent = '', 2000)
-    setTimeout(() => select.classList.remove('select-toggle'), 1000)
-})
+document.querySelector('.back').addEventListener('click', backAction)
 
 // 監聽 top 按鈕，點擊時觸發 scrolls 函式
 document.querySelector('.top').addEventListener('click', scrolls)
 
 // 監聽頁面滾動，當滾動到指定位置時觸發函式內容
-window.addEventListener('scroll', () => {
-    let height = document.documentElement.scrollTop || document.body.scrollTop;
-    height > 28 ? document.querySelector('.header').classList.remove('header-active') : document.querySelector('.header').classList.add('header-active')
-    height > 200 ? document.querySelector('.top').classList.add('top-active') : document.querySelector('.top').classList.remove('top-active')
-})
+window.addEventListener('scroll', switchTopBar)
 
 // 監聽頁面載入，載入時觸發函式內容
-window.addEventListener('load', () => {
-    document.querySelector('.header').classList.add('header-active')
-    setTimeout(() => {
-        document.querySelector('.control').classList.add('control-in')
-        document.querySelector('.bg-text').classList.add('bg-text-in')
-    }, 1000)
-    setTimeout(() => document.querySelector('.clock').classList.add('clock-in'), 2000)
-    setTimeout(() => document.querySelector('.in-title').classList.add('in-title-in'), 1000)
-    setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 2000)
-    setTimeout(() => document.querySelector('.text-in').innerHTML = `
-        <span class="loading loading-in">
-            <span class="loading-icon"></span>
-            <span class="loading-icons"></span>
-            Loading
-        </span>`, 3000)
-    setTimeout(() => {
-        document.querySelector('.loading').classList.remove('loading-in')
-        document.querySelector('.loading').classList.add('loading-out')
-    }, 7000)
-    setTimeout(() => document.querySelector('.footer').classList.add('footer-in'), 3000)
-    setTimeout(() => select.classList.add('select-in'), 8000)
-})
+window.addEventListener('load', onloadAnimate)
