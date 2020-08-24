@@ -1,24 +1,19 @@
 let Data;
 let DataShow;
-let xhr = new XMLHttpRequest();
 let theSameData;
 const topBlock = document.querySelector('.block')
 const ndTitle = document.querySelector('.ct-title')
 const main = document.querySelector('.card-show')
 const paginations = document.querySelector('.pagination')
-// ↓ 使用AJAX 抓取 Open data 資料 start ↓
-xhr.open('get', 'https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json', true)
-xhr.send(null)
-xhr.onload = function () {
-    if (xhr.status !== 200) {
-        return;
-    }
-    var jsion_Data = JSON.parse(xhr.responseText)
-    Data = jsion_Data.result.records
+// ↓ 使用 fetch 抓取 Open data 資料 start ↓
+
+fetch('https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json').then(jsonTrans => jsonTrans.json()).then(res => {
+    Data = res.result.records
     setTimeout(() => pagination(Data, 1), 6000)
     listData();
-}
-// ↑ 使用AJAX 抓取 Open data 資料 end ↑
+}).catch(err => console.log(err))
+
+// ↑ 使用 fetch 抓取 Open data 資料 end ↑
 
 // ↓ Select 選單連動 jsion 資料顯示於選單中 start ↓
 function listData() {
@@ -154,7 +149,7 @@ function show(newArry) {
 function paginationBtn(page) {
     let str = ''
     const allPages = page.pageTotal
-    Number(page.beforPage) ? str += `<li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage)-1}"><i class="fal fa-angle-double-left"></i></a></li>` : str += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fal fa-angle-double-left"></i></a></li>`
+    Number(page.beforPage) ? str += `<li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage) - 1}"><i class="fal fa-angle-double-left"></i></a></li>` : str += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fal fa-angle-double-left"></i></a></li>`
     for (let p = 1; p <= allPages; p++) {
         Number(page.currentPage) === p ? str += `<li class="page-item active"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>` : str += `<li class="page-item"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>`
     }
@@ -182,8 +177,8 @@ window.addEventListener('load', () => {
     document.querySelector('.title2').classList.add('fadeIn-lt')
 })
 
-$(document).ready(function () {
-    $('.top').click(function () {
+$(document).ready(() => {
+    $('.top').click(() => {
         $('html,body').animate({
             scrollTop: 0
         }, 3000)
