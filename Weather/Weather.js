@@ -129,7 +129,7 @@ function todayAndTomrrow(text) {
                                 <div class="board mx-1 weather-contentSd-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">${key.dayText}降雨機率</span>
+                                            <span class="text-center">${key.dayText == '目前' ? '本日' : key.dayText}降雨機率</span>
                                         </div>
                                     </div>
                                     <div class="row my-3">
@@ -146,7 +146,7 @@ function todayAndTomrrow(text) {
                         <div class="row no-gutters">
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentTd-in">
-                                    <p class="mt-2 mb-3 text-center">${key.dayText}均溫：${key.G}&degC</p>
+                                    <p class="mt-2 mb-3 text-center">${key.dayText == '目前' ? '本日' : key.dayText}均溫：${key.G}&degC</p>
                                     <p class="my-4 text-center">紫外線：${key.H}&nbsp${key.I}</p>
                                     <p class="my-4 text-center">體感溫度：${key.J}&degC ~ ${key.K}&degC</p>
                                     <p class="mt-3 mb-2 text-center">濕度：${key.L}%</p>
@@ -156,7 +156,7 @@ function todayAndTomrrow(text) {
                                 <div class="board mx-1 weather-contentFort-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">${key.dayText}天氣概況</span>
+                                            <span class="text-center">${key.dayText == '目前' ? '本日' : key.dayText}天氣概況</span>
                                         </div>
                                     </div>
                                     <div class="row no-gutters">
