@@ -13,7 +13,7 @@ fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorizati
 function cityType() {
     let array = []
     let city;
-    city = `<option selected disabled>--請選擇縣市--</option>`
+    city = `<option selected disabled>- - 請選擇欲查詢氣象縣市 - -</option>`
     jsonData.forEach(key => {
         array.push(key)
         city += `<option value="${key.locationName}">${key.locationName}</option>`
@@ -26,7 +26,7 @@ function cityType() {
 function callAll() {
     scrolls()
     allDatas.forEach(keyWord => {
-        this.value == keyWord.locationName ? today() : ''
+        this.value == keyWord.locationName ? todayAndTomrrow() : ''
     })
     select.classList.add('select-toggle')
     document.querySelector('.back').classList.add('back-toggle')
@@ -49,18 +49,14 @@ function callAll() {
 function content() {
     switch (this.textContent) {
         case '目前天氣':
-            today()
+            todayAndTomrrow(this.textContent.slice(0, 2))
             document.querySelector('.now').classList.add('btn-active')
-            document.querySelector('.now').classList.add('btn-color')
-            document.querySelector('.tomorrow').classList.remove('btn-color')
             document.querySelector('.week').classList.remove('btn-color')
             setTimeout(() => document.querySelector('.now').classList.remove('btn-active'), 500)
             break
         case '明日天氣':
-            tomorrow()
+            todayAndTomrrow(this.textContent.slice(0, 2))
             document.querySelector('.tomorrow').classList.add('btn-active')
-            document.querySelector('.now').classList.remove('btn-color')
-            document.querySelector('.tomorrow').classList.add('btn-color')
             document.querySelector('.week').classList.remove('btn-color')
             setTimeout(() => document.querySelector('.tomorrow').classList.remove('btn-active'), 500)
             break
@@ -74,37 +70,74 @@ function content() {
             break
     }
 }
-
-// 設定 today 函式內容
-function today() {
+// 設定 todayAndTomrrow 函式內容
+function todayAndTomrrow(text) {
+    text == undefined ? text = '目前' : text = text
     allDatas.forEach(keyWord => {
+        const todayWithTomrrow = [{
+            dayText: '目前',
+            dayClass: 'now',
+            A: keyWord.weatherElement[8].time[0].elementValue[0].value,
+            B: keyWord.weatherElement[12].time[0].elementValue[0].value,
+            C: keyWord.weatherElement[3].time[0].elementValue[0].value,
+            D: keyWord.weatherElement[7].time[0].elementValue[0].value,
+            E: keyWord.weatherElement[0].time[0].elementValue[0].value,
+            F: keyWord.weatherElement[0].time[1].elementValue[0].value,
+            G: keyWord.weatherElement[1].time[0].elementValue[0].value,
+            H: keyWord.weatherElement[9].time[0].elementValue[0].value,
+            I: keyWord.weatherElement[9].time[0].elementValue[1].value,
+            J: keyWord.weatherElement[11].time[0].elementValue[0].value,
+            K: keyWord.weatherElement[5].time[0].elementValue[0].value,
+            L: keyWord.weatherElement[2].time[0].elementValue[0].value,
+            M: keyWord.weatherElement[10].time[0].elementValue[0].value,
+            N: keyWord.weatherElement[10].time[1].elementValue[0].value
+        }, {
+            dayText: '明日',
+            dayClass: 'tomorrow',
+            A: keyWord.weatherElement[8].time[2].elementValue[0].value,
+            B: keyWord.weatherElement[12].time[2].elementValue[0].value,
+            C: keyWord.weatherElement[3].time[1].elementValue[0].value,
+            D: keyWord.weatherElement[7].time[1].elementValue[0].value,
+            E: keyWord.weatherElement[0].time[2].elementValue[0].value,
+            F: keyWord.weatherElement[0].time[3].elementValue[0].value,
+            G: keyWord.weatherElement[1].time[1].elementValue[0].value,
+            H: keyWord.weatherElement[9].time[1].elementValue[0].value,
+            I: keyWord.weatherElement[9].time[0].elementValue[1].value,
+            J: keyWord.weatherElement[11].time[1].elementValue[0].value,
+            K: keyWord.weatherElement[5].time[1].elementValue[0].value,
+            L: keyWord.weatherElement[2].time[2].elementValue[0].value,
+            M: keyWord.weatherElement[10].time[2].elementValue[0].value,
+            N: keyWord.weatherElement[10].time[3].elementValue[0].value
+        }]
         if (select.value == keyWord.locationName) {
             document.querySelector('.location').textContent = keyWord.locationName
-            setTimeout(() => document.querySelector('.now').classList.add('btn-color'), 800)
-            document.querySelector('.text-in').innerHTML =
-                `
+            todayWithTomrrow.forEach(key => {
+                if (key.dayText == text) {
+                    document.querySelector(`.${key.dayClass}`).classList.add('btn-color')
+                    document.querySelector('.text-in').innerHTML =
+                        `
                     <div class="col-11">
                         <div class="row no-gutters">
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentFt-in">
-                                    <span class="text-center">目前氣溫</span>
-                                    <p class="mb-0 my-2 text-center">${keyWord.weatherElement[8].time[0].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[0].elementValue[0].value}&degC</p>
-                                    <p class="mb-0 text-center">舒適度：${keyWord.weatherElement[3].time[0].elementValue[0].value} ~ ${keyWord.weatherElement[7].time[0].elementValue[0].value}</p> 
+                                    <span class="text-center">${key.dayText}天氣</span>
+                                    <p class="mb-0 my-2 text-center">${key.A}&degC ~ ${key.B}&degC</p>
+                                    <p class="mb-0 text-center">舒適度：${key.C} ~ ${key.D}</p> 
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentSd-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">目前降雨機率</span>
+                                            <span class="text-center">${key.dayText}降雨機率</span>
                                         </div>
                                     </div>
                                     <div class="row my-3">
                                         <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">白天：${keyWord.weatherElement[0].time[0].elementValue[0].value}%</p>
+                                            <p class="mb-0 my-1 text-center">白天：${key.E}%</p>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">夜晚：${keyWord.weatherElement[0].time[1].elementValue[0].value}%</p>
+                                            <p class="mb-0 my-1 text-center">夜晚：${key.F}%</p>
                                         </div>
                                     </div>
                                 </div>
@@ -113,103 +146,37 @@ function today() {
                         <div class="row no-gutters">
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentTd-in">
-                                    <p class="mt-2 mb-3 text-center">目前均溫：${keyWord.weatherElement[1].time[0].elementValue[0].value}&degC</p>
-                                    <p class="my-4 text-center">紫外線：${keyWord.weatherElement[9].time[0].elementValue[0].value}&nbsp${keyWord.weatherElement[9].time[0].elementValue[1].value}</p>
-                                    <p class="my-4 text-center">體感溫度：${keyWord.weatherElement[11].time[0].elementValue[0].value}&degC ~ ${keyWord.weatherElement[5].time[0].elementValue[0].value}&degC</p>
-                                    <p class="mt-3 mb-2 text-center">濕度：${keyWord.weatherElement[2].time[0].elementValue[0].value}%</p>
+                                    <p class="mt-2 mb-3 text-center">${key.dayText}均溫：${key.G}&degC</p>
+                                    <p class="my-4 text-center">紫外線：${key.H}&nbsp${key.I}</p>
+                                    <p class="my-4 text-center">體感溫度：${key.J}&degC ~ ${key.K}&degC</p>
+                                    <p class="mt-3 mb-2 text-center">濕度：${key.L}%</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="board mx-1 weather-contentFort-in">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <span class="text-center">目前天氣概況</span>
+                                            <span class="text-center">${key.dayText}天氣概況</span>
                                         </div>
                                     </div>
                                     <div class="row no-gutters">
                                         <div class="col-md-6">
                                             <p class="my-3 text-center">白天至夜晚</p>
-                                            <p class="mb-2 mx-2 text-justify">${keyWord.weatherElement[10].time[0].elementValue[0].value}</p>
+                                            <p class="mb-2 mx-2 text-justify">${key.M}</p>
                                         </div>
                                         <div class="col-md-6">
                                             <p class="my-3 text-center">夜晚至隔日半夜</p>
-                                            <p class="mb-2 mx-2 text-justify">${keyWord.weatherElement[10].time[1].elementValue[0].value}</p>
+                                            <p class="mb-2 mx-2 text-justify">${key.N}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                `
-        }
-    })
-}
-
-// 設定 tomorrow 函式內容
-function tomorrow() {
-    allDatas.forEach(keyWord => {
-        if (select.value == keyWord.locationName) {
-            document.querySelector('.location').textContent = keyWord.locationName
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentFt-in">
-                                    <span class="text-center">明日氣溫</span>
-                                    <p class="mb-0 my-2 text-center">${keyWord.weatherElement[8].time[2].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[2].elementValue[0].value}&degC</p>
-                                    <p class="mb-0 text-center">舒適度：${keyWord.weatherElement[3].time[1].elementValue[0].value} ~ ${keyWord.weatherElement[7].time[1].elementValue[0].value}</p> 
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentSd-in">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="text-center">明日降雨機率</span>
-                                        </div>
-                                    </div>
-                                    <div class="row my-3">
-                                        <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">白天：${keyWord.weatherElement[0].time[2].elementValue[0].value}%</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">夜晚：${keyWord.weatherElement[0].time[3].elementValue[0].value}%</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentTd-in">
-                                    <p class="mt-2 mb-3 text-center">明日均溫：${keyWord.weatherElement[1].time[1].elementValue[0].value}&degC</p>
-                                    <p class="my-4 text-center">紫外線：${keyWord.weatherElement[9].time[1].elementValue[0].value}&nbsp${keyWord.weatherElement[9].time[0].elementValue[1].value}</p>
-                                    <p class="my-4 text-center">體感溫度：${keyWord.weatherElement[11].time[1].elementValue[0].value}&degC ~ ${keyWord.weatherElement[5].time[1].elementValue[0].value}&degC</p>
-                                    <p class="mt-3 mb-2 text-center">濕度：${keyWord.weatherElement[2].time[2].elementValue[0].value}%</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentFort-in">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="text-center">明日天氣概況</span>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters">
-                                        <div class="col-md-6">
-                                            <p class="my-3 text-center">白天至夜晚</p>
-                                            <p class="mb-2 mx-2 text-justify">${keyWord.weatherElement[10].time[2].elementValue[0].value}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="my-3 text-center">夜晚至隔日半夜</p>
-                                            <p class="mb-2 mx-2 text-justify">${keyWord.weatherElement[10].time[3].elementValue[0].value}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
+                `} else {
+                    document.querySelector(`.${key.dayClass}`).classList.remove('btn-color')
+                }
+            })
         }
     })
 }
@@ -354,6 +321,17 @@ function week() {
     })
 }
 
+function allBlockAnimate(textSide) {
+    select.classList.add('select-toggle')
+    document.querySelector('.back').classList.add('back-toggle')
+    document.querySelector('.back').textContent = '查詢其它區域或縣市'
+    document.querySelector('.location').classList.add('weather-title-in')
+    document.querySelector('.location').classList.remove('weather-title-out')
+    document.querySelector('.sidebar').classList.remove('sidebar-active')
+    document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
+    document.querySelector('.location').textContent = textSide
+}
+
 // 右側 sidebar 內容，當點擊文字與 case 內文字相同時載入不同內容
 function allBlock() {
     document.querySelector('.footer').classList.toggle('footer-active')
@@ -363,14 +341,7 @@ function allBlock() {
     document.querySelector('.bg-text').classList.toggle('bg-text-change')
     switch (this.textContent) {
         case '北部':
-            select.classList.add('select-toggle')
-            document.querySelector('.back').classList.add('back-toggle')
-            document.querySelector('.back').textContent = '查詢其它區域或縣市'
-            document.querySelector('.location').classList.add('weather-title-in')
-            document.querySelector('.location').classList.remove('weather-title-out')
-            document.querySelector('.sidebar').classList.remove('sidebar-active')
-            document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-            document.querySelector('.location').textContent = '北部'
+            allBlockAnimate(this.textContent)
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
@@ -659,14 +630,7 @@ function allBlock() {
                 `
             break
         case '中部':
-            select.classList.add('select-toggle')
-            document.querySelector('.back').classList.add('back-toggle')
-            document.querySelector('.back').textContent = '查詢其它區域或縣市'
-            document.querySelector('.location').classList.add('weather-title-in')
-            document.querySelector('.location').classList.remove('weather-title-out')
-            document.querySelector('.sidebar').classList.remove('sidebar-active')
-            document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-            document.querySelector('.location').textContent = '中部'
+            allBlockAnimate(this.textContent)
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
@@ -815,14 +779,7 @@ function allBlock() {
                 `
             break
         case '南部':
-            select.classList.add('select-toggle')
-            document.querySelector('.back').classList.add('back-toggle')
-            document.querySelector('.back').textContent = '查詢其它區域或縣市'
-            document.querySelector('.location').classList.add('weather-title-in')
-            document.querySelector('.location').classList.remove('weather-title-out')
-            document.querySelector('.sidebar').classList.remove('sidebar-active')
-            document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-            document.querySelector('.location').textContent = '南部'
+            allBlockAnimate(this.textContent)
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
@@ -1007,14 +964,7 @@ function allBlock() {
                 `
             break
         case '東部':
-            select.classList.add('select-toggle')
-            document.querySelector('.back').classList.add('back-toggle')
-            document.querySelector('.back').textContent = '查詢其它區域或縣市'
-            document.querySelector('.location').classList.add('weather-title-in')
-            document.querySelector('.location').classList.remove('weather-title-out')
-            document.querySelector('.sidebar').classList.remove('sidebar-active')
-            document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-            document.querySelector('.location').textContent = '東部'
+            allBlockAnimate(this.textContent)
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
@@ -1093,14 +1043,7 @@ function allBlock() {
                 `
             break
         case '外島':
-            select.classList.add('select-toggle')
-            document.querySelector('.back').classList.add('back-toggle')
-            document.querySelector('.back').textContent = '查詢其它區域或縣市'
-            document.querySelector('.location').classList.add('weather-title-in')
-            document.querySelector('.location').classList.remove('weather-title-out')
-            document.querySelector('.sidebar').classList.remove('sidebar-active')
-            document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-            document.querySelector('.location').textContent = '外島'
+            allBlockAnimate(this.textContent)
             document.querySelector('.text-in').innerHTML =
                 `
                     <div class="col-11">
@@ -1337,7 +1280,7 @@ function time() {
     let hour = (date.getHours() < 10 ? '0' : '') + date.getHours()
     let minute = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
     let seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds()
-    let text = `${year}/${month}/${dates} ${hour}：${minute}：${seconds}`
+    let text = `${year} / ${month} / ${dates} ${hour}：${minute}：${seconds}`
     document.querySelector('.clock').textContent = text
 }
 
