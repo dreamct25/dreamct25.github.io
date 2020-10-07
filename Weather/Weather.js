@@ -1175,11 +1175,11 @@ function scrolls() {
     });
 }
 // 設定背景圖隨畫面時間不同更換背景圖
-function bgChange() {
-    let times = document.querySelector('.clock').textContent.substring(13, 10)
-    let timeText = parseInt(times)
-
-    if (timeText >= 6 && timeText <= 17) {
+(function bgChange() {
+    const timeObject = new Date()
+    let hours = timeObject.getHours()
+    onloadAnimate()
+    if (hours >= 6 && hours <= 17) {
         document.querySelector('.bg-text').textContent = 'Moring'
         document.querySelector('html').classList.remove('night')
         document.querySelector('html').classList.add('moring')
@@ -1190,7 +1190,8 @@ function bgChange() {
         document.querySelector('.control').classList.toggle('control-active')
         document.querySelector('.control-point').classList.toggle('control-point-active')
     }
-}
+}())
+
 
 function backGroundSet() {
     this.classList.toggle('control-active')
@@ -1285,10 +1286,7 @@ function time() {
 }
 
 // 每秒刷新畫面時間文字
-setInterval(time, 1)
-
-// 頁面載入時同步讀取畫面時間，並觸發 bg Change 函式
-setTimeout(bgChange, 1)
+setInterval(time, 1000)
 
 // 監聽選單內容，並觸發 callAll 函式
 select.addEventListener('change', callAll)
@@ -1313,6 +1311,3 @@ document.querySelector('.top').addEventListener('click', scrolls)
 
 // 監聽頁面滾動，當滾動到指定位置時觸發函式內容
 window.addEventListener('scroll', switchTopBar)
-
-// 監聽頁面載入，載入時觸發函式內容
-window.addEventListener('load', onloadAnimate)
