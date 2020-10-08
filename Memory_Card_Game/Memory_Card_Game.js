@@ -8,7 +8,7 @@ const cancel = document.querySelector('.cancel')
 let hasOpen_Card = false;
 let cardFrt, cardScd;
 let lock = false;
-
+let cardTimes = 0;
 function cardChage() {
     if (lock == true) return
     if (this === cardFrt) return;
@@ -23,16 +23,15 @@ function cardChage() {
 }
 
 function cardMatch() {
-    let cardTimes = 0;
     let cardMatching = cardFrt.dataset.target === cardScd.dataset.target;
     if (cardMatching == true) {
-        disableEvent(cardTimes)
+        disableEvent()
         return
     }
     returnCover()
 }
 
-function disableEvent(cardTimes) {
+function disableEvent() {
     cardTimes += 1
     if (cardTimes == 8) {
         cardTimes = 0
@@ -44,6 +43,7 @@ function disableEvent(cardTimes) {
         modalShow.style.transition = '1s ease'
         setTimeout(show, 100)
     }
+    console.log(cardTimes)
     cardFrt.removeEventListener('click', cardChage)
     cardScd.removeEventListener('click', cardChage)
     reset()
@@ -51,7 +51,7 @@ function disableEvent(cardTimes) {
 
 function returnCover() {
     lock = true
-    setTimeout(function() {
+    setTimeout(function () {
         cardFrt.classList.remove('card-turn')
         cardScd.classList.remove('card-turn')
         reset()
@@ -64,8 +64,8 @@ function reset() {
 }
 
 function resetAll() {
-    cards.forEach(card=>card.style.order = Math.floor(Math.random() * 16))
-    cards.forEach(carder=> {
+    cards.forEach(card => card.style.order = Math.floor(Math.random() * 16))
+    cards.forEach(carder => {
         carder.classList.remove('card-turn')
         carder.addEventListener('click', cardChage)
     })
@@ -76,29 +76,29 @@ function modalHeader_Text() {
     switch (modalText_header.textContent) {
         case '':
             modalText_header.textContent = '遊戲說明'
-        break;
+            break;
         case '遊戲說明':
             modalText_header.textContent = '您要再來一局嗎'
-        break;
+            break;
         default:
             modalText_header.textContent = '您要再來一局嗎'
-        break;
+            break;
     }
 }
 
 function modalContent_Text() {
-    var modalText_content = document.querySelector('.content-text')
-    if (modalText_content.textContent == '') {
-        modalText_content.innerHTML = '點擊卡片對應相同的卡片的圖案<br>直到將整面卡面配對正確'
-    } else if (modalText_content.textContent == '點擊卡片對應相同的卡片的圖案<br>直到將整面卡面配對正確') {
-        modalText_content.innerHTML = '您已將卡牌全數對應成功瞜，恭喜 !<br>雖然只是個小遊戲，還是很感謝您的遊玩 !'
-    } else {
-        modalText_content.innerHTML = '您已將卡牌全數對應成功瞜，恭喜 !<br>雖然只是個小遊戲，還是很感謝您的遊玩 !'
+    const modalText_content = document.querySelector('.content-text')
+    switch (modalText_content.textContent) {
+        case '':
+            modalText_content.innerHTML = '點擊卡片對應相同的卡片的圖案<br>直到將整面卡面配對正確'
+            break;
+        case '點擊卡片對應相同的卡片的圖案<br>直到將整面卡面配對正確':
+            modalText_content.innerHTML = '您已將卡牌全數對應成功瞜，恭喜 !<br>雖然只是個小遊戲，還是很感謝您的遊玩 !'
+            break;
+        default:
+            modalText_content.innerHTML = '您已將卡牌全數對應成功瞜，恭喜 !<br>雖然只是個小遊戲，還是很感謝您的遊玩 !'
+            break;
     }
-}
-
-function modalBtn_Cancel_TextClose() {
-    cancel.classList == 'cancel'?cancel.classList.remove('cancel'):null
 }
 
 function modalBtn_Cancel_TextOpen() {
@@ -110,13 +110,17 @@ function modalBtn_Cancel_TextOpen() {
 }
 
 function modalBtn_Again_Text() {
-    var againText = document.querySelector('.again-text')
-    if (againText.textContent == '') {
-        againText.innerHTML = '確定'
-    } else if (againText.textContent == '確定') {
-        againText.innerHTML = '再來一局'
-    } else {
-        againText.innerHTML = '再來一局'
+    const againText = document.querySelector('.again-text')
+    switch (againText.textContent) {
+        case '':
+            againText.textContent = '確定'
+            break;
+        case '確定':
+            againText.textContent = '再來一局'
+            break;
+        default:
+            againText.textContent = '再來一局'
+            break;
     }
 }
 // 設定淡入延遲
@@ -128,10 +132,9 @@ function show() {
 function close() {
     modalShow.classList.remove('modal-toggle')
     modalContentShow.classList.remove('modal-body-toggle')
-    setTimeout(modalShow.style.display = 'none', 750)  
+    setTimeout(() => modalShow.style.display = 'none', 750)
 }
 
-cards.forEach(card=>card.addEventListener('click', cardChage))
 (function start() {
     modalShow.style.display = 'block'
     modalShow.style.transition = '1s ease'
@@ -139,17 +142,25 @@ cards.forEach(card=>card.addEventListener('click', cardChage))
     modalHeader_Text()
     modalContent_Text()
     modalBtn_Again_Text()
-    modalBtn_Cancel_TextClose()
-}());
-    // 監聽點擊彈出視窗本體內部架構 X 按鈕
-btnClose.addEventListener('click', close())
+    cancel.classList == 'cancel' ? cancel.classList.remove('cancel') : null
+}())
+
+cards.forEach(card => card.addEventListener('click', cardChage))
+
+// 監聽點擊彈出視窗本體內部架構 X 按鈕
+btnClose.addEventListener('click', close)
 
 // 監聽點擊彈出視窗本體內部架構 Cancel 按鈕
-again.addEventListener('click',()=> {
+again.addEventListener('click', () => {
     close()
     resetAll()
 })
-cancel.addEventListener('click', close())
+cancel.addEventListener('click', close)
 
 // 監聽點擊彈出視窗本體架構外部網頁空白區域 window (整個網頁當前視窗)，當點擊外部區域時一樣可關閉彈出視窗
-window.addEventListener('click',e=>e.target == modalShow?close():null)
+window.addEventListener('click', e => {
+    if (e.target == modalShow) {
+        close()
+        resetAll()
+    }
+})

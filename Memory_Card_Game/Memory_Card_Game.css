@@ -58,7 +58,6 @@ body {
     border-radius: 5px;
     color: rgb(162, 0, 255);
     position: absolute;
-    /* backface-visibility: hidden; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,12 +73,6 @@ body {
     transform: rotateY(180deg);
 }
 
-
-/* .card-back {
-    background: blue;
-} */
-
-
 /* 彈出視窗外框架 */
 
 .modal {
@@ -94,39 +87,39 @@ body {
     background: rgba(0, 0, 0, .7);
 }
 
-
-/* 彈出視窗外框架載入淡入淡出動畫 */
+/* 彈出視窗外框架 end */
+/* 彈出視窗外框架載入淡入淡出動畫 start */
 
 .modal-toggle {
     opacity: 1;
 }
 
-
-/* 彈出視窗本體架構設定 */
+/* 彈出視窗外框架載入淡入淡出動畫 end */
+/* 彈出視窗本體架構設定 start */
 
 .modal-body {
     box-shadow: 0 0 5px rgba(0, 0, 0, .7);
-    background-image: linear-gradient( 120deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%);
+    background-image: linear-gradient(120deg, rgba(255, 215, 185, 0.91) 23%, rgba(223, 159, 247, 0.8) 93%);
     border-radius: 10px;
-    margin: 2% auto;
-    max-width: 400px;
+    min-width: 375px;
+    margin: auto 5%;
     opacity: 0;
-    transform: translateY(-200px) scale(0.1);
+    transform: translateY(100%) scale(0.1);
     transition: .5s ease;
     position: relative;
 }
 
-
-/* 彈出視窗本體架構淡入淡出動畫 */
+/* 彈出視窗本體架構設定 end */
+/* 彈出視窗本體架構淡入淡出動畫 start */
 
 .modal-body-toggle {
     opacity: 1;
-    transform: translateY(0px) scale(1);
+    transform: translateY(100%) scale(1);
     transition: .5s ease;
 }
 
-
-/* 彈出視窗本體內部架構 */
+/* 彈出視窗本體架構淡入淡出動畫 end */
+/* 彈出視窗本體內部架構 start */
 
 .modal-header {
     display: flex;
