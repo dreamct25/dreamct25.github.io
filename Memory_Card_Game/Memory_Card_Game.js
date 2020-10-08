@@ -1,20 +1,16 @@
-var cards = document.querySelectorAll('.card');
-var num = document.querySelector('.count')
-var cardTimes = 0;
-var hasOpen_Card = false;
-var cardFrt, cardScd;
-var lock = false;
-var btnClose = document.querySelector('.close')
-var modalShow = document.querySelector('.modal')
-var modalContentShow = document.querySelector('.modal-body')
-var again = document.querySelector('.again')
-var cancel = document.querySelector('.cancel')
-var shows;
+const cards = document.querySelectorAll('.card');
+const num = document.querySelector('.count')
+const btnClose = document.querySelector('.close')
+const modalShow = document.querySelector('.modal')
+const modalContentShow = document.querySelector('.modal-body')
+const again = document.querySelector('.again')
+const cancel = document.querySelector('.cancel')
+let hasOpen_Card = false;
+let cardFrt, cardScd;
+let lock = false;
 
 function cardChage() {
-    if (lock == true) {
-        return
-    }
+    if (lock == true) return
     if (this === cardFrt) return;
     this.classList.add('card-turn')
     if (!hasOpen_Card) {
@@ -27,15 +23,16 @@ function cardChage() {
 }
 
 function cardMatch() {
-    var cardMatching = cardFrt.dataset.target === cardScd.dataset.target;
+    let cardTimes = 0;
+    let cardMatching = cardFrt.dataset.target === cardScd.dataset.target;
     if (cardMatching == true) {
-        disableEvent()
+        disableEvent(cardTimes)
         return
     }
     returnCover()
 }
 
-function disableEvent() {
+function disableEvent(cardTimes) {
     cardTimes += 1
     if (cardTimes == 8) {
         cardTimes = 0
@@ -45,7 +42,7 @@ function disableEvent() {
         modalBtn_Again_Text()
         modalShow.style.display = 'block'
         modalShow.style.transition = '1s ease'
-        shows = setTimeout(show, 100)
+        setTimeout(show, 100)
     }
     cardFrt.removeEventListener('click', cardChage)
     cardScd.removeEventListener('click', cardChage)
@@ -67,25 +64,25 @@ function reset() {
 }
 
 function resetAll() {
-    cards.forEach(function(card) {
-        var resetBoard = Math.floor(Math.random() * 16)
-        card.style.order = resetBoard
-    })
-    cards.forEach(function(carder) {
+    cards.forEach(card=>card.style.order = Math.floor(Math.random() * 16))
+    cards.forEach(carder=> {
         carder.classList.remove('card-turn')
         carder.addEventListener('click', cardChage)
     })
-
 }
 
 function modalHeader_Text() {
-    var modalText_header = document.querySelector('.header-text')
-    if (modalText_header.textContent == '') {
-        modalText_header.innerHTML = '遊戲說明'
-    } else if (modalText_header.textContent == '遊戲說明') {
-        modalText_header.innerHTML = '您要再來一局嗎'
-    } else {
-        modalText_header.innerHTML = '您要再來一局嗎'
+    const modalText_header = document.querySelector('.header-text')
+    switch (modalText_header.textContent) {
+        case '':
+            modalText_header.textContent = '遊戲說明'
+        break;
+        case '遊戲說明':
+            modalText_header.textContent = '您要再來一局嗎'
+        break;
+        default:
+            modalText_header.textContent = '您要再來一局嗎'
+        break;
     }
 }
 
@@ -101,14 +98,11 @@ function modalContent_Text() {
 }
 
 function modalBtn_Cancel_TextClose() {
-    var cancelText = document.querySelector('.cancel-text')
-    if (cancel.classList == 'cancel') {
-        cancel.classList.remove('cancel')
-    }
+    cancel.classList == 'cancel'?cancel.classList.remove('cancel'):null
 }
 
 function modalBtn_Cancel_TextOpen() {
-    var cancelText = document.querySelector('.cancel-text')
+    const cancelText = document.querySelector('.cancel-text')
     if (cancelText.textContent == '' && cancel.classList == '') {
         cancel.classList.add('cancel')
         cancelText.innerHTML = '取消'
@@ -132,46 +126,30 @@ function show() {
 }
 // 設定淡出延遲
 function close() {
-    modalShow.style.display = 'none'
+    modalShow.classList.remove('modal-toggle')
+    modalContentShow.classList.remove('modal-body-toggle')
+    setTimeout(modalShow.style.display = 'none', 750)  
 }
 
-cards.forEach(function(card) {
-    card.addEventListener('click', cardChage)
-})
-window.addEventListener('load', function() {
-        modalShow.style.display = 'block'
-        modalShow.style.transition = '1s ease'
-        shows = setTimeout(show, 100)
-        modalHeader_Text()
-        modalContent_Text()
-        modalBtn_Again_Text()
-        modalBtn_Cancel_TextClose()
-    })
+cards.forEach(card=>card.addEventListener('click', cardChage))
+(function start() {
+    modalShow.style.display = 'block'
+    modalShow.style.transition = '1s ease'
+    setTimeout(show, 100)
+    modalHeader_Text()
+    modalContent_Text()
+    modalBtn_Again_Text()
+    modalBtn_Cancel_TextClose()
+}());
     // 監聽點擊彈出視窗本體內部架構 X 按鈕
-btnClose.addEventListener('click', function() {
-    modalShow.classList.remove('modal-toggle')
-    modalContentShow.classList.remove('modal-body-toggle')
-    shows = setTimeout(close, 750)
-})
+btnClose.addEventListener('click', close())
 
 // 監聽點擊彈出視窗本體內部架構 Cancel 按鈕
-again.addEventListener('click', function() {
-    modalShow.classList.remove('modal-toggle')
-    modalContentShow.classList.remove('modal-body-toggle')
-    shows = setTimeout(close, 750)
+again.addEventListener('click',()=> {
+    close()
     resetAll()
 })
-cancel.addEventListener('click', function() {
-    modalShow.classList.remove('modal-toggle')
-    modalContentShow.classList.remove('modal-body-toggle')
-    shows = setTimeout(close, 750)
-})
+cancel.addEventListener('click', close())
 
 // 監聽點擊彈出視窗本體架構外部網頁空白區域 window (整個網頁當前視窗)，當點擊外部區域時一樣可關閉彈出視窗
-window.addEventListener('click', function(e) {
-    if (e.target == modalShow) {
-        modalShow.classList.remove('modal-toggle')
-        modalContentShow.classList.remove('modal-body-toggle')
-        shows = setTimeout(close, 750)
-    }
-})
+window.addEventListener('click',e=>e.target == modalShow?close():null)
