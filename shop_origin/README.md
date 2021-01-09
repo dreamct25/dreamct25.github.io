@@ -1,4 +1,5 @@
-# 電商實作專案
+# 電商實作專
+---
 ## 部分資料匣內容
 server ( 存放 node js server 各項設定檔與各支 Sql 串接的路由的引用模組設定 )
 > `serverConfig.js` ( node.js server 主要引用與模組設定邏輯，為主要檔案 )
