@@ -1,0 +1,701 @@
+html {
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    -webkit-box-shadow: inset 0 0 2000px 2000px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 2000px 2000px rgba(0, 0, 0, 0.3);
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+}
+
+html body {
+    background-color: transparent !important;
+}
+
+html body .header {
+    color: white;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-style: italic;
+    text-shadow: 0 0 0 transparent;
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+    -webkit-transform: translate(2%, 30%);
+    -ms-transform: translate(2%, 30%);
+    transform: translate(2%, 30%);
+}
+
+html body .header-toggle {
+    top: -100%;
+}
+
+html body .header-moring {
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+html body .header-night {
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.7);
+}
+
+@media screen and (max-width: 414px) {
+    html body .header {
+        -webkit-transform: translate(23%, 30%);
+        -ms-transform: translate(23%, 30%);
+        transform: translate(23%, 30%);
+    }
+}
+
+html body .main {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin-top: 110px;
+}
+
+html body .main .row {
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+}
+
+html body .main .row .background-controller-outer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+}
+
+html body .main .row .background-controller-outer .background-controller {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 110px;
+    height: 25px;
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    margin-bottom: 10px;
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+    z-index: 3;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+html body .main .row .background-controller-outer .background-controller .background-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    font-style: italic;
+    z-index: 1;
+}
+
+html body .main .row .background-controller-outer .background-controller .circle {
+    width: 25px;
+    height: 25px;
+    background-color: white;
+    border-radius: 50%;
+    -webkit-transform: translateX(0px);
+    -ms-transform: translateX(0px);
+    transform: translateX(0px);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.7);
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+    z-index: 2;
+}
+
+html body .main .row .background-controller-outer .background-controller .circle-toggle {
+    -webkit-transform: translateX(85px);
+    -ms-transform: translateX(85px);
+    transform: translateX(85px);
+}
+
+html body .main .row .background-controller-outer .background-controller-toggle {
+    background-color: rgba(0, 140, 255, 0.7);
+}
+
+html body .main .row .date-group {
+    color: white;
+    font-size: 18px;
+    font-style: italic;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7);
+}
+
+html body .main .row .date-group span {
+    display: block;
+    text-align: right;
+}
+
+html body .main .row .option-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    position: relative;
+    padding: 25% 0;
+    margin-top: 0;
+    z-index: 1;
+    opacity: 1;
+    overflow: hidden;
+    -webkit-transition: .1s ease;
+    -o-transition: .1s ease;
+    transition: .1s ease;
+}
+
+html body .main .row .option-group .select {
+    margin-bottom: 8px;
+    padding: 3px 0;
+    border-radius: 20px;
+    font-size: 18px;
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+    -ms-transform: translateX(0px);
+    transform: translateX(0px);
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+    outline: none;
+    border: none;
+}
+
+html body .main .row .option-group .select-toggle {
+    opacity: 0;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+html body .main .row .option-group .other-block {
+    margin-top: 8px;
+    font-size: 18px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 20px;
+    padding: 3px 20px;
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    opacity: 1;
+    -webkit-transform: translateX(0px);
+    -ms-transform: translateX(0px);
+    transform: translateX(0px);
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+}
+
+html body .main .row .option-group .other-block-toggle {
+    opacity: 0;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+}
+
+html body .main .row .option-group-toggle {
+    margin-top: -5%;
+    opacity: 0;
+    padding: 0;
+    z-index: -1;
+}
+
+@media screen and (max-width: 414px) {
+    html body .main .row .option-group {
+        padding: 50% 0;
+    }
+    html body .main .row .option-group-toggle {
+        margin-top: -15%;
+        padding: 0;
+    }
+}
+
+html body .main .weather-outer-frame {
+    overflow: hidden;
+}
+
+html body .main .weather-outer-frame .weathers-outer {
+    overflow: hidden;
+    border-radius: 8px;
+    margin-top: -100%;
+    opacity: 0;
+    -webkit-transition: 1s ease;
+    -o-transition: 1s ease;
+    transition: 1s ease;
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session {
+    position: relative;
+    color: white;
+    margin-top: -5px;
+    width: 100%;
+    text-align: center;
+    padding: 15px 0 10px 0;
+    font-size: 20px;
+    -webkit-box-shadow: inset 0 -2px 0 0 rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 -2px 0 0 rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session:nth-of-type(1) {
+    border-top-left-radius: 8px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session:nth-of-type(3) {
+    border-top-right-radius: 8px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session:after {
+    content: "";
+    width: 0;
+    height: 3px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 95%;
+    left: 50%;
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session:hover::after {
+    background-color: white;
+    left: 0%;
+    width: 100%;
+    -webkit-box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session-active {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: inset 0 5px 3px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 5px 3px 2px rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .btn-session-group .btn-session-active:hover::after {
+    background-color: rgba(255, 255, 255, 0);
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    left: 50%;
+    width: 0;
+    z-index: -1;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers {
+    color: white;
+    text-align: center;
+    margin-bottom: -8px;
+    -webkit-box-shadow: inset 0 -8px 3px 2px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 -8px 3px 2px rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 0 0 8px 8px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers span {
+    display: block;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title-switch {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 20px 0 20px 0;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title-switch .city-name-outer {
+    overflow: hidden;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title-switch .city-name-outer .city-name {
+    font-size: 35px;
+    -webkit-transform: translateY(50px);
+    -ms-transform: translateY(50px);
+    transform: translateY(50px);
+    -webkit-animation: showText 1s ease forwards;
+    animation: showText 1s ease forwards;
+    opacity: 0;
+}
+
+@-webkit-keyframes showText {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(50px);
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+    }
+}
+
+@keyframes showText {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(50px);
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0px);
+        transform: translateY(0px);
+    }
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title-switch .arrow-right,
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title-switch .arrow-left {
+    margin: 0 15px 0 15px;
+    padding: 2px 7px 2px 7px;
+    font-size: 25px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .city-name-title {
+    text-align: center;
+    font-size: 35px;
+    padding: 20px 0 20px 0;
+    -webkit-box-shadow: inset 0 -1px 0px 0 rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 -1px 0px 0 rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .temp-desc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 20px 0 20px 0;
+    background-color: rgba(40, 40, 40, 0.7);
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .temp-desc .temp-desc-title {
+    font-size: 20px;
+    padding-bottom: 15px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .temp-desc span {
+    padding: 8px 0 8px 0;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 20px 0 12px 0;
+    background-color: rgba(35, 35, 35, 0.7);
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc .rain-desc-title {
+    font-size: 20px;
+    padding-bottom: 15px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc .rain-sign {
+    font-size: 18px;
+    padding-top: 5px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc .rain-icon {
+    font-size: 35px;
+    padding: 5px 0 5px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc .rain-percent {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .rain-desc .rain-percent span {
+    padding: 5px 15px 5px 15px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .other-desc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 20px 0 20px 0;
+    background-color: rgba(30, 30, 30, 0.7);
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .other-desc .other-desc-title {
+    font-size: 20px;
+    padding-bottom: 15px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .other-desc span {
+    padding: 8px 0 8px 0;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding: 20px 0 35px 0;
+    background-color: rgba(25, 25, 25, 0.7);
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.8);
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-title {
+    font-size: 20px;
+    padding-bottom: 20px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-moring,
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-night {
+    padding: 0px 40px 0 40px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-moring span:nth-of-type(1),
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-night span:nth-of-type(1) {
+    font-size: 18px;
+    padding: 10px 0 10px 0;
+}
+
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-moring span:nth-of-type(2),
+html body .main .weather-outer-frame .weathers-outer .weathers .weather-desc .weather-desc-night span:nth-of-type(2) {
+    text-align: justify;
+}
+
+html body .main .weather-outer-frame .weathers-outer .table {
+    color: white;
+    margin-bottom: 0;
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr {
+    -webkit-box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr th {
+    border-top: none;
+    border-bottom: 0;
+    color: black;
+    background-color: rgba(255, 255, 255, 0.8);
+    -webkit-box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+    box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr th:nth-of-type(1) {
+    background-color: transparent;
+    -webkit-box-shadow: inset 0 0 0 0 rgba(0, 0, 0, 0.7);
+    box-shadow: inset 0 0 0 0 rgba(0, 0, 0, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr td {
+    border-top: none;
+    -webkit-box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr td .week-desc {
+    line-height: 2em;
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(1) {
+    vertical-align: middle;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: black;
+    -webkit-box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+    box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(3),
+html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(5),
+html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(7) {
+    background-color: rgba(60, 60, 60, 0.7);
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(1) td {
+    padding: 20px 12px 25px 12px;
+}
+
+html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td {
+    padding: 20px 12px 35px 12px;
+}
+
+@media screen and (max-width: 768px) {
+    html body .main .weather-outer-frame .weathers-outer .table {
+        color: white;
+        margin-bottom: 0;
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr {
+        -webkit-box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr th {
+        border-top: none;
+        border-bottom: 0;
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr th:nth-of-type(2),
+    html body .main .weather-outer-frame .weathers-outer .table tr th:nth-of-type(3) {
+        color: black;
+        background-color: rgba(255, 255, 255, 0.8);
+        -webkit-box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+        box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr td {
+        border-top: none;
+        -webkit-box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+        box-shadow: inset 0 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr td .week-desc {
+        line-height: 2em;
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(1) {
+        vertical-align: middle;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: black;
+        -webkit-box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+        box-shadow: inset 0 0 2px 0 rgba(0, 0, 0, 0.7);
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(3),
+    html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(5),
+    html body .main .weather-outer-frame .weathers-outer .table tr td:nth-of-type(7) {
+        background-color: rgba(60, 60, 60, 0.7);
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(1) td {
+        padding: 20px 12px 25px 12px;
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td {
+        padding: 20px 12px 35px 12px;
+    }
+}
+
+html body .main .weather-outer-frame .weathers-outer-active {
+    margin-top: 0;
+    opacity: 1;
+}
+
+html body .footer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    padding: 20px 0 20px 0;
+}
+
+html body .footer i {
+    margin: 0 5px 0 5px;
+}
+
+.moring {
+    background-image: url("https://unsplash.com/photos/FBLGvhgVYQM/download?force=true&w=1920");
+}
+
+.night {
+    background-image: url("https://unsplash.com/photos/NORa8-4ohA0/download?force=true&w=1920");
+}
