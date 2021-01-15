@@ -1,108 +1,63 @@
-let Data;
-let DataShow;
-let theSameData;
-const topBlock = document.querySelector('.block')
-const ndTitle = document.querySelector('.ct-title')
-const main = document.querySelector('.card-show')
-const paginations = document.querySelector('.pagination')
-// ↓ 使用 fetch 抓取 Open data 資料 start ↓
+let Datas;
+let DatasTemp = []
+const querySelectorFn = classText => document.querySelector(classText)
+const querySelectorAllFn = classText => document.querySelectorAll(classText)
+const main = querySelectorFn('.card-show')
+const paginations = querySelectorFn('.pagination')
 
 fetch('https://raw.githubusercontent.com/hexschool/KCGTravel/master/datastore_search.json').then(jsonTrans => jsonTrans.json()).then(res => {
-    Data = res.result.records
-    setTimeout(() => pagination(Data, 1), 6000)
-    listData();
+    let Data = res.result.records
+    if (res.success == true) {
+        setTimeout(() => {
+            pagination(Data, 1)
+            listData(Data);
+        }, 5000)
+    }
 }).catch(err => console.log(err))
 
-// ↑ 使用 fetch 抓取 Open data 資料 end ↑
-
-// ↓ Select 選單連動 jsion 資料顯示於選單中 start ↓
-function listData() {
-    let Datas = [];
+function listData(Data) {
     let option = '';
-    Data.forEach(key =>
-        Datas.push(key.Zone)
-    );
-    theSameData = Array.from(new Set(Datas))
+    let ZoneArrayTemp = []
+    Datas = Array.from(new Set(Data))
     option = `<option value="" selected>--請選擇行政區--</option>`;
-    theSameData.forEach(key => option += `<option value="${key}">${key}</option>`)
-    topBlock.innerHTML = option
-}
-// ↑ Select 選單連動 jsion 資料顯示於選單中 end ↑ 
-
-// ↓ Select 選單連動 jsion 資料顯示標題文字與資料顯示於網頁上 start ↓
-function contentShow() {
-    let mnCard = '';
-    theSameData.forEach(key =>
-        this.value == key ? ndTitle.textContent = key : null
-    )
-    Data.forEach(key => {
-        if (this.value == key.Zone) {
-            mnCard += `
-            <div class="col-md-6 mb-4 px-2 display-show">
-                <div class="card-act">
-                    <div class="image-outer">
-                        <h5 class="font-fix-1">${key.Name}</h5>
-                        <h5 class="font-fix-2">${key.Zone}</h5>
-                        <div class="image" style="background-image:url(${key.Picture1});"></div>
-                    </div>
-                    <div class="list pt-3 px-2">
-                        <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${key.Opentime}</p>
-                        <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${key.Add}</p>
-                        <div class="d-flex justify-content-between">
-                            <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${key.Tel}</p>
-                            <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${key.Ticketinfo}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>`
-            paginations.style.display = 'none'
-        }
+    Datas.forEach(key => {
+        if (ZoneArrayTemp.indexOf(key.Zone) == -1) ZoneArrayTemp.push(key.Zone)
     })
-    main.innerHTML = mnCard
+    ZoneArrayTemp.forEach(key => option += `<option value="${key}">${key}</option>`)
+    querySelectorFn('.block').innerHTML = option
 }
-// ↑ Select 選單連動 jsion 資料顯示標題文字與資料顯示於網頁上 end ↑ 
 
-// ↓ 頂 bar 選擇按鈕 start ↓
-function topBarContentShow() {
-    let mnCard = '';
-    Data.forEach(key => key.Zone == this.textContent ? mnCard += `
-    <div class="col-md-6 mb-4 px-2 display-show">
-        <div class="card-act">
-            <div class="image-outer">
-                <h5 class="font-fix-1">${key.Name}</h5>
-                <h5 class="font-fix-2">${key.Zone}</h5>
-                <div class="image" style="background-image:url(${key.Picture1});"></div>
-            </div>
-            <div class="list pt-3 px-2">
-                <p><font color="#FF1493"><i class="fas fa-clock mr-1"></i></font>${key.Opentime}</p>
-                <p><font color="#FF0000"><i class="fas fa-map-marker-alt mr-1"></i></font>${key.Add}</p>
-                <div class="d-flex justify-content-between">
-                    <p><font color="#00BBFF"><i class="fas fa-mobile-alt mr-1"></i></font>${key.Tel}</p>
-                    <p><font color="#F5D005"><i class="fas fa-tag mr-1"></i></font>${key.Ticketinfo}</p>
-                </div>
-            </div>
-        </div>
-    </div>` : null)
-    theSameData.forEach(key => key == this.textContent ? ndTitle.textContent = key : null)
-    main.innerHTML = mnCard;
-    paginations.style.display = 'none'
+function contentShow() {
+    querySelectorAllFn(".box").forEach(key => key.classList.remove("box-active"))
+    DatasTemp = []
+    DatasTemp = Datas.filter(key => key.Zone == this.value)
+    pagination(DatasTemp, 1)
 }
-// ↑ 頂 bar 選擇按鈕 end ↑
+
+function topBarContentShow() {
+    DatasTemp = []
+    DatasTemp = Datas.filter(key => key.Zone == this.textContent)
+    pagination(DatasTemp, 1)
+    querySelectorAllFn(".box").forEach(key => key.dataset.block == this.dataset.block ? key.classList.add("box-active") : key.classList.remove("box-active"))
+}
+
 function changePage(element) {
     element.preventDefault();
-    if (element.target.nodeName !== 'A') return
+    if (element.target.className.split(" ").indexOf("pages") == -1) return
     const pageSet = element.target.dataset.pages
-    pagination(Data, pageSet)
+    DatasTemp.length == 0 ? pagination(Datas, pageSet) : pagination(DatasTemp, pageSet)
 }
 
 function pagination(Data, nowPage) {
-    let onPage
-    window.innerWidth == 414 ? onPage = 10 : onPage = 8
     const newArry = []
     const dataLength = Data.length
-    const pageTotal = Math.ceil(dataLength / onPage)
-    let currentPage = nowPage
-    currentPage > pageTotal ? currentPage = pageTotal : null
+    let onPage = window.innerWidth <= 768 ? 6 : 8
+    let pageTotal = Math.ceil(dataLength / onPage)
+    let currentPage = nowPage == undefined ? 1 : nowPage
+    let beforePage = currentPage > 1
+    let afterPage = currentPage < dataLength
+    if (currentPage == pageTotal) afterPage = false
+    if (currentPage > pageTotal) currentPage = pageTotal
     const minNum = (currentPage * onPage) - onPage + 1
     const maxNum = (currentPage * onPage)
     Data.forEach((key, index) => {
@@ -112,8 +67,8 @@ function pagination(Data, nowPage) {
     const page = {
         pageTotal,
         currentPage,
-        beforPage: currentPage > 1,
-        afterPage: currentPage < pageTotal
+        beforPage: beforePage,
+        afterPage: afterPage
     }
     show(newArry)
     paginationBtn(page)
@@ -121,10 +76,10 @@ function pagination(Data, nowPage) {
 
 function show(newArry) {
     let mnCard = '';
-    ndTitle.textContent = '全部'
-    main.innerHTML = '';
-    newArry.forEach(key => mnCard += `
-    <div class="col-md-6 mb-4 px-2 display-show">
+    newArry.forEach(key => {
+        DatasTemp.length == 0 ? querySelectorFn('.ct-title').textContent = '所有市區景點' : querySelectorFn('.ct-title').textContent = key.Zone;
+        mnCard += `
+    <div class="col-md-6">
         <div class="card-act">
             <div class="image-outer">
                 <h5 class="font-fix-1">${key.Name}</h5>
@@ -140,41 +95,43 @@ function show(newArry) {
                 </div>
             </div>
         </div>
-    </div>`)
+    </div>`
+    })
     main.innerHTML = mnCard;
-    document.querySelector('.dashed').classList.add('dashed-in')
-    document.querySelector('.arrow').classList.add('arrow-in')
+    querySelectorFn('.dashed').classList.add('dashed-in')
+    querySelectorFn('.arrow').classList.add('arrow-in')
 }
 
 function paginationBtn(page) {
     let str = ''
     const allPages = page.pageTotal
-    Number(page.beforPage) ? str += `<li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage) - 1}"><i class="fal fa-angle-double-left"></i></a></li>` : str += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fal fa-angle-double-left"></i></a></li>`
+    Number(page.beforPage) ? str += `<li class="page-item"><a class="page-link pages" href="#" data-pages="${Number(page.currentPage) - 1}"><i class="fal fa-angle-double-left pages" data-pages="${Number(page.currentPage) - 1}"></i></a></li>` : str += `<li class="page-item disabled"><a class="page-link" href="#"><i class="fal fa-angle-double-left"></i></a></li>`
     for (let p = 1; p <= allPages; p++) {
-        Number(page.currentPage) === p ? str += `<li class="page-item active"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>` : str += `<li class="page-item"><a class="page-link" href="#" data-pages="${p}">${p}</a></li>`
+        Number(page.currentPage) === p ? str += `<li class="page-item active"><a class="page-link pages" href="#" data-pages="${p}">${p}</a></li>` : str += `<li class="page-item"><a class="page-link pages" href="#" data-pages="${p}">${p}</a></li>`
     }
-    Number(page.afterPage) ? str += ` <li class="page-item"><a class="page-link" href="#" data-pages="${Number(page.currentPage) + 1}"><i class="fal fa-angle-double-right"></i></a></li>` : str += `<li class="page-item disabled"><span class="page-link"><i class="fal fa-angle-double-right"></i></span></li>`
+    Number(page.afterPage) ? str += ` <li class="page-item"><a class="page-link pages" href="#" data-pages="${Number(page.currentPage) + 1}"><i class="fal fa-angle-double-right pages" data-pages="${Number(page.currentPage) + 1}"></i></a></li>` : str += `<li class="page-item disabled"><span class="page-link"><i class="fal fa-angle-double-right"></i></span></li>`
     paginations.innerHTML = str
 }
 
 function changeLine() {
     this.classList.toggle('arrow-act')
-    document.querySelector('.dashed').classList.toggle('dashed-sm')
-    document.querySelector('.display').classList.toggle('display-act')
+    querySelectorFn('.dashed').classList.toggle('dashed-sm')
+    querySelectorFn('.display').classList.toggle('display-act')
 }
 
 function showBackBtn() {
-    this.scrollY > 100 ? document.querySelector('.top').classList.add('top-show') : document.querySelector('.top').classList.remove('top-show')
+    this.scrollY > 100 ? querySelectorFn('.top').classList.add('top-show') : querySelectorFn('.top').classList.remove('top-show')
 }
 
 paginations.addEventListener('click', changePage)
-topBlock.addEventListener('change', contentShow)
-document.querySelectorAll('.box').forEach(key => key.addEventListener('click', topBarContentShow))
-document.querySelector('.arrow').addEventListener('click', changeLine)
+querySelectorFn('.block').addEventListener('change', contentShow)
+querySelectorFn('.arrow').addEventListener('click', changeLine)
 window.addEventListener('scroll', showBackBtn)
-window.addEventListener('load', () => {
-    document.querySelector('.title1').classList.add('fadeIn-rt')
-    document.querySelector('.title2').classList.add('fadeIn-lt')
+querySelectorFn('.title1').classList.add('fadeIn-rt')
+querySelectorFn('.title2').classList.add('fadeIn-lt')
+querySelectorAllFn('.box').forEach((key, index) => {
+    key.addEventListener('click', topBarContentShow)
+    key.setAttribute("data-block", index)
 })
 
 $(document).ready(() => {

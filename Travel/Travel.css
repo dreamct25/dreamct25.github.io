@@ -121,32 +121,9 @@ body {
   transition: 1s ease;
   border-radius: 5px;
   display: block;
-}
-
-.box:hover {
-  color: white;
-  text-decoration: none;
-  animation-name: block;
-  animation-duration: 1s;
-  animation-timing-function: ease;
-  animation-iteration-count: infinite;
-}
-
-@keyframes block {
-  0% {
-    transform: translateY(0px);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  }
-
-  50% {
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.7);
-  }
-
-  100% {
-    transform: translateY(0px);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  }
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .box1 {
@@ -163,6 +140,12 @@ body {
 
 .box4 {
   background: rgba(0, 102, 255, 0.65);
+}
+
+.box-active {
+  color: black;
+  background-color: white;
+  box-shadow: inset 0 0 2px 1px rgba(0, 0, 0, 0.7);
 }
 
 .main .dashed {
@@ -223,13 +206,8 @@ body {
   transition: 1s ease;
 }
 
-.main .content {
-  margin-top: 50px;
-}
-
 .main .content .ct-title {
   text-align: center;
-  margin-top: -55px;
   margin-bottom: 40px;
 }
 
@@ -317,12 +295,11 @@ body {
 }
 
 .main .content .display-show .card-act {
-  height: 100%;
   border-radius: 10px;
-  transition: 1s ease;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
-  margin-bottom: 1px;
-  transition: 1s ease;
+  margin: 8px;
+  height: 95%;
+  overflow: hidden;
 }
 
 .main .content .display-show .card-act .image-outer {
@@ -336,16 +313,20 @@ body {
   bottom: -3px;
   z-index: 10;
   font-size: 20px;
+  font-weight: bold;
   color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
 }
 
 .main .content .display-show .card-act .image-outer .font-fix-2 {
   position: absolute;
   right: 20px;
-  bottom: -7px;
+  bottom: -5px;
   z-index: 10;
   font-size: 16px;
+  font-weight: bold;
   color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
 }
 
 .main .content .display-show .card-act .image-outer .image {
@@ -357,24 +338,13 @@ body {
   background-position: center center;
   background-size: cover;
   transition: 1s ease;
+  box-shadow: inset 0 0 500px 500px rgba(0, 0, 0, 0.3);
 }
 
 .main .content .display-show .card-act .image-outer .image:hover {
   border-radius: 25px 25px 0 0;
-  transform: scale(1.05);
+  transform: scale(1.5);
   transition: 8s ease;
-}
-
-.main .content .card-act:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-  transition: 1s ease;
-}
-
-.main .content .list {
-  border-top: 1px solid black;
-  height: 40%;
-  list-style-type: none;
 }
 
 @keyframes displayShow {
@@ -387,6 +357,10 @@ body {
     opacity: 1;
     transform: translateY(0px);
   }
+}
+
+.main nav ul {
+  margin: 20px 0;
 }
 
 @media screen and (max-width: 414px) {
