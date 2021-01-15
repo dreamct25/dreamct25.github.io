@@ -73,6 +73,44 @@ html body .main .row {
     justify-content: flex-end;
 }
 
+html body .main .row .go-back-options-outer {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    height: 100%;
+    padding-top: 20px;
+    overflow: hidden;
+}
+
+html body .main .row .go-back-options-outer .go-back-options {
+    color: white;
+    text-align: center;
+    width: 100%;
+    padding: 8px 0 8px 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px 30px 0 8px;
+    -webkit-box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, 0.7);
+    -webkit-transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    transform: translateX(-100%);
+    -webkit-transition: .7s ease;
+    -o-transition: .7s ease;
+    transition: .7s ease;
+}
+
+html body .main .row .go-back-options-outer .go-back-options-toggle {
+    -webkit-transform: translateX(0);
+    -ms-transform: translateX(0);
+    transform: translateX(0);
+}
+
 html body .main .row .background-controller-outer {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -172,8 +210,8 @@ html body .main .row .option-group {
     -ms-flex-direction: column;
     flex-direction: column;
     position: relative;
-    padding: 25% 0;
-    margin-top: 0;
+    padding: 50% 0 63% 0;
+    margin-top: -15%;
     z-index: 1;
     opacity: 1;
     overflow: hidden;
@@ -232,7 +270,6 @@ html body .main .row .option-group .other-block-toggle {
 }
 
 html body .main .row .option-group-toggle {
-    margin-top: -5%;
     opacity: 0;
     padding: 0;
     z-index: -1;
@@ -240,10 +277,9 @@ html body .main .row .option-group-toggle {
 
 @media screen and (max-width: 414px) {
     html body .main .row .option-group {
-        padding: 50% 0;
+        padding: 50% 0 63% 0;
     }
     html body .main .row .option-group-toggle {
-        margin-top: -15%;
         padding: 0;
     }
 }
@@ -661,10 +697,16 @@ html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td
         background-color: rgba(60, 60, 60, 0.7);
     }
     html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(1) td {
-        padding: 20px 12px 25px 12px;
+        padding: 12px;
     }
     html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td {
-        padding: 20px 12px 35px 12px;
+        padding: 12px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    html body .main .weather-outer-frame .weathers-outer {
+        margin-top: -2000px;
     }
 }
 

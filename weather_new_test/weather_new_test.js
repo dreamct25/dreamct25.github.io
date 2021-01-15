@@ -196,8 +196,8 @@ function today(renderWeather, order) {
             wetEqualPerc: addPercent(key.weatherElement[2].time[0].elementValue[0].value),
             weatherSign: key.weatherElement[6].time[0].elementValue[0].value,
             weatherSignState: transWeatherIcon(key.weatherElement[6].time[0].elementValue[1].value),
-            weatherNightDesc: key.weatherElement[10].time[0].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[1].elementValue[0].value
+            weatherNightDesc: key.weatherElement[10].time[1].elementValue[0].value,
+            weatherMoringDesc: key.weatherElement[10].time[0].elementValue[0].value
 
         })
     })
@@ -208,22 +208,22 @@ function tomorrow(renderWeather, order) {
     filterWeatherState.forEach(key => {
         renderWeather.push({
             cityName: key.locationName,
-            minTemp: addTempSign(key.weatherElement[8].time[1].elementValue[0].value),
-            maxTemp: addTempSign(key.weatherElement[12].time[1].elementValue[0].value),
-            minFeelTemp: addTempSign(key.weatherElement[11].time[1].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.weatherElement[5].time[1].elementValue[0].value),
-            equalTemp: addTempSign(key.weatherElement[1].time[1].elementValue[0].value),
-            comferMinPerc: addPercent(key.weatherElement[3].time[1].elementValue[0].value),
-            comferMaxPerc: addPercent(key.weatherElement[7].time[1].elementValue[0].value),
+            minTemp: addTempSign(key.weatherElement[8].time[3].elementValue[0].value),
+            maxTemp: addTempSign(key.weatherElement[12].time[2].elementValue[0].value),
+            minFeelTemp: addTempSign(key.weatherElement[11].time[2].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.weatherElement[5].time[2].elementValue[0].value),
+            equalTemp: addTempSign(key.weatherElement[1].time[2].elementValue[0].value),
+            comferMinPerc: addPercent(key.weatherElement[3].time[2].elementValue[0].value),
+            comferMaxPerc: addPercent(key.weatherElement[7].time[2].elementValue[0].value),
             rainNightPerc: addPercent(key.weatherElement[0].time[2].elementValue[0].value),
-            rainMoringPerc: addPercent(key.weatherElement[0].time[1].elementValue[0].value),
-            uivLevel: key.weatherElement[9].time[0].elementValue[0].value,
-            uivDesc: key.weatherElement[9].time[0].elementValue[1].value,
-            wetEqualPerc: addPercent(key.weatherElement[2].time[1].elementValue[0].value),
+            rainMoringPerc: addPercent(key.weatherElement[0].time[3].elementValue[0].value),
+            uivLevel: key.weatherElement[9].time[1].elementValue[0].value,
+            uivDesc: key.weatherElement[9].time[1].elementValue[1].value,
+            wetEqualPerc: addPercent(key.weatherElement[2].time[2].elementValue[0].value),
             weatherSign: key.weatherElement[6].time[1].elementValue[0].value,
             weatherSignState: transWeatherIcon(key.weatherElement[6].time[1].elementValue[1].value),
-            weatherNightDesc: key.weatherElement[10].time[2].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[1].elementValue[0].value
+            weatherNightDesc: key.weatherElement[10].time[3].elementValue[0].value,
+            weatherMoringDesc: key.weatherElement[10].time[2].elementValue[0].value
         })
     })
     renderView(renderWeather, order)
@@ -582,6 +582,7 @@ function renderView(renderWeather, order) {
     let text = ""
     order == 2 ? text = renderViewWeek(renderWeather,text) : text = renderViewWithoutWeek(renderWeather,order,text)
     querySelectorFactory(".weathers").innerHTML = text
+    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
 }
 
 function renderBlockWithoutRwd(renderWeather,text){
@@ -675,6 +676,18 @@ function renderBlockView(renderWeather,text){
     let newText = text
     window.innerWidth <= 768 ? newText = renderBlockOnRwd(renderWeather,newText):newText = renderBlockWithoutRwd(renderWeather,newText)
     querySelectorFactory(".weathers").innerHTML = newText
+    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
+}
+
+function returnOptions(){
+    this.classList.remove("go-back-options-toggle")
+    querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
+    setTimeout(()=>querySelectorFactory(".weathers").textContent = "",1200) 
+    setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 1210)
+    setTimeout(()=>{
+        querySelectorFactory(".select").classList.toggle("select-toggle")
+        querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
+    },1310)
 }
 
 // 每秒刷新畫面時間文字
@@ -688,6 +701,8 @@ querySelectorFactory(".background-controller").addEventListener("click",backgrou
 querySelectorFactory(".select").addEventListener('change', selectCity)
 
 querySelectorFactory(".other-block").addEventListener("click",selectCity)
+
+querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
 // 監聽 top 按鈕，點擊時觸發 scrolls 函式
 // document.querySelector('.top').addEventListener('click', scrolls)
 
