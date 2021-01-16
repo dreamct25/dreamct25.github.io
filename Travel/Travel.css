@@ -300,6 +300,7 @@ body {
   margin: 8px;
   height: 95%;
   overflow: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
 .main .content .display-show .card-act .image-outer {
