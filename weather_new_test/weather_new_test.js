@@ -17,15 +17,14 @@ fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorizati
 function cityType(arry) {
     let arrySort = []
     let city;
-    city = `<option selected disabled>- - 請選擇欲查詢氣象縣市 - -</option>`
+    querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
     arrySort = arry.sort((a, b) => b.lon - a.lon)
     arrySort.forEach(key => {
         jsonData.push(key)
-        querySelectorFactory(".select").innerHTML = city += `<option value="${key.locationName}">${key.locationName}</option>`
+        querySelectorFactory(".select-city").innerHTML += `<span class="city-name" onclick="selectCityPart(this)">${key.locationName}</span>`
     });
     jsonData.forEach(key => key.locationName == '臺北市' ? console.log(key) : null)
 }
-
 
 // 設定點擊後慢速至頂內容
 function scrolls() {
@@ -91,7 +90,7 @@ function backgroundChange() {
 function switchTopBar() {
     let height = document.documentElement.scrollTop || document.body.scrollTop;
     height > 28 ? querySelectorFactory('.header').classList.add('header-toggle') : querySelectorFactory('.header').classList.remove('header-toggle')
-        // height > 200 ? document.querySelector('.top').classList.add('top-active') : document.querySelector('.top').classList.remove('top-active')
+    height > 200 ? querySelectorFactory('.go-top').classList.add('go-top-toggle') : querySelectorFactory('.go-top').classList.remove('go-top-toggle')
 }
 
 // 畫面時間內容設定
@@ -109,10 +108,17 @@ function time() {
     querySelectorFactory(".time").textContent = timeText
 }
 
-function selectCity() {
-    switch (this.className) {
-        case "select":
-            filterWeatherState = jsonData.filter(key => key.locationName == this.value)
+function selectCityPart(element) {
+    querySelectorFactory(".current-select").textContent = element.textContent
+    selectAnimate(element)
+    setTimeout(() => selectCity(element), 1400)
+}
+
+function selectCity(currentTaget) {
+    let currentTagetTemp = currentTaget.className == undefined ? currentTaget.target.className : currentTaget.className
+    switch (currentTagetTemp) {
+        case "city-name":
+            filterWeatherState = jsonData.filter(key => key.locationName == currentTaget.textContent)
             renderList(false)
             chooseDayBtn()
             break;
@@ -121,7 +127,7 @@ function selectCity() {
             chooseBlockBtn()
             break;
     }
-    querySelectorFactory(".select").classList.toggle("select-toggle")
+    querySelectorFactory(".select-group").classList.toggle("select-toggle")
     querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
     setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 701)
 
@@ -388,6 +394,33 @@ function chooseAnimate(array, element) {
     })
 }
 
+function selectAnimate(element) {
+    let currentElement = element.target == undefined ? querySelectorFactory(".current-select") : element.target
+    let haveClass = currentElement.className.split(" ").indexOf("current-select-toggle")
+    if (haveClass == -1) {
+        currentElement.classList.add("current-select-toggle")
+        setTimeout(() => {
+            querySelectorFactory(".select-city-outer").classList.add("select-city-toggle")
+            querySelectorFactory(".arrow").classList.add("arrow-toggle")
+        }, 700)
+    } else {
+        querySelectorFactory(".select-city-outer").classList.remove("select-city-toggle")
+        querySelectorFactory(".arrow").classList.remove("arrow-toggle")
+        setTimeout(() => currentElement.classList.remove("current-select-toggle"), 700)
+    }
+
+}
+
+function weatherOuterAnimate(state) {
+    if (state == true) {
+        querySelectorFactory(".weathers-outer").classList.add("weathers-outer-active")
+        querySelectorFactory(".weathers-outer").style.marginTop = "0px"
+    } else {
+        querySelectorFactory(".weathers-outer").style.marginTop = `-${querySelectorFactory(".weathers-outer").offsetHeight}px`
+        querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
+    }
+}
+
 function renderList(state) {
     let domObject = ""
     const btnItem = [{
@@ -418,7 +451,7 @@ function renderList(state) {
     btnItem.forEach(key => { if (key.matchSwitch == state) domObject += `<div class="btn-session">${key.btnText}</div>` })
     querySelectorFactory(".btn-session-group").innerHTML = domObject
     querySelectorAllFactory(".btn-session").forEach((key, index) => key.setAttribute("data-order", index))
-    setTimeout(() => querySelectorFactory(".weathers-outer").classList.add("weathers-outer-active"), 801)
+    setTimeout(() => weatherOuterAnimate(true), 1401)
     querySelectorAllFactory(".btn-session").forEach(key => {
         state == false ? key.addEventListener("click", chooseDayBtn) : key.addEventListener("click", chooseBlockBtn)
     })
@@ -681,13 +714,13 @@ function renderBlockView(renderWeather,text){
 
 function returnOptions(){
     this.classList.remove("go-back-options-toggle")
-    querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
+    weatherOuterAnimate(false)
     setTimeout(()=>querySelectorFactory(".weathers").textContent = "",1200) 
     setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 1210)
     setTimeout(()=>{
-        querySelectorFactory(".select").classList.toggle("select-toggle")
+        querySelectorFactory(".select-group").classList.toggle("select-toggle")
         querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
-    },1310)
+    },2010)
 }
 
 // 每秒刷新畫面時間文字
@@ -697,14 +730,16 @@ backgroundChange()
 
 querySelectorFactory(".background-controller").addEventListener("click",backgroundChange)
 
+querySelectorFactory(".weathers-outer").style.marginTop = `-${window.innerHeight}px`
+
 // 監聽選單內容，並觸發 selectCity 函式
-querySelectorFactory(".select").addEventListener('change', selectCity)
+querySelectorFactory(".current-select").addEventListener("click",selectAnimate)
 
 querySelectorFactory(".other-block").addEventListener("click",selectCity)
 
 querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
 // 監聽 top 按鈕，點擊時觸發 scrolls 函式
-// document.querySelector('.top').addEventListener('click', scrolls)
+querySelectorFactory('.go-top').addEventListener('click', scrolls)
 
 // 監聽頁面滾動，當滾動到指定位置時觸發函式內容
 window.addEventListener('scroll', switchTopBar)
