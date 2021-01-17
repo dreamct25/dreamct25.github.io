@@ -16,12 +16,11 @@ fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorizati
 // 將各縣市名稱導入選單中資料，並透過 allDatas 將陣列中的値存起來，以便外部使用
 function cityType(arry) {
     let arrySort = []
-    let city;
     querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
     arrySort = arry.sort((a, b) => b.lon - a.lon)
-    arrySort.forEach(key => {
+    arrySort.forEach((key, index) => {
         jsonData.push(key)
-        querySelectorFactory(".select-city").innerHTML += `<span class="city-name" onclick="selectCityPart(this)">${key.locationName}</span>`
+        querySelectorFactory(".select-city").innerHTML += `<span class="city-name" data-num="${index}" onclick="selectCityPart(this)">${key.locationName}</span>`
     });
     jsonData.forEach(key => key.locationName == '臺北市' ? console.log(key) : null)
 }
@@ -110,14 +109,15 @@ function time() {
 
 function selectCityPart(element) {
     querySelectorFactory(".current-select").textContent = element.textContent
-    selectAnimate(element)
-    setTimeout(() => selectCity(element), 1400)
+    querySelectorAllFactory(".city-name").forEach(key => key.dataset.num == element.dataset.num ? key.classList.add("selected") : key.classList.remove("selected"))
+    setTimeout(() => selectAnimate(element), 700)
+    setTimeout(() => selectCity(element), 2100)
 }
 
 function selectCity(currentTaget) {
     let currentTagetTemp = currentTaget.className == undefined ? currentTaget.target.className : currentTaget.className
     switch (currentTagetTemp) {
-        case "city-name":
+        case "city-name selected":
             filterWeatherState = jsonData.filter(key => key.locationName == currentTaget.textContent)
             renderList(false)
             chooseDayBtn()
@@ -729,12 +729,9 @@ setInterval(time, 1000)
 backgroundChange()
 
 querySelectorFactory(".background-controller").addEventListener("click",backgroundChange)
-
 querySelectorFactory(".weathers-outer").style.marginTop = `-${window.innerHeight}px`
-
 // 監聽選單內容，並觸發 selectCity 函式
 querySelectorFactory(".current-select").addEventListener("click",selectAnimate)
-
 querySelectorFactory(".other-block").addEventListener("click",selectCity)
 
 querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
