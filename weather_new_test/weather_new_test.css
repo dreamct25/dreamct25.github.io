@@ -225,6 +225,125 @@ html body .main .row .option-group {
     transition: .7s ease;
 }
 
+html body .main .row .option-group .loading-outer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -30%) scale(1);
+    -ms-transform: translate(-50%, -30%) scale(1);
+    transform: translate(-50%, -30%) scale(1);
+    width: 300px;
+    height: 300px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    opacity: 1;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-transition: 1s ease;
+    -o-transition: 1s ease;
+    transition: 1s ease;
+    z-index: 10;
+}
+
+html body .main .row .option-group .loading-outer .loading-text {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+html body .main .row .option-group .loading-outer .circle-I {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    border: 10px solid transparent;
+    border-top: 10px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    -webkit-animation: circleI 1.5s linear infinite;
+    animation: circleI 1.5s linear infinite;
+}
+
+html body .main .row .option-group .loading-outer .circle-II {
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+    border: 5px solid transparent;
+    border-bottom: 5px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    -webkit-animation: circleII 1.5s linear infinite;
+    animation: circleII 1.5s linear infinite;
+}
+
+@-webkit-keyframes circleI {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    100% {
+        -webkit-transform: rotate(315deg);
+        transform: rotate(315deg);
+    }
+}
+
+@keyframes circleI {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    100% {
+        -webkit-transform: rotate(315deg);
+        transform: rotate(315deg);
+    }
+}
+
+@-webkit-keyframes circleII {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    100% {
+        -webkit-transform: rotate(-405deg);
+        transform: rotate(-405deg);
+    }
+}
+
+@keyframes circleII {
+    0% {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+    }
+    100% {
+        -webkit-transform: rotate(-405deg);
+        transform: rotate(-405deg);
+    }
+}
+
+html body .main .row .option-group .loading-outer-hide {
+    z-index: 0;
+    opacity: 0;
+    -webkit-transform: translate(-50%, -30%) scale(1.5);
+    -ms-transform: translate(-50%, -30%) scale(1.5);
+    transform: translate(-50%, -30%) scale(1.5);
+}
+
+@media screen and (max-width: 414px) {
+    html body .main .row .option-group .loading-outer {
+        top: 40%;
+    }
+}
+
 html body .main .row .option-group .select-group {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -824,6 +943,9 @@ html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td
     }
     html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(2) td {
         padding: 12px;
+    }
+    html body .main .weather-outer-frame .weathers-outer .table tr:nth-of-type(7) td {
+        padding-bottom: 25px;
     }
 }
 

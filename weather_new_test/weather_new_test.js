@@ -4,16 +4,20 @@ let jsonData = [];
 let filterWeatherState = []
 let renderCount = 0
 
-// 抓取氣象站資料
-fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => res.json()).then(res => {
-    if (res.success == "true") {
-        let jsonDataTemp = []
-        res.records.locations[0].location.forEach(key => jsonDataTemp.push(key))
-        setTimeout(() => cityType(jsonDataTemp), 200)
-    }
+fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => {
+    loadingAnimate(true)
+    return res.json()
+}).then(res => {
+    setTimeout(() => {
+        if (res.success == "true") {
+            let jsonDataTemp = []
+            res.records.locations[0].location.forEach(key => jsonDataTemp.push(key))
+            loadingAnimate(false)
+            setTimeout(() => cityType(jsonDataTemp), 2000)
+        }
+    }, 3000)
 }).catch(err => console.log(err))
 
-// 將各縣市名稱導入選單中資料，並透過 allDatas 將陣列中的値存起來，以便外部使用
 function cityType(arry) {
     let arrySort = []
     querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
@@ -25,7 +29,6 @@ function cityType(arry) {
     jsonData.forEach(key => key.locationName == '臺北市' ? console.log(key) : null)
 }
 
-// 設定點擊後慢速至頂內容
 function scrolls() {
     let timer = null;
     cancelAnimationFrame(timer);
@@ -411,6 +414,20 @@ function selectAnimate(element) {
 
 }
 
+function loadingAnimate(state) {
+    if (state == true) {
+        querySelectorFactory(".loading-outer").classList.remove("loading-outer-hide")
+        querySelectorFactory(".loading-text").textContent = "Loading"
+    } else {
+        querySelectorFactory(".loading-text").textContent = "Completed"
+        setTimeout(() => querySelectorFactory(".loading-outer").classList.add("loading-outer-hide"), 1000)
+        setTimeout(() => {
+            querySelectorFactory(".select-group").classList.remove("select-toggle")
+            querySelectorFactory(".other-block").classList.remove("other-block-toggle")
+        }, 2010)
+    }
+}
+
 function weatherOuterAnimate(state) {
     if (state == true) {
         querySelectorFactory(".weathers-outer").classList.add("weathers-outer-active")
@@ -723,20 +740,20 @@ function returnOptions(){
     },2010)
 }
 
-// 每秒刷新畫面時間文字
 setInterval(time, 1000)
 
 backgroundChange()
 
 querySelectorFactory(".background-controller").addEventListener("click",backgroundChange)
+
 querySelectorFactory(".weathers-outer").style.marginTop = `-${window.innerHeight}px`
-// 監聽選單內容，並觸發 selectCity 函式
+
 querySelectorFactory(".current-select").addEventListener("click",selectAnimate)
+
 querySelectorFactory(".other-block").addEventListener("click",selectCity)
 
 querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
-// 監聽 top 按鈕，點擊時觸發 scrolls 函式
+
 querySelectorFactory('.go-top').addEventListener('click', scrolls)
 
-// 監聽頁面滾動，當滾動到指定位置時觸發函式內容
 window.addEventListener('scroll', switchTopBar)
