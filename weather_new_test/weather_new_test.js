@@ -402,6 +402,8 @@ function selectAnimate(element) {
     let haveClass = currentElement.className.split(" ").indexOf("current-select-toggle")
     if (haveClass == -1) {
         currentElement.classList.add("current-select-toggle")
+        querySelectorFactory(".select-group").classList.add("select-group-action")
+        querySelectorFactory(".other-block").classList.add("other-block-action")
         setTimeout(() => {
             querySelectorFactory(".select-city-outer").classList.add("select-city-toggle")
             querySelectorFactory(".arrow").classList.add("arrow-toggle")
@@ -409,7 +411,11 @@ function selectAnimate(element) {
     } else {
         querySelectorFactory(".select-city-outer").classList.remove("select-city-toggle")
         querySelectorFactory(".arrow").classList.remove("arrow-toggle")
-        setTimeout(() => currentElement.classList.remove("current-select-toggle"), 700)
+        setTimeout(() => {
+            querySelectorFactory(".select-group").classList.remove("select-group-action")
+            querySelectorFactory(".other-block").classList.remove("other-block-action")
+            currentElement.classList.remove("current-select-toggle")
+        }, 700)
     }
 
 }

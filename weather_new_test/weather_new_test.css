@@ -476,7 +476,7 @@ html body .main .row .option-group .select-group .select-city-outer .select-city
 }
 
 html body .main .row .option-group .select-group .select-city-toggle {
-    bottom: -130px;
+    bottom: -250px;
 }
 
 html body .main .row .option-group .select-toggle {
@@ -484,6 +484,12 @@ html body .main .row .option-group .select-toggle {
     -webkit-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
+}
+
+html body .main .row .option-group .select-group-action {
+    -webkit-transform: translateY(-100px);
+    -ms-transform: translateY(-100px);
+    transform: translateY(-100px);
 }
 
 html body .main .row .option-group .other-block {
@@ -510,6 +516,13 @@ html body .main .row .option-group .other-block-toggle {
     -webkit-transform: translateX(50%);
     -ms-transform: translateX(50%);
     transform: translateX(50%);
+}
+
+html body .main .row .option-group .other-block-action {
+    opacity: 0;
+    -webkit-transform: translateY(300px);
+    -ms-transform: translateY(300px);
+    transform: translateY(300px);
 }
 
 html body .main .row .option-group-toggle {
