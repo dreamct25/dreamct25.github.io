@@ -14,7 +14,7 @@
         background-repeat: no-repeat;
     }
     
-    body {
+    html body {
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -22,17 +22,17 @@
         min-height: 100vh;
     }
     
-    body .wrap {
+    html body .wrap {
         max-width: 960px;
         margin: 0 auto;
     }
     
-    body .wrap .header h1 {
+    html body .wrap .header h1 {
         text-align: center;
         color: white;
     }
     
-    body .wrap .container {
+    html body .wrap .container {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -41,49 +41,49 @@
     }
     
     @media screen and (max-width: 768px) {
-        body .wrap .container {
+        html body .wrap .container {
             min-height: 70vh;
         }
     }
     
     @media screen and (max-width: 414px) {
-        body .wrap .container {
+        html body .wrap .container {
             min-height: 76vh;
         }
     }
     
-    body .wrap .container .main {
+    html body .wrap .container .main {
         overflow: hidden;
         background: linear-gradient(120deg, rgb(0, 0, 0), rgba(20, 20, 20), rgba(40, 40, 40), rgba(60, 60, 60));
         border-radius: 10px;
-        box-shadow: inset 0 0 0.3px 0.3px rgba(255, 255, 255, 0.7), 0 0 12px rgba(255, 255, 255, .7);
+        box-shadow: inset 0 0 0.7px 0.7px rgba(255, 255, 255, 0.7), 0 0 12px rgba(255, 255, 255, .7);
     }
     
-    body .wrap .container .main .row {
+    html body .wrap .container .main .row {
         display: flex;
     }
     
-    body .wrap .container .main .row .col {
+    html body .wrap .container .main .row .col {
         display: flex;
         flex-direction: row;
         width: 100%;
     }
     
-    body .wrap .container .main .display-outer {
+    html body .wrap .container .main .display-outer {
         color: white;
-        background-color: rgb(60, 60, 60);
         text-align: right;
-        padding: 35px 20px 35px 0;
+        padding: 35px 20px 35px 20px;
         border-radius: 10px 10px 0 0;
         position: relative;
-        box-shadow: inset 0 0 0.3px 0.3px rgba(255, 255, 255, .7);
+        box-shadow: inset 0 0 0.7px 0.7px rgba(255, 255, 255, .7);
     }
     
-    body .wrap .container .main .display-outer .display-num-outer {
+    html body .wrap .container .main .display-outer .display-num-outer {
         overflow: hidden;
+        width: 300px;
     }
     
-    body .wrap .container .main .display-outer .display-num-outer .display-num {
+    html body .wrap .container .main .display-outer .display-num-outer .display-num {
         display: block;
         color: white;
         font-size: 35px;
@@ -92,7 +92,7 @@
         transition: 1s ease;
     }
     
-    body .wrap .container .main .row .col .btns {
+    html body .wrap .container .main .row .col .btns {
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -101,53 +101,53 @@
         height: 85px;
         color: white;
         background-color: rgb(40, 40, 40);
-        box-shadow: inset 0 0 0.3px 0.3px rgba(255, 255, 255, .7);
+        box-shadow: inset 0 0 0.7px 0.7px rgba(255, 255, 255, .7);
         font-size: 35px;
         transition: .3s ease;
         cursor: pointer;
         user-select: none;
     }
     
-    body .wrap .container .main .row .col .zero {
+    html body .wrap .container .main .row .col .zero {
         border-radius: 0 0 0 10px;
     }
     
-    body .wrap .container .main .row .col .equal {
+    html body .wrap .container .main .row .col .equal {
         border-radius: 0 0 10px 0;
     }
     
-    body .wrap .container .main .row .col .btn-active {
+    html body .wrap .container .main .row .col .btn-active {
         color: black;
         background-color: rgb(255, 255, 255);
-        box-shadow: inset 0 0 3px 0.3px rgba(0, 0, 0, .7);
+        box-shadow: inset 0 0 3px 0.7px rgba(0, 0, 0, .7);
     }
     
-    body .wrap .container .main .display-outer .display-num-outer .display-num-on {
+    html body .wrap .container .main .display-outer .display-num-outer .display-num-on {
         transform: translateY(0px);
         opacity: 1;
     }
     
-    body .wrap .container .main .row .col .power {
+    html body .wrap .container .main .row .col .power {
         transition: .7s ease;
     }
     
-    body .wrap .container .main .row .col .power-link {
+    html body .wrap .container .main .row .col .power-link {
         background-color: white;
         color: rgb(40, 40, 40);
-        box-shadow: inset 0 0 3px 0.3px rgba(0, 0, 0, .7);
+        box-shadow: inset 0 0 3px 0.7px rgba(0, 0, 0, .7);
     }
     
-    body .wrap .container .main .display-outer .icon-group {
+    html body .wrap .container .main .display-outer .icon-group {
         display: flex;
-        justify-content: space-around;
         font-size: 10px;
         top: 0;
         left: 0;
         color: white;
         position: absolute;
+        padding: 3px 0px 0px 5px;
     }
     
-    body .wrap .container .main .display-outer .icon-group .icon {
+    html body .wrap .container .main .display-outer .icon-group .icon {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -157,19 +157,19 @@
         margin: 8px 0px 5px 7px;
     }
     
-    body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(1) {
+    html body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(1) {
         background-color: rgb(187, 0, 0);
     }
     
-    body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(2) {
+    html body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(2) {
         background-color: rgb(209, 178, 0);
     }
     
-    body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(3) {
+    html body .wrap .container .main .display-outer .icon-group .icon:nth-of-type(3) {
         background-color: rgb(42, 211, 0);
     }
     
-    body .wrap .footer {
+    html body .wrap .footer {
         color: white;
         text-align: center;
     }
@@ -387,12 +387,25 @@
     function powerToggle() {
         this.classList.toggle("power-link")
         querySelectors(".display-num").classList.toggle("display-num-on")
+        console.log(this.className)
+        if (this.className.split(" ").indexOf("power-link") == -1) {
+            setTimeout(() => {
+                stayValue = ""
+                stayArray = []
+                viewer.textContent = "0"
+            }, 390)
+            querySelectors(".back").removeEventListener("click", deleteNum)
+            querySelectors(".ac").removeEventListener("click", clearAll)
+            querySelectorAlls(".btns").forEach(key => key.removeEventListener("click", inputItems))
+        } else {
+            querySelectors(".back").addEventListener("click", deleteNum)
+            querySelectors(".ac").addEventListener("click", clearAll)
+            querySelectorAlls(".btns").forEach(key => key.addEventListener("click", inputItems))
+        }
+
     }
 
     querySelectors(".power").addEventListener("click", powerToggle)
-    querySelectors(".back").addEventListener("click", deleteNum)
-    querySelectors(".ac").addEventListener("click", clearAll)
-    querySelectorAlls(".btns").forEach(key => key.addEventListener("click", inputItems))
 </script>
 
 </html>
