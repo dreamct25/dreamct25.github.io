@@ -1,1166 +1,34 @@
-const select = document.querySelector('.select')
-let jsonData;
-let allDatas;
+const querySelectorFactory = currentClass => document.querySelector(currentClass)
+const querySelectorAllFactory = currentClass => document.querySelectorAll(currentClass)
+let jsonData = [];
+let filterWeatherState = []
+let renderCount = 0
 
-// 抓取氣象站資料
-
-fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => res.json()).then(res => {
-    jsonData = res.records.locations[0].location
-    cityType()
+fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => {
+    loadingAnimate(true)
+    return res.json()
+}).then(res => {
+    setTimeout(() => {
+        if (res.success == "true") {
+            let jsonDataTemp = []
+            res.records.locations[0].location.forEach(key => jsonDataTemp.push(key))
+            loadingAnimate(false)
+            setTimeout(() => cityType(jsonDataTemp), 2000)
+        }
+    }, 3000)
 }).catch(err => console.log(err))
 
-// 將各縣市名稱導入選單中資料，並透過 allDatas 將陣列中的値存起來，以便外部使用
-function cityType() {
-    let array = []
-    let city;
-    city = `<option selected disabled>- - 請選擇欲查詢氣象縣市 - -</option>`
-    jsonData.forEach(key => {
-        array.push(key)
-        city += `<option value="${key.locationName}">${key.locationName}</option>`
+function cityType(arry) {
+    let arrySort = []
+    querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
+    arrySort = arry.sort((a, b) => b.lon - a.lon)
+    arrySort.forEach((key, index) => {
+        jsonData.push(key)
+        querySelectorFactory(".select-city").innerHTML += `<span class="city-name" data-num="${index}" onclick="selectCityPart(this)">${key.locationName}</span>`
     });
-    select.innerHTML = city
-    allDatas = Array.from(new Set(array))
+    jsonData.forEach(key => key.locationName == '臺北市' ? console.log(key) : null)
 }
 
-// 點選對應城市時觸發 today 函式，並套用各版面載入動畫
-function callAll() {
-    scrolls()
-    allDatas.forEach(keyWord => {
-        this.value == keyWord.locationName ? todayAndTomrrow() : ''
-    })
-    select.classList.add('select-toggle')
-    document.querySelector('.back').classList.add('back-toggle')
-    document.querySelector('.back').textContent = '查詢其它城市'
-    document.querySelector('.location').classList.add('weather-title-in')
-    document.querySelector('.location').classList.remove('weather-title-out')
-    document.querySelectorAll('.week-board').forEach(animate => animate.classList.remove('weather-week-content-out'))
-    document.querySelectorAll('.board').forEach(animate => animate.classList.remove('weather-content-out'))
-    document.querySelector('.footer').classList.toggle('footer-active')
-    document.querySelector('.clock').classList.toggle('clock-change')
-    document.querySelector('.control').classList.toggle('control-change')
-    document.querySelector('.bg-text').classList.toggle('bg-text-change')
-    document.querySelector('.sidebar').classList.toggle('sidebar-hide')
-    setTimeout(() => document.querySelector('.now').classList.add('now-in'), 500)
-    setTimeout(() => document.querySelector('.tomorrow').classList.add('tomorrow-in'), 750)
-    setTimeout(() => document.querySelector('.week').classList.add('week-in'), 1000)
-}
-
-// 點選 navbar 中的文字，當點擊文字與 case 內文字相同時載入不同內容涵式
-function content() {
-    switch (this.textContent) {
-        case '目前天氣':
-            todayAndTomrrow(this.textContent.slice(0, 2))
-            document.querySelector('.now').classList.add('btn-active')
-            document.querySelector('.week').classList.remove('btn-color')
-            setTimeout(() => document.querySelector('.now').classList.remove('btn-active'), 500)
-            break
-        case '明日天氣':
-            todayAndTomrrow(this.textContent.slice(0, 2))
-            document.querySelector('.tomorrow').classList.add('btn-active')
-            document.querySelector('.week').classList.remove('btn-color')
-            setTimeout(() => document.querySelector('.tomorrow').classList.remove('btn-active'), 500)
-            break
-        case '一周天氣':
-            week()
-            document.querySelector('.week').classList.add('btn-active')
-            document.querySelector('.now').classList.remove('btn-color')
-            document.querySelector('.tomorrow').classList.remove('btn-color')
-            document.querySelector('.week').classList.add('btn-color')
-            setTimeout(() => document.querySelector('.week').classList.remove('btn-active'), 500)
-            break
-    }
-}
-// 設定 todayAndTomrrow 函式內容
-function todayAndTomrrow(text) {
-    text == undefined ? text = '目前' : text = text
-    allDatas.forEach(keyWord => {
-        const todayWithTomrrow = [{
-            dayText: '目前',
-            dayClass: 'now',
-            A: keyWord.weatherElement[8].time[0].elementValue[0].value,
-            B: keyWord.weatherElement[12].time[0].elementValue[0].value,
-            C: keyWord.weatherElement[3].time[0].elementValue[0].value,
-            D: keyWord.weatherElement[7].time[0].elementValue[0].value,
-            E: keyWord.weatherElement[0].time[0].elementValue[0].value,
-            F: keyWord.weatherElement[0].time[1].elementValue[0].value,
-            G: keyWord.weatherElement[1].time[0].elementValue[0].value,
-            H: keyWord.weatherElement[9].time[0].elementValue[0].value,
-            I: keyWord.weatherElement[9].time[0].elementValue[1].value,
-            J: keyWord.weatherElement[11].time[0].elementValue[0].value,
-            K: keyWord.weatherElement[5].time[0].elementValue[0].value,
-            L: keyWord.weatherElement[2].time[0].elementValue[0].value,
-            M: keyWord.weatherElement[10].time[0].elementValue[0].value,
-            N: keyWord.weatherElement[10].time[1].elementValue[0].value
-        }, {
-            dayText: '明日',
-            dayClass: 'tomorrow',
-            A: keyWord.weatherElement[8].time[2].elementValue[0].value,
-            B: keyWord.weatherElement[12].time[2].elementValue[0].value,
-            C: keyWord.weatherElement[3].time[1].elementValue[0].value,
-            D: keyWord.weatherElement[7].time[1].elementValue[0].value,
-            E: keyWord.weatherElement[0].time[2].elementValue[0].value,
-            F: keyWord.weatherElement[0].time[3].elementValue[0].value,
-            G: keyWord.weatherElement[1].time[1].elementValue[0].value,
-            H: keyWord.weatherElement[9].time[1].elementValue[0].value,
-            I: keyWord.weatherElement[9].time[0].elementValue[1].value,
-            J: keyWord.weatherElement[11].time[1].elementValue[0].value,
-            K: keyWord.weatherElement[5].time[1].elementValue[0].value,
-            L: keyWord.weatherElement[2].time[2].elementValue[0].value,
-            M: keyWord.weatherElement[10].time[2].elementValue[0].value,
-            N: keyWord.weatherElement[10].time[3].elementValue[0].value
-        }]
-        if (select.value == keyWord.locationName) {
-            document.querySelector('.location').textContent = keyWord.locationName
-            todayWithTomrrow.forEach(key => {
-                if (key.dayText == text) {
-                    document.querySelector(`.${key.dayClass}`).classList.add('btn-color')
-                    document.querySelector('.text-in').innerHTML =
-                        `
-                    <div class="col-11">
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentFt-in">
-                                    <span class="text-center">${key.dayText}天氣</span>
-                                    <p class="mb-0 my-2 text-center">${key.A}&degC ~ ${key.B}&degC</p>
-                                    <p class="mb-0 text-center">舒適度：${key.C} ~ ${key.D}</p> 
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentSd-in">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="text-center">${key.dayText == '目前' ? '本日' : key.dayText}降雨機率</span>
-                                        </div>
-                                    </div>
-                                    <div class="row my-3">
-                                        <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">白天：${key.E}%</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="mb-0 my-1 text-center">夜晚：${key.F}%</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row no-gutters">
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentTd-in">
-                                    <p class="mt-2 mb-3 text-center">${key.dayText == '目前' ? '本日' : key.dayText}均溫：${key.G}&degC</p>
-                                    <p class="my-4 text-center">紫外線：${key.H}&nbsp${key.I}</p>
-                                    <p class="my-4 text-center">體感溫度：${key.J}&degC ~ ${key.K}&degC</p>
-                                    <p class="mt-3 mb-2 text-center">濕度：${key.L}%</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="board mx-1 weather-contentFort-in">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="text-center">${key.dayText == '目前' ? '本日' : key.dayText}天氣概況</span>
-                                        </div>
-                                    </div>
-                                    <div class="row no-gutters">
-                                        <div class="col-md-6">
-                                            <p class="my-3 text-center">白天至夜晚</p>
-                                            <p class="mb-2 mx-2 text-justify">${key.M}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="my-3 text-center">夜晚至隔日半夜</p>
-                                            <p class="mb-2 mx-2 text-justify">${key.N}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `} else {
-                    document.querySelector(`.${key.dayClass}`).classList.remove('btn-color')
-                }
-            })
-        }
-    })
-}
-
-// 設定 week 函式內容
-function week() {
-    allDatas.forEach(keyWord => {
-        if (select.value == keyWord.locationName) {
-            let dateI = keyWord.weatherElement[0].time[2].startTime
-            let dateII = keyWord.weatherElement[0].time[4].startTime
-            let dateIII = keyWord.weatherElement[0].time[6].startTime
-            let dateIV = keyWord.weatherElement[0].time[8].startTime
-            let dateV = keyWord.weatherElement[0].time[10].startTime
-            let dateVI = keyWord.weatherElement[0].time[12].startTime
-            document.querySelector('.location').textContent = keyWord.locationName
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${dateI.substring(5, 7)}/${dateI.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[2].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[2].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${dateI.substring(5, 7)}/${dateI.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[3].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[3].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${dateII.substring(5, 7)}/${dateII.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[4].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[4].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[4].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${dateII.substring(5, 7)}/${dateII.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[5].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[5].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[5].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${dateIII.substring(5, 7)}/${dateIII.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[6].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[6].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[6].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${dateIII.substring(5, 7)}/${dateIII.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[7].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[7].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[7].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFort-in">
-                                    <span class="date">${dateIV.substring(5, 7)}/${dateIV.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[8].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[8].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[8].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFort-in">
-                                    <span class="date">${dateIV.substring(5, 7)}/${dateIV.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[9].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[9].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[9].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFvt-in">
-                                    <span class="date">${dateV.substring(5, 7)}/${dateV.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[10].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[10].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[10].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFvt-in">
-                                    <span class="date">${dateV.substring(5, 7)}/${dateV.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[11].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[11].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[11].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row my-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSxt-in">
-                                    <span class="date">${dateVI.substring(5, 7)}/${dateVI.substring(8, 11)}</span>
-                                    <span class="date">白天</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[12].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[12].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[12].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSxt-in">
-                                    <span class="date">${dateVI.substring(5, 7)}/${dateVI.substring(8, 11)}</span>
-                                    <span class="date">夜晚</span>
-                                    <span class="date">${keyWord.weatherElement[8].time[13].elementValue[0].value}&degC ~ ${keyWord.weatherElement[12].time[13].elementValue[0].value}&degC</span>
-                                    <span class="date">降雨機率</span>
-                                    <span class="date">${keyWord.weatherElement[0].time[13].elementValue[0].value}%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-        }
-    })
-}
-
-function allBlockAnimate(textSide) {
-    select.classList.add('select-toggle')
-    document.querySelector('.back').classList.add('back-toggle')
-    document.querySelector('.back').textContent = '查詢其它區域或縣市'
-    document.querySelector('.location').classList.add('weather-title-in')
-    document.querySelector('.location').classList.remove('weather-title-out')
-    document.querySelector('.sidebar').classList.remove('sidebar-active')
-    document.querySelector('.sidebar-icon').classList.remove('sidebar-icon-active')
-    document.querySelector('.location').textContent = textSide
-}
-
-// 右側 sidebar 內容，當點擊文字與 case 內文字相同時載入不同內容
-function allBlock() {
-    document.querySelector('.footer').classList.toggle('footer-active')
-    document.querySelector('.sidebar').classList.toggle('sidebar-hide')
-    document.querySelector('.clock').classList.toggle('clock-change')
-    document.querySelector('.control').classList.toggle('control-change')
-    document.querySelector('.bg-text').classList.toggle('bg-text-change')
-    switch (this.textContent) {
-        case '北部':
-            allBlockAnimate(this.textContent)
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[5].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[5].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[5].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[5].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[5].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[5].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[16].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[16].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[16].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[16].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[16].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[16].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[15].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[15].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[15].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[15].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[15].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[15].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[9].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[9].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[9].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[9].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[9].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[9].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${allDatas[19].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[19].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[19].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[19].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[19].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[19].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${allDatas[10].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[10].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[10].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[10].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[10].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[10].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFort-in">
-                                    <span class="date">${allDatas[14].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[14].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[14].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[14].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[14].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[14].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFort-in">
-                                    <span class="date">${allDatas[7].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[7].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[7].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[7].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[7].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[7].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            break
-        case '中部':
-            allBlockAnimate(this.textContent)
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                    <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[17].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[17].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[17].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[17].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[17].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[17].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[13].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[13].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[13].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[13].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[13].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[13].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[0].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[0].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[0].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[0].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[0].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[0].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[1].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[1].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[1].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[1].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[1].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[1].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            break
-        case '南部':
-            allBlockAnimate(this.textContent)
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[20].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[20].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[20].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[20].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[20].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[20].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[21].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[21].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[21].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[21].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[21].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[21].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[18].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[18].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[18].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[18].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[18].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[18].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[12].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[12].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[12].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[12].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[12].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[12].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentTd-in">
-                                    <span class="date">${allDatas[6].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[6].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[6].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[6].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[6].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[6].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            break
-        case '東部':
-            allBlockAnimate(this.textContent)
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[11].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[11].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[11].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[11].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[11].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[11].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[3].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[3].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[3].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[3].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[3].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[3].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            break
-        case '外島':
-            allBlockAnimate(this.textContent)
-            document.querySelector('.text-in').innerHTML =
-                `
-                    <div class="col-11">
-                        <span class="tomorrow-day tomorrow-day-in my-3">明日天氣</span>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[2].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[2].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[2].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[2].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[2].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[2].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentFt-in">
-                                    <span class="date">${allDatas[4].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[4].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[4].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[4].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[4].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[4].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3 no-gutters">
-                            <div class="col-md-6">
-                                <div class="week-board mx-1 weather-week-contentSd-in">
-                                    <span class="date">${allDatas[8].locationName}</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[8].weatherElement[8].time[2].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[2].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[8].weatherElement[8].time[3].elementValue[0].value}&degC ~ ${allDatas[8].weatherElement[12].time[3].elementValue[0].value}&degC</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="date">降雨機率</span>
-                                    <div class="row my-2">
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">白天</span>
-                                                <span class="date">${allDatas[8].weatherElement[0].time[2].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="row justify-content-center">
-                                                <span class="date mx-1">夜晚</span>
-                                                <span class="date">${allDatas[8].weatherElement[0].time[3].elementValue[0].value}%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `
-            break
-    }
-}
-
-// 設定點擊後慢速至頂內容
 function scrolls() {
     let timer = null;
     cancelAnimationFrame(timer);
@@ -1174,102 +42,57 @@ function scrolls() {
         }
     });
 }
+
+function changeMoring(currentOption) {
+    querySelectorFactory(".background-text").textContent = 'Moring'
+    querySelectorFactory(".header").classList.add("header-moring")
+    querySelectorFactory(".header").classList.remove("header-night")
+    querySelectorFactory('html').classList.remove('night')
+    querySelectorFactory('html').classList.add('moring')
+    currentOption.classList.remove('background-controller-toggle')
+    querySelectorFactory('.circle').classList.remove('circle-toggle')
+}
+
+function changeNight(currentOption) {
+    querySelectorFactory(".background-text").textContent = 'Night'
+    querySelectorFactory(".header").classList.add("header-night")
+    querySelectorFactory(".header").classList.remove("header-moring")
+    querySelectorFactory('html').classList.add('night')
+    querySelectorFactory('html').classList.remove('moring')
+    currentOption.classList.add('background-controller-toggle')
+    querySelectorFactory('.circle').classList.add('circle-toggle')
+}
+
 // 設定背景圖隨畫面時間不同更換背景圖
-(function bgChange() {
-    const timeObject = new Date()
-    let hours = timeObject.getHours()
-    onloadAnimate()
-    if (hours >= 6 && hours <= 17) {
-        document.querySelector('.bg-text').textContent = 'Moring'
-        document.querySelector('html').classList.remove('night')
-        document.querySelector('html').classList.add('moring')
+function backgroundChange() {
+    const date = new Date()
+    let backgroundToggleOptions = {
+        byHand: this,
+        notHand: querySelectorFactory(".background-controller")
+    }
+    let currentOption = null
+    if (this == window) {
+        currentOption = backgroundToggleOptions.notHand
+        if (date.getHours() >= 6 && date.getHours() <= 17) {
+            changeMoring(currentOption)
+        } else {
+            changeNight(currentOption)
+        }
+        return
     } else {
-        document.querySelector('.bg-text').textContent = 'Night'
-        document.querySelector('html').classList.add('night')
-        document.querySelector('html').classList.remove('moring')
-        document.querySelector('.control').classList.toggle('control-active')
-        document.querySelector('.control-point').classList.toggle('control-point-active')
+        currentOption = backgroundToggleOptions.byHand
+        let haveMoringClass = null
+        haveMoringClass = querySelectorFactory('html').className.split(" ").indexOf("moring")
+        console.log(haveMoringClass)
+        haveMoringClass != -1 ? changeNight(currentOption) : changeMoring(currentOption)
     }
-}())
 
-
-function backGroundSet() {
-    this.classList.toggle('control-active')
-    document.querySelector('.control-point').classList.toggle('control-point-active')
-    let bgText = document.querySelector('.bg-text')
-    switch (bgText.textContent) {
-        case 'Moring':
-            bgText.textContent = 'Night'
-            document.querySelector('html').classList.add('night')
-            document.querySelector('html').classList.remove('moring')
-            break
-        case 'Night':
-            bgText.textContent = 'Moring'
-            document.querySelector('html').classList.remove('night')
-            document.querySelector('html').classList.add('moring')
-            break
-    }
-}
-
-function sideBarPart() {
-    document.querySelector('.sidebar').classList.toggle('sidebar-active')
-    this.classList.toggle('sidebar-icon-active')
-    document.querySelector('.sidebar-icon-outer').classList.add('sidebar-icon-active-trans')
-    setTimeout(() => document.querySelector('.sidebar-icon-outer').classList.remove('sidebar-icon-active-trans'), 10000)
-    this.classList.add('sidebar-arrow-trans')
-    setTimeout(() => this.classList.remove('sidebar-arrow-trans'), 10000)
-}
-
-function backAction() {
-    scrolls()
-    this.classList.remove('back-toggle')
-    document.querySelector('.now').classList.remove('now-in')
-    document.querySelector('.tomorrow').classList.remove('tomorrow-in')
-    document.querySelector('.week').classList.remove('week-in')
-    document.querySelector('.now').classList.remove('btn-color')
-    document.querySelector('.tomorrow').classList.remove('btn-color')
-    document.querySelector('.week').classList.remove('btn-color')
-    document.querySelector('.location').classList.add('weather-title-out')
-    document.querySelector('.location').classList.remove('weather-title-in')
-    document.querySelectorAll('.week-board').forEach(animate => animate.classList.add('weather-week-content-out'))
-    document.querySelectorAll('.board').forEach(animate => animate.classList.add('weather-content-out'))
-    document.querySelectorAll('.tomorrow-day').forEach(animate => animate.classList.add('tomorrow-day-out'))
-    document.querySelector('.footer').classList.toggle('footer-active')
-    document.querySelector('.clock').classList.toggle('clock-change')
-    document.querySelector('.control').classList.toggle('control-change')
-    document.querySelector('.bg-text').classList.toggle('bg-text-change')
-    document.querySelector('.sidebar').classList.toggle('sidebar-hide')
-    setTimeout(() => document.querySelector('.text-in').textContent = '', 2000)
-    setTimeout(() => select.classList.remove('select-toggle'), 1000)
-}
-
-function onloadAnimate() {
-    document.querySelector('.header').classList.add('header-active')
-    setTimeout(() => {
-        document.querySelector('.control').classList.add('control-in')
-        document.querySelector('.bg-text').classList.add('bg-text-in')
-    }, 1000)
-    setTimeout(() => document.querySelector('.clock').classList.add('clock-in'), 2000)
-    setTimeout(() => document.querySelector('.in-title').classList.add('in-title-in'), 1000)
-    setTimeout(() => document.querySelector('.in-title').classList.remove('in-title-in'), 2000)
-    setTimeout(() => document.querySelector('.text-in').innerHTML = `
-        <span class="loading loading-in">
-            <span class="loading-icon"></span>
-            <span class="loading-icons"></span>
-            Loading
-        </span>`, 3000)
-    setTimeout(() => {
-        document.querySelector('.loading').classList.remove('loading-in')
-        document.querySelector('.loading').classList.add('loading-out')
-    }, 7000)
-    setTimeout(() => document.querySelector('.footer').classList.add('footer-in'), 3000)
-    setTimeout(() => select.classList.add('select-in'), 8000)
 }
 
 function switchTopBar() {
     let height = document.documentElement.scrollTop || document.body.scrollTop;
-    height > 28 ? document.querySelector('.header').classList.remove('header-active') : document.querySelector('.header').classList.add('header-active')
-    height > 200 ? document.querySelector('.top').classList.add('top-active') : document.querySelector('.top').classList.remove('top-active')
+    height > 28 ? querySelectorFactory('.header').classList.add('header-toggle') : querySelectorFactory('.header').classList.remove('header-toggle')
+    height > 200 ? querySelectorFactory('.go-top').classList.add('go-top-toggle') : querySelectorFactory('.go-top').classList.remove('go-top-toggle')
 }
 
 // 畫面時間內容設定
@@ -1281,33 +104,662 @@ function time() {
     let hour = (date.getHours() < 10 ? '0' : '') + date.getHours()
     let minute = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
     let seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds()
-    let text = `${year} / ${month} / ${dates} ${hour}：${minute}：${seconds}`
-    document.querySelector('.clock').textContent = text
+    let dateText = `${year} / ${month} / ${dates}`
+    let timeText = `${hour}：${minute}：${seconds}`
+    querySelectorFactory(".date").textContent = dateText
+    querySelectorFactory(".time").textContent = timeText
 }
 
-// 每秒刷新畫面時間文字
+function selectCityPart(element) {
+    querySelectorFactory(".current-select").textContent = element.textContent
+    querySelectorAllFactory(".city-name").forEach(key => key.dataset.num == element.dataset.num ? key.classList.add("selected") : key.classList.remove("selected"))
+    setTimeout(() => selectAnimate(element), 700)
+    setTimeout(() => selectCity(element), 2100)
+}
+
+function selectCity(currentTaget) {
+    let currentTagetTemp = currentTaget.className == undefined ? currentTaget.target.className : currentTaget.className
+    switch (currentTagetTemp) {
+        case "city-name selected":
+            filterWeatherState = jsonData.filter(key => key.locationName == currentTaget.textContent)
+            renderList(false)
+            chooseDayBtn()
+            break;
+        case "other-block":
+            renderList(true)
+            chooseBlockBtn()
+            break;
+    }
+    querySelectorFactory(".select-group").classList.toggle("select-toggle")
+    querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
+    setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 701)
+
+}
+
+function addTempSign(text) {
+    let transText = `${text}&degC`
+    return transText
+}
+
+function addPercent(text) {
+    let transText = `${text}%`
+    return transText
+}
+
+function transWeatherIcon(text) {
+    let transText = ""
+    const iconsItem = [{
+        num: 1,
+        icon: '<i class="fas fa-sun"></i>'
+    }, {
+        num: 2,
+        icon: '<i class="fas fa-sun-cloud"></i>'
+    }, {
+        num: 3,
+        icon: '<i class="fas fa-clouds-sun"></i>'
+    }, {
+        num: 7,
+        icon: '<i class="fas fa-clouds"></i>'
+    }, {
+        num: 8,
+        icon: '<i class="fas fa-cloud-showers-heavy"></i>'
+    }]
+    iconsItem.forEach(key => {
+        if (key.num == Number(text)) {
+            transText = key.icon
+        } else if (Number(text) >= 4 && Number(text) <= 7 && key.num >= 4 && key.num <= 7) {
+            transText = key.icon
+        } else if (Number(text) >= 8 && key.num >= 8) {
+            transText = key.icon
+        }
+    })
+    return transText
+}
+
+function dateTrans(time) {
+    const inputTime = time.replace(/-/g, "/")
+    const dateTime = new Date(inputTime)
+    let timeObject = {}
+    timeObject.year = dateTime.getFullYear()
+    timeObject.month = dateTime.getMonth() + 1
+    timeObject.date = dateTime.getDate()
+    timeObject.hour = dateTime.getHours()
+    return timeObject
+}
+
+function today(renderWeather, order) {
+    filterWeatherState.forEach(key => {
+        renderWeather.push({
+            cityName: key.locationName,
+            minTemp: addTempSign(key.weatherElement[8].time[0].elementValue[0].value),
+            maxTemp: addTempSign(key.weatherElement[12].time[0].elementValue[0].value),
+            minFeelTemp: addTempSign(key.weatherElement[11].time[0].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.weatherElement[5].time[0].elementValue[0].value),
+            equalTemp: addTempSign(key.weatherElement[1].time[0].elementValue[0].value),
+            comferMinPerc: addPercent(key.weatherElement[3].time[0].elementValue[0].value),
+            comferMaxPerc: addPercent(key.weatherElement[7].time[0].elementValue[0].value),
+            rainNightPerc: addPercent(key.weatherElement[0].time[0].elementValue[0].value),
+            rainMoringPerc: addPercent(key.weatherElement[0].time[1].elementValue[0].value),
+            uivLevel: key.weatherElement[9].time[0].elementValue[0].value,
+            uivDesc: key.weatherElement[9].time[0].elementValue[1].value,
+            wetEqualPerc: addPercent(key.weatherElement[2].time[0].elementValue[0].value),
+            weatherSign: key.weatherElement[6].time[0].elementValue[0].value,
+            weatherSignState: transWeatherIcon(key.weatherElement[6].time[0].elementValue[1].value),
+            weatherNightDesc: key.weatherElement[10].time[1].elementValue[0].value,
+            weatherMoringDesc: key.weatherElement[10].time[0].elementValue[0].value
+
+        })
+    })
+    renderView(renderWeather, order)
+}
+
+function tomorrow(renderWeather, order) {
+    filterWeatherState.forEach(key => {
+        renderWeather.push({
+            cityName: key.locationName,
+            minTemp: addTempSign(key.weatherElement[8].time[3].elementValue[0].value),
+            maxTemp: addTempSign(key.weatherElement[12].time[2].elementValue[0].value),
+            minFeelTemp: addTempSign(key.weatherElement[11].time[2].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.weatherElement[5].time[2].elementValue[0].value),
+            equalTemp: addTempSign(key.weatherElement[1].time[2].elementValue[0].value),
+            comferMinPerc: addPercent(key.weatherElement[3].time[2].elementValue[0].value),
+            comferMaxPerc: addPercent(key.weatherElement[7].time[2].elementValue[0].value),
+            rainNightPerc: addPercent(key.weatherElement[0].time[2].elementValue[0].value),
+            rainMoringPerc: addPercent(key.weatherElement[0].time[3].elementValue[0].value),
+            uivLevel: key.weatherElement[9].time[1].elementValue[0].value,
+            uivDesc: key.weatherElement[9].time[1].elementValue[1].value,
+            wetEqualPerc: addPercent(key.weatherElement[2].time[2].elementValue[0].value),
+            weatherSign: key.weatherElement[6].time[1].elementValue[0].value,
+            weatherSignState: transWeatherIcon(key.weatherElement[6].time[1].elementValue[1].value),
+            weatherNightDesc: key.weatherElement[10].time[3].elementValue[0].value,
+            weatherMoringDesc: key.weatherElement[10].time[2].elementValue[0].value
+        })
+    })
+    renderView(renderWeather, order)
+}
+
+function week(renderWeather, order) {
+    const date = new Date()
+    let moringTemp = []
+    let nightTemp = []
+    filterWeatherState.forEach(key => {
+        for (var x = 0; x < key.weatherElement[8].time.length; x++) {
+            if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 6) {
+                moringTemp.push({
+                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
+                    minTemp: key.weatherElement[8].time[x].elementValue[0].value,
+                    maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
+                    rainPerc: key.weatherElement[0].time[x].elementValue[0].value
+                })
+            } else if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 18) {
+                nightTemp.push({
+                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
+                    minTemp: key.weatherElement[8].time[x].elementValue[0].value,
+                    maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
+                    rainPerc: key.weatherElement[0].time[x].elementValue[0].value
+                })
+            }
+        }
+    })
+
+    renderWeather.push({
+        cityName: filterWeatherState[0].locationName,
+        moring: moringTemp,
+        night: nightTemp
+    })
+    renderView(renderWeather, order)
+}
+
+function weekBlock(renderWeather, filterCurrentCity, text) {
+    const date = new Date()
+    let moringTemp = []
+    let nightTemp = []
+    filterCurrentCity.forEach(key => {
+        for (let x = 0; x < key.weatherElement[8].time.length; x++) {
+            if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 6) {
+                moringTemp.push({
+                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
+                    minTemp: key.weatherElement[8].time[x].elementValue[0].value,
+                    maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
+                    rainPerc: key.weatherElement[0].time[x].elementValue[0].value
+                })
+            } else if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 18) {
+                nightTemp.push({
+                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
+                    minTemp: key.weatherElement[8].time[x].elementValue[0].value,
+                    maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
+                    rainPerc: key.weatherElement[0].time[x].elementValue[0].value
+                })
+            }
+        }
+    })
+    renderWeather.push({
+        cityName: filterWeatherState[renderCount].locationName,
+        moring: moringTemp,
+        night: nightTemp
+    })
+    renderBlockView(renderWeather, text)
+}
+
+function renderCurrentCity(lengthCount) {
+    let text = ""
+    let filterCurrentCity = []
+    let renderWeather = []
+    for (let x = 0; x <= filterWeatherState.length; x++) {
+        if (renderCount == x) filterCurrentCity.push(filterWeatherState[x])
+    }
+    text = `
+    <div class="city-name-title-switch">
+        <i class="fas fa-chevron-left arrow-left" onclick="renderCountCenter(this,${lengthCount})"></i>
+            <div class="city-name-outer">
+                <div class="city-name">${filterWeatherState[renderCount].locationName}</div>
+            </div>
+        <i class="fas fa-chevron-right arrow-right" onclick="renderCountCenter(this,${lengthCount})"></i>
+    </div>`
+    weekBlock(renderWeather, filterCurrentCity, text)
+}
+
+function chooseDayBtn() {
+    let renderWeather = []
+    const dayBtnItem = [{
+        order: 0,
+        fn: order => today(renderWeather, order)
+    }, {
+        order: 1,
+        fn: order => tomorrow(renderWeather, order)
+    }, {
+        order: 2,
+        fn: order => week(renderWeather, order)
+    }]
+    chooseAnimate(dayBtnItem, this)
+}
+
+function chooseBlockBtn() {
+    const northCode = [10002, 10017, 65, 63, 68, 10004, 10018, 10005]
+    const middleCode = [66, 10007, 10009, 10008]
+    const southCode = [10010, 10020, 67, 64, 10013]
+    const eastCode = [10015, 10014]
+    const outeCode = [09007, 09020, 10016]
+    const blockBtnItem = [{
+        order: 0,
+        fn: () => chooseArea(northCode)
+    }, {
+        order: 1,
+        fn: () => chooseArea(middleCode)
+    }, {
+        order: 2,
+        fn: () => chooseArea(southCode)
+    }, {
+        order: 3,
+        fn: () => chooseArea(eastCode)
+    }, {
+        order: 4,
+        fn: () => chooseArea(outeCode)
+    }]
+    chooseAnimate(blockBtnItem, this)
+}
+
+function chooseArea(cityCode) {
+    renderCount = 0
+    filterWeatherState = []
+    cityCode.forEach((code, index) => {
+        jsonData.forEach(key => {
+            if (code == key.geocode) {
+                filterWeatherState.push(key)
+            }
+        })
+        if ((cityCode.length - 1) == index) {
+            renderCurrentCity(cityCode.length)
+        }
+    })
+}
+
+function chooseAnimate(array, element) {
+    array.forEach(key => {
+        if (element == window) {
+            if (key.order == 0) {
+                querySelectorAllFactory(".btn-session")[key.order].classList.add("btn-session-active")
+                key.fn(key.order)
+            }
+            return
+        }
+
+        if (key.order == element.dataset.order) {
+            element.classList.add("btn-session-active")
+            key.fn(key.order)
+        } else {
+            querySelectorAllFactory(".btn-session")[key.order].classList.remove("btn-session-active")
+        }
+    })
+}
+
+function selectAnimate(element) {
+    let currentElement = element.target == undefined ? querySelectorFactory(".current-select") : element.target
+    let haveClass = currentElement.className.split(" ").indexOf("current-select-toggle")
+    if (haveClass == -1) {
+        currentElement.classList.add("current-select-toggle")
+        querySelectorFactory(".select-group").classList.add("select-group-action")
+        querySelectorFactory(".other-block").classList.add("other-block-action")
+        setTimeout(() => {
+            querySelectorFactory(".select-city-outer").classList.add("select-city-toggle")
+            querySelectorFactory(".arrow").classList.add("arrow-toggle")
+        }, 700)
+    } else {
+        querySelectorFactory(".select-city-outer").classList.remove("select-city-toggle")
+        querySelectorFactory(".arrow").classList.remove("arrow-toggle")
+        setTimeout(() => {
+            querySelectorFactory(".select-group").classList.remove("select-group-action")
+            querySelectorFactory(".other-block").classList.remove("other-block-action")
+            currentElement.classList.remove("current-select-toggle")
+        }, 700)
+    }
+
+}
+
+function loadingAnimate(state) {
+    if (state == true) {
+        querySelectorFactory(".loading-outer").classList.remove("loading-outer-hide")
+        querySelectorFactory(".loading-text").textContent = "Loading"
+    } else {
+        querySelectorFactory(".loading-text").textContent = "Completed"
+        setTimeout(() => querySelectorFactory(".loading-outer").classList.add("loading-outer-hide"), 1000)
+        setTimeout(() => {
+            querySelectorFactory(".select-group").classList.remove("select-toggle")
+            querySelectorFactory(".other-block").classList.remove("other-block-toggle")
+        }, 2010)
+    }
+}
+
+function weatherOuterAnimate(state) {
+    if (state == true) {
+        querySelectorFactory(".weathers-outer").classList.add("weathers-outer-active")
+        querySelectorFactory(".weathers-outer").style.marginTop = "0px"
+    } else {
+        querySelectorFactory(".weathers-outer").style.marginTop = `-${querySelectorFactory(".weathers-outer").offsetHeight}px`
+        querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
+    }
+}
+
+function renderList(state) {
+    let domObject = ""
+    const btnItem = [{
+        matchSwitch: false,
+        btnText: "目前天氣",
+    }, {
+        matchSwitch: false,
+        btnText: "明日天氣",
+    }, {
+        matchSwitch: false,
+        btnText: "一週天氣",
+    }, {
+        matchSwitch: true,
+        btnText: "北部",
+    }, {
+        matchSwitch: true,
+        btnText: "中部",
+    }, {
+        matchSwitch: true,
+        btnText: "南部",
+    }, {
+        matchSwitch: true,
+        btnText: "東部",
+    }, {
+        matchSwitch: true,
+        btnText: "外島",
+    }]
+    btnItem.forEach(key => { if (key.matchSwitch == state) domObject += `<div class="btn-session">${key.btnText}</div>` })
+    querySelectorFactory(".btn-session-group").innerHTML = domObject
+    querySelectorAllFactory(".btn-session").forEach((key, index) => key.setAttribute("data-order", index))
+    setTimeout(() => weatherOuterAnimate(true), 1401)
+    querySelectorAllFactory(".btn-session").forEach(key => {
+        state == false ? key.addEventListener("click", chooseDayBtn) : key.addEventListener("click", chooseBlockBtn)
+    })
+}
+
+function renderCountCenter(element, lengthCount) {
+    if (element.classList[2] == "arrow-left") {
+        renderCount == 0 ? renderCount = (lengthCount - 1) : renderCount--
+    } else {
+        renderCount == (lengthCount - 1) ? renderCount = 0 : renderCount++
+    }
+    renderCurrentCity(lengthCount)
+}
+
+function renderViewWeekWithoutRwd(renderWeather, text) {
+    renderWeather.forEach(render => {
+                text = `<div class="city-name-title">${render.cityName}</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>`
+                render.moring.forEach(key => text += `<th scope="col">${key.date.replace("2021 / ","")}</th>`)
+                text += `</tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>白天</td>`
+                render.moring.forEach(key =>
+                        text += `<td>
+                            <div class="week-desc">
+                                <span>${key.weatherDesc}</span>
+                                <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                                <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                            </div>
+                        </td>`)
+            text += `</tr>
+                    <tr>
+                        <td>夜晚</td>`
+                        render.night.forEach((key, index) => {
+                            if (index == 0) return
+                            text += 
+                        `<td>
+                            <div class="week-desc">
+                                <span>${key.weatherDesc}</span>
+                                <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                                <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                            </div>
+                        </td>`})
+            text += `</tr>
+                <tbody>
+            </table>`})
+return text
+}
+
+function renderViewWeekOnRwd(renderWeather,text){
+    renderWeather.forEach(render=>{
+        text +=`<div class="city-name-title">${render.cityName}</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">白天</th>
+                <th scope="col">夜晚</th>`
+            text += `</tr>
+        </thead>
+        <tbody>`
+            render.moring.forEach(moringData => {
+                render.night.forEach(nightData=>{
+                    if(moringData.date == nightData.date){
+                        text += `
+                        <tr>
+                            <td>${moringData.date.replace("2021 / ","")}</td>
+                            <td>
+                                <div class="week-desc">
+                                    <span>${moringData.weatherDesc}</span>
+                                    <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
+                                    <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="week-desc">
+                                    <span>${nightData.weatherDesc}</span>
+                                    <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
+                                    <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
+                                </div>
+                            </td>
+                        </tr>`
+                    }
+                })
+            })
+        text += `<tbody></table>`
+    })
+    return text
+}
+function renderViewWeek(renderWeather, text) {
+    let newText = text
+    window.innerWidth <= 768 ? newText = renderViewWeekOnRwd(renderWeather,text) : newText = renderViewWeekWithoutRwd(renderWeather,text)
+    return newText
+}
+
+function renderViewWithoutWeek(renderWeather,order,text){
+    renderWeather.forEach(render=> 
+        text = 
+        `<div class="row no-gutters">
+            <div class="col-md-12">
+                <div class="city-name-title">
+                    ${render.cityName}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="temp-desc">
+                    <div class="temp-desc-title">溫度資訊</div>
+                    <span>氣溫：${render.minTemp} ~ ${render.maxTemp}</span>
+                    <span>${order == 0?"本日":"明日"}均溫：${render.equalTemp}</span>
+                    <span>體感溫度：${render.minFeelTemp} ~ ${render.maxFeelTemp}</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rain-desc">
+                    <div class="rain-desc-title">${order == 0?"本日":"明日"}降雨機率</div>
+                    <div class="rain-sign">${render.weatherSign}</div>
+                    <div class="rain-icon">${render.weatherSignState}</div>
+                    <div class="rain-percent">
+                        <span>白天：${render.rainMoringPerc}</span>
+                        <span>夜晚：${render.rainNightPerc}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="other-desc">
+                    <div class="other-desc-title">各項指數</div>
+                    <span>舒適度指數：${render.comferMinPerc} ~ ${render.comferMaxPerc}</span>
+                    <span>紫外線指數：${render.uivLevel} ${render.uivDesc}</span>
+                    <span>濕度：${render.wetEqualPerc}</span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="weather-desc">
+                    <div class="weather-desc-title">${order == 0?"本日":"明日"}天氣概況</div>
+                    <div class="row no-gutters">  
+                        <div class="col-md-6">  
+                            <div class="weather-desc-moring">
+                                <span>白天至夜晚</span>
+                                <span>${render.weatherMoringDesc}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="weather-desc-night">
+                                <span>夜晚至凌晨</span>
+                                <span>${render.weatherNightDesc}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`)
+    return text
+}
+
+function renderView(renderWeather, order) {
+    let text = ""
+    order == 2 ? text = renderViewWeek(renderWeather,text) : text = renderViewWithoutWeek(renderWeather,order,text)
+    querySelectorFactory(".weathers").innerHTML = text
+    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
+}
+
+function renderBlockWithoutRwd(renderWeather,text){
+    renderWeather.forEach(render=>{
+        text +=
+    `<table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>`
+                render.moring.forEach(key => {
+                    text += `<th scope="col">${key.date.replace("2021 / ","")}</th>`
+                })
+                text += `</tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>白天</td>`
+                render.moring.forEach(key => {
+                        text +=
+                                `<td>
+                    <div class="week-desc">
+                        <span>${key.weatherDesc}</span>
+                        <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                        <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                    </div>
+                </td>`
+        })
+        text += `</tr>
+                <tr>
+                    <td>夜晚</td>`
+        render.night.forEach((key, index) => {
+            if (index == 0) return
+            text += 
+            `<td>
+                <div class="week-desc">
+                    <span>${key.weatherDesc}</span>
+                    <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                    <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                </div>
+            </td>`
+        })
+        text += `</tr>
+            <tbody>
+        </table>`
+    })
+    return text
+}
+
+function renderBlockOnRwd(renderWeather,text){
+    renderWeather.forEach(render=>{
+        text +=
+    `<table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">白天</th>
+                <th scope="col">夜晚</th>`
+            text += `</tr>
+        </thead>
+        <tbody>`
+            render.moring.forEach(moringData => {
+                render.night.forEach(nightData=>{
+                    if(moringData.date == nightData.date){
+                        text += `
+                        <tr>
+                            <td>${moringData.date.replace("2021 / ","")}</td>
+                            <td>
+                                <div class="week-desc">
+                                    <span>${moringData.weatherDesc}</span>
+                                    <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
+                                    <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="week-desc">
+                                    <span>${nightData.weatherDesc}</span>
+                                    <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
+                                    <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
+                                </div>
+                            </td>
+                        </tr>`
+                    }
+                })
+            })
+        text += `<tbody></table>`
+    })
+    return text
+}
+
+function renderBlockView(renderWeather,text){
+    let newText = text
+    window.innerWidth <= 768 ? newText = renderBlockOnRwd(renderWeather,newText):newText = renderBlockWithoutRwd(renderWeather,newText)
+    querySelectorFactory(".weathers").innerHTML = newText
+    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
+}
+
+function returnOptions(){
+    this.classList.remove("go-back-options-toggle")
+    weatherOuterAnimate(false)
+    setTimeout(()=>querySelectorFactory(".weathers").textContent = "",1200) 
+    setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 1210)
+    setTimeout(()=>{
+        querySelectorFactory(".select-group").classList.toggle("select-toggle")
+        querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
+    },2010)
+}
+
 setInterval(time, 1000)
 
-// 監聽選單內容，並觸發 callAll 函式
-select.addEventListener('change', callAll)
+backgroundChange()
 
-// 監聽背景控制器內容，點擊式觸發函式內容並同步更換控制器左側文字
-document.querySelector('.control').addEventListener('click', backGroundSet)
+querySelectorFactory(".background-controller").addEventListener("click",backgroundChange)
 
-// 監聽 navbar 內容，點擊式觸發 content 函式
-document.querySelectorAll('.weather').forEach(weather => weather.addEventListener('click', content))
+querySelectorFactory(".weathers-outer").style.marginTop = `-${window.innerHeight}px`
 
-// 監聽 sidebar 圖形按鈕，點擊時觸發函式內容
-document.querySelector('.sidebar-icon').addEventListener('click', sideBarPart)
+querySelectorFactory(".current-select").addEventListener("click",selectAnimate)
 
-// 監聽每個 sidebar 文字，點擊時觸發 allBlock 函式
-document.querySelectorAll('.sidebar-text').forEach(keyWord => keyWord.addEventListener('click', allBlock))
+querySelectorFactory(".other-block").addEventListener("click",selectCity)
 
-// 監聽 back 按鈕，點擊時觸發函式內容
-document.querySelector('.back').addEventListener('click', backAction)
+querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
 
-// 監聽 top 按鈕，點擊時觸發 scrolls 函式
-document.querySelector('.top').addEventListener('click', scrolls)
+querySelectorFactory('.go-top').addEventListener('click', scrolls)
 
-// 監聽頁面滾動，當滾動到指定位置時觸發函式內容
 window.addEventListener('scroll', switchTopBar)
