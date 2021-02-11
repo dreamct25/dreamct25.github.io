@@ -1,103 +1,168 @@
-const quest = document.querySelector('.quest')
-const Qouter = document.querySelector('.Q-outer')
-const Qtext = document.querySelectorAll('.texts')
-const chooseFt = document.querySelector('.text-first')
-const chooseSd = document.querySelector('.text-second')
-const prev = document.querySelector('.prev')
-const next = document.querySelector('.next')
-const typeTextContent = document.querySelector('.type-text-content')
-const explainText = document.querySelector('.explain')
-
-// 題目資料
-const Qitems = {
-    Q1T: 'Q1 . 我傾向從何處得到力量？',
-    Q1A: '別人',
-    Q1B: '我自己的想法',
-    Q2T: 'Q2 . 當我參加一個社交聚會時，我傾向從何處擁有更多的氣力？',
-    Q2A: '在夜色很深時，一旦我開始投入也許就是最晚離開的那一個',
-    Q2B: '在夜晚開始的時候，我就疲倦想回家了',
-    Q3T: 'Q3 . 下列哪種聽起來較吸引人？',
-    Q3A: '與我的情人到有很多人且社交活動頻繁的地方',
-    Q3B: '待在家中與我的情人做一些特別的事情，如觀賞一部有趣的影片並享用我最愛的外帶食物',
-    Q4T: 'Q4 . 在約會中我通常...',
-    Q4A: '整體來說蠻健談的',
-    Q4B: '較安靜且保留，直到我覺得舒服',
-    Q5T: 'Q5 . 在過去我大部分情人都在何處遇見？',
-    Q5A: '在宴會中、夜總會、工作上、休閒活動中、會議上、或當朋友介紹我給他們的朋友時',
-    Q5B: '透過私人的方式，如個人廣告、錄影約會、或由親密的朋友和家人介紹',
-    Q6T: 'Q6 . 我傾向擁有...',
-    Q6A: '很多認識的人和很親密的朋友',
-    Q6B: '一些很親密的朋友和一些認識的人',
-    Q7T: 'Q7 . 在過去我愛的人和情人傾向對我說...',
-    Q7A: '你難道不可以安靜一點嗎？',
-    Q7B: '可以請你從你的世界中出來一下嗎？',
-    Q8T: 'Q8 . 我傾向透過以下方式收集資訊...',
-    Q8A: '我對有可能發生的事情的想像和期望',
-    Q8B: '我對目前狀況的實際認知',
-    Q9T: 'Q9 . 我傾向相信...',
-    Q9A: '我的直覺',
-    Q9B: '我直接的觀察和現成的經驗',
-    Q10T: 'Q10 . 當在一段關係中時我傾向相信...',
-    Q10A: '永遠有進步的空間',
-    Q10B: '若它沒有被破壞別修補它',
-    Q11T: 'Q11 . 當我對一個約會覺得放心時我傾向談論...',
-    Q11A: '未來有關於改進或發明的事物和生活的種種可能性，如我也許會談論一個新的科學發明或一個更好的方法來表達我的感受',
-    Q11B: '實際具體的關於「此時此地」的事物，如我也許會談論品酒的好方法或我即將要參加的新奇旅程',
-    Q12T: 'Q12 . 我是這樣的人...',
-    Q12A: '喜歡先看整個大局面',
-    Q12B: '喜歡先拿捏細節',
-    Q13T: 'Q13 . 我的思考類型是...',
-    Q13A: '與其活在現實中，我選擇活在我的想像裡',
-    Q13B: '與其活在我的想像裡，我選擇活在現實中',
-    Q14T: 'Q14 . 我通常...',
-    Q14A: '偏向於去想像一大堆關於即將來臨的約會中的事情',
-    Q14B: '偏向於拘緊地想像即將來臨的約會，期待讓它自然地發生',
-    Q15T: 'Q15 . 我傾向如此做決定...',
-    Q15A: '先依我的心意，再依我的邏輯',
-    Q15B: '先依我的邏輯，再依我的心意',
-    Q16T: 'Q16 . 我傾向比較能夠察覺到...',
-    Q16A: '當人們需要情感上的支持時',
-    Q16B: '當人們不合邏輯時',
-    Q17T: 'Q17 . 當與某人分手時...',
-    Q17A: '我通常讓自己的情緒深陷其中很難抽身而出',
-    Q17B: '雖然我覺得受傷，但一旦下定決心會直截了當地將過去戀人的影子甩開',
-    Q18T: 'Q18 . 當與一個人交往時我傾向衡量...',
-    Q18A: '情感上的相容性：表達愛意和對另一半的需求很敏感',
-    Q18B: '智慧上的相容性：溝通重要的想法與客觀地討論辯論事情',
-    Q19T: 'Q19 . 當我不同意我情人的想法時...',
-    Q19A: '我盡可能地避免傷害對方的感受，若是會對對方造成傷害的話就不說',
-    Q19B: '我通常毫無保留地說話，並且對我的情人直言直語，因為對的就是對的',
-    Q20T: 'Q20 . 認識我的人傾向形容我為...',
-    Q20A: '熱情和敏感的',
-    Q20B: '邏輯和明確的',
-    Q21T: 'Q21 . 我把大部分和別人的相遇視為...',
-    Q21A: '友善及重要的',
-    Q21B: '另有目的',
-    Q22T: 'Q22 . 若我有時間和金錢朋友邀請我到國外度假，並且在一天前才通知，我會...',
-    Q22A: '需先檢查我的時間表',
-    Q22B: '立即收拾行囊',
-    Q23T: 'Q23 . 在第一次約會中我...',
-    Q23A: '若我所約的人來遲了會很不高興',
-    Q23B: '一點都不在乎，因為自己常常遲到',
-    Q24T: 'Q24 . 我偏好...',
-    Q24A: '事先知道約會的行程：要去哪裡、有誰參加、我會在哪裡多久、該如何打扮',
-    Q24B: '讓約會自然地發生，不做先前太多的計劃',
-    Q25T: 'Q25 . 我選擇的生活循環著...',
-    Q25A: '日程表和組織性',
-    Q25B: '自然發生和彈性',
-    Q26T: 'Q26 . 哪一項較為常見？',
-    Q26A: '我準時出席而其他人遲到',
-    Q26B: '其他人都準時出席而我遲到',
-    Q27T: 'Q27 . 我是喜歡這樣的人...',
-    Q27A: '下定決心並且做出最後肯定的結論',
-    Q27B: '不限定我的選擇並且持續收集資訊',
-    Q28T: 'Q28 . 我是這類型的人...',
-    Q28A: '喜歡在一個時間裡專心做一件事情直到完成',
-    Q28B: '享受同時進行好幾件事情'
+let obj = {}
+const querySelector = parameter => {
+    const selected = document.querySelector(parameter)
+    return {
+        selected: selected,
+        text: txt => txt == undefined ? selected.textContent : selected.textContent = txt,
+        addClass: hasAdd => selected.classList.add(hasAdd),
+        removeClass: hasRemove => selected.classList.remove(hasRemove),
+        styles: (cssType, cssParameter) => selected.style.setProperty(cssType, cssParameter)
+    }
 }
 
+const querySelectorAll = parameter => document.querySelectorAll(parameter)
+
+obj.array = []
+obj.strTemp = ""
+obj.count = -1
+obj.switchs = false
+obj.stopTimeSet;
+
+// 題目資料
+obj.Qitems = [{
+    qNum: 0,
+    qT: 'Q1 . 我傾向從何處得到力量？',
+    ansA: '別人',
+    ansB: '我自己的想法',
+}, {
+    qNum: 1,
+    qT: 'Q2 . 當我參加一個社交聚會時，我傾向從何處擁有更多的氣力？',
+    ansA: '在夜色很深時，一旦我開始投入也許就是最晚離開的那一個',
+    ansB: '在夜晚開始的時候，我就疲倦想回家了',
+}, {
+    qNum: 2,
+    qT: 'Q3 . 下列哪種聽起來較吸引人？',
+    ansA: '與我的情人到有很多人且社交活動頻繁的地方',
+    ansB: '待在家中與我的情人做一些特別的事情，如觀賞一部有趣的影片並享用我最愛的外帶食物',
+}, {
+    qNum: 3,
+    qT: 'Q4 . 在約會中我通常...',
+    ansA: '整體來說蠻健談的',
+    ansB: '較安靜且保留，直到我覺得舒服',
+}, {
+    qNum: 4,
+    qT: 'Q5 . 在過去我大部分情人都在何處遇見？',
+    ansA: '在宴會中、夜總會、工作上、休閒活動中、會議上、或當朋友介紹我給他們的朋友時',
+    ansB: '透過私人的方式，如個人廣告、錄影約會、或由親密的朋友和家人介紹',
+}, {
+    qNum: 5,
+    qT: 'Q6 . 我傾向擁有...',
+    ansA: '很多認識的人和很親密的朋友',
+    ansB: '一些很親密的朋友和一些認識的人',
+}, {
+    qNum: 6,
+    qT: 'Q7 . 在過去我愛的人和情人傾向對我說...',
+    ansA: '你難道不可以安靜一點嗎？',
+    ansB: '可以請你從你的世界中出來一下嗎？',
+}, {
+    qNum: 7,
+    qT: 'Q8 . 我傾向透過以下方式收集資訊...',
+    ansA: '我對有可能發生的事情的想像和期望',
+    ansB: '我對目前狀況的實際認知',
+}, {
+    qNum: 8,
+    qT: 'Q9 . 我傾向相信...',
+    ansA: '我的直覺',
+    ansB: '我直接的觀察和現成的經驗',
+}, {
+    qNum: 9,
+    qT: 'Q10 . 當在一段關係中時我傾向相信...',
+    ansA: '永遠有進步的空間',
+    ansB: '若它沒有被破壞別修補它',
+}, {
+    qNum: 10,
+    qT: 'Q11 . 當我對一個約會覺得放心時我傾向談論...',
+    ansA: '未來有關於改進或發明的事物和生活的種種可能性，如我也許會談論一個新的科學發明或一個更好的方法來表達我的感受',
+    ansB: '實際具體的關於「此時此地」的事物，如我也許會談論品酒的好方法或我即將要參加的新奇旅程',
+}, {
+    qNum: 11,
+    qT: 'Q12 . 我是這樣的人...',
+    ansA: '喜歡先看整個大局面',
+    ansB: '喜歡先拿捏細節',
+}, {
+    qNum: 12,
+    qT: 'Q13 . 我的思考類型是...',
+    ansA: '與其活在現實中，我選擇活在我的想像裡',
+    ansB: '與其活在我的想像裡，我選擇活在現實中',
+}, {
+    qNum: 13,
+    qT: 'Q14 . 我通常...',
+    ansA: '偏向於去想像一大堆關於即將來臨的約會中的事情',
+    ansB: '偏向於拘緊地想像即將來臨的約會，期待讓它自然地發生',
+}, {
+    qNum: 14,
+    qT: 'Q15 . 我傾向如此做決定...',
+    ansA: '先依我的心意，再依我的邏輯',
+    ansB: '先依我的邏輯，再依我的心意',
+}, {
+    qNum: 15,
+    qT: 'Q16 . 我傾向比較能夠察覺到...',
+    ansA: '當人們需要情感上的支持時',
+    ansB: '當人們不合邏輯時',
+}, {
+    qNum: 16,
+    qT: 'Q17 . 當與某人分手時...',
+    ansA: '我通常讓自己的情緒深陷其中很難抽身而出',
+    ansB: '雖然我覺得受傷，但一旦下定決心會直截了當地將過去戀人的影子甩開',
+}, {
+    qNum: 17,
+    qT: 'Q18 . 當與一個人交往時我傾向衡量...',
+    ansA: '情感上的相容性：表達愛意和對另一半的需求很敏感',
+    ansB: '智慧上的相容性：溝通重要的想法與客觀地討論辯論事情',
+}, {
+    qNum: 18,
+    qT: 'Q19 . 當我不同意我情人的想法時...',
+    ansA: '我盡可能地避免傷害對方的感受，若是會對對方造成傷害的話就不說',
+    ansB: '我通常毫無保留地說話，並且對我的情人直言直語，因為對的就是對的',
+}, {
+    qNum: 19,
+    qT: 'Q20 . 認識我的人傾向形容我為...',
+    ansA: '熱情和敏感的',
+    ansB: '邏輯和明確的',
+}, {
+    qNum: 20,
+    qT: 'Q21 . 我把大部分和別人的相遇視為...',
+    ansA: '友善及重要的',
+    ansB: '另有目的',
+}, {
+    qNum: 21,
+    qT: 'Q22 . 若我有時間和金錢朋友邀請我到國外度假，並且在一天前才通知，我會...',
+    ansA: '需先檢查我的時間表',
+    ansB: '立即收拾行囊',
+}, {
+    qNum: 22,
+    qT: 'Q23 . 在第一次約會中我...',
+    ansA: '若我所約的人來遲了會很不高興',
+    ansB: '一點都不在乎，因為自己常常遲到',
+}, {
+    qNum: 23,
+    qT: 'Q24 . 我偏好...',
+    ansA: '事先知道約會的行程：要去哪裡、有誰參加、我會在哪裡多久、該如何打扮',
+    ansB: '讓約會自然地發生，不做先前太多的計劃',
+}, {
+    qNum: 24,
+    qT: 'Q25 . 我選擇的生活循環著...',
+    ansA: '日程表和組織性',
+    ansB: '自然發生和彈性',
+}, {
+    qNum: 25,
+    qT: 'Q26 . 哪一項較為常見？',
+    ansA: '我準時出席而其他人遲到',
+    ansB: '其他人都準時出席而我遲到',
+}, {
+    qNum: 26,
+    qT: 'Q27 . 我是喜歡這樣的人...',
+    ansA: '下定決心並且做出最後肯定的結論',
+    ansB: '不限定我的選擇並且持續收集資訊',
+}, {
+    qNum: 27,
+    qT: 'Q28 . 我是這類型的人...',
+    ansA: '喜歡在一個時間裡專心做一件事情直到完成',
+    ansB: '享受同時進行好幾件事情'
+}]
+
 // 解析資料
-const typeItems = [{
+obj.typeItems = [{
     originsType: 'ESTJ',
     nameType: '大男人型',
     thinkType: '外向+感覺+理性+判斷',
@@ -370,129 +435,88 @@ const typeItems = [{
     explainLove: '你是一個喜愛嘗試、對世界維持好奇心的人。因此，你熱愛和不同性格的人約會。你保持各種開放的可能性，也很能展現自己的社交魅力，也總是讓人感覺到自在、毫無壓力。而你等待著那個可以真正走入你內心的人。屬於你的戀愛關鍵字是隨和與溫柔。',
     explainFallLove: '你的內心是溫柔的，面對分手時，你會選擇承擔失敗裡大部分的責任，並且也會有懊悔情緒，自責自己當初應該可以做到更多等。你的同情心、感性，會讓你時常處於懷舊的狀態。你很珍惜自己擁有過的情感關係。然而，你也有可能因此對感情堅持著一種不可能被實踐的標準。想對你說，你其實是一個很願意包容不同可能的人，你總是將前任，以及你對他的情感小心收藏，而你已經做得很好了；當包容著過去，同時間，也別忘了提醒自己騰出空間去接納未來。'
 }]
-let array = []
-let newString = ''
-let arrayPos;
-let count = -1
-let testText = ''
-let switchs = false
-let stopTimeSet;
-next.textContent = '開始'
 
 // 設定點擊內容所加入的文字
 function choose() {
-    switchs = true
-    if (switchs !== true) return;
-    switchs = false
-    switch (this.dataset.choose) {
-        case 'A':
-            chooseFt.classList.add('texts-trans')
-            chooseSd.classList.remove('texts-trans')
-            if (count >= 0 && count <= 6) {
-                if (array.includes('I') == true) {
-                    arrayPos = array.findIndex(key => key == 'I')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('E') == true ? null : array.push('E')
-            } else if (count >= 7 && count <= 13) {
-                if (array.includes('S') == true) {
-                    arrayPos = array.findIndex(key => key == 'S')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('N') == true ? null : array.push('N')
-            } else if (count >= 14 && count <= 20) {
-                if (array.includes('T') == true) {
-                    arrayPos = array.findIndex(key => key == 'T')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('F') == true ? null : array.push('F')
-            } else if (count >= 21 && count <= 27) {
-                if (array.includes('P') == true) {
-                    arrayPos = array.findIndex(key => key == 'P')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('J') == true ? null : array.push('J')
-            }
-            break;
-        case 'B':
-            chooseSd.classList.add('texts-trans')
-            chooseFt.classList.remove('texts-trans')
-            if (count >= 0 && count <= 6) {
-                if (array.includes('E') == true) {
-                    arrayPos = array.findIndex(key => key == 'E')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('I') == true ? null : array.push('I')
-            } else if (count >= 7 && count <= 13) {
-                if (array.includes('N') == true) {
-                    arrayPos = array.findIndex(key => key == 'N')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('S') == true ? null : array.push('S')
-            } else if (count >= 14 && count <= 20) {
-                if (array.includes('F') == true) {
-                    arrayPos = array.findIndex(key => key == 'F')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('T') == true ? null : array.push('T')
-            } else if (count >= 21 && count <= 27) {
-                if (array.includes('J') == true) {
-                    arrayPos = array.findIndex(key => key == 'J')
-                    array.splice(arrayPos, 1)
-                }
-                array.includes('P') == true ? null : array.push('P')
-            }
-            break;
+    obj.switchs = true
+    if (obj.switchs !== true) return;
+    obj.switchs = false
+    if (this.dataset.choose == "A") {
+        querySelector(".text-first").addClass('texts-trans')
+        querySelector(".text-second").removeClass('texts-trans')
+        isChooseA()
+    } else {
+        querySelector(".text-second").addClass('texts-trans')
+        querySelector(".text-first").removeClass('texts-trans')
+        isChooseB()
     }
-
 }
 
+function isChooseA() {
+    if (obj.count >= 0 && obj.count <= 6) {
+        obj.strTemp = "E"
+    } else if (obj.count >= 7 && obj.count <= 13) {
+        obj.strTemp = "N"
+    } else if (obj.count >= 14 && obj.count <= 20) {
+        obj.strTemp = "F"
+    } else if (obj.count >= 21 && obj.count <= 27) {
+        obj.strTemp = "J"
+    }
+}
+
+function isChooseB() {
+    if (obj.count >= 0 && obj.count <= 6) {
+        obj.strTemp = "I"
+    } else if (obj.count >= 7 && obj.count <= 13) {
+        obj.strTemp = "S"
+    } else if (obj.count >= 14 && obj.count <= 20) {
+        obj.strTemp = "T"
+    } else if (obj.count >= 21 && obj.count <= 27) {
+        obj.strTemp = "P"
+    }
+}
+
+function modalHide() {
+    querySelector('.confirm').selected.classList.add('confirm-active')
+    setTimeout(() => querySelector('.confirm').removeClass('confirm-active'), 540);
+    setTimeout(() => {
+        querySelector('.modalC').removeClass('modal-toggle')
+        querySelector('.modal-bodyC').removeClass('modal-body-toggle')
+        setTimeout(() => querySelector('.modalC').styles("display", ""), 750);
+    }, 890)
+    querySelector('.confirm').selected.removeEventListener('click', modalHide)
+}
 // 設定點擊下一題時的函式內容
 function nextStep() {
-    count < 0 ? switchs = false : null
-    if (switchs !== false) {
-        const modalShow = document.querySelector('.modalC')
-        const modalContentShow = document.querySelector('.modal-bodyC')
-        const confirm = document.querySelector('.confirm')
-        modalShow.style.display = 'block'
-        modalShow.style.transition = '1s ease'
-        window.innerWidth <= 414 ? modalContentShow.style.maxWidth = '350px' : modalContentShow.style.maxWidth = '400px'
-
-        function modalHide() {
-            confirm.classList.add('confirm-active')
-            setTimeout(() => confirm.classList.remove('confirm-active'), 540);
-
-            setTimeout(() => {
-                modalShow.classList.remove('modal-toggle')
-                modalContentShow.classList.remove('modal-body-toggle')
-                setTimeout(() => modalShow.style.display = 'none', 750);
-            }, 890)
-            confirm.removeEventListener('click', modalHide)
-        }
+    obj.count < 0 ? obj.switchs = false : null
+    if (obj.switchs !== false) {
+        let params = window.innerWidth <= 414 ? '350px' : '400px'
+        querySelector('.modalC').styles("display", "block")
+        querySelector('.modalC').styles("transition", "1s ease")
+        querySelector(".modal-bodyC").styles("width", params)
         setTimeout(() => {
-            modalShow.classList.add('modal-toggle')
-            modalContentShow.classList.add('modal-body-toggle')
+            querySelector('.modalC').addClass('modal-toggle')
+            querySelector(".modal-bodyC").addClass('modal-body-toggle')
         }, 100)
-
-        confirm.addEventListener('click', modalHide)
+        querySelector('.confirm').selected.addEventListener('click', modalHide)
         return
-    } else if (Qouter.classList.length >= 3) {
-        Qouter.classList.remove('Qadd-in')
-        Qouter.classList.add('Qadd-out')
+    } else if (querySelector(".Q-outer").selected.classList.length >= 3) {
+        querySelector(".Q-outer").removeClass('Qadd-in')
+        querySelector(".Q-outer").addClass('Qadd-out')
         setTimeout(() => {
-            chooseFt.classList.remove('texts-trans')
-            chooseSd.classList.remove('texts-trans')
+            querySelector(".text-first").removeClass('texts-trans')
+            querySelector(".text-second").removeClass('texts-trans')
         }, 900)
-        stopTimeSet = setTimeout(() => {
-            Qouter.classList.remove('Qadd-out')
-            Qouter.classList.add('Qadd-in')
+        obj.stopTimeSet = setTimeout(() => {
+            querySelector(".Q-outer").removeClass('Qadd-out')
+            querySelector(".Q-outer").addClass('Qadd-in')
         }, 1000)
     } else {
-        setTimeout(() => Qouter.classList.add('Qadd-in'), 1000)
-        Qouter.classList.remove('Qadd-out')
+        setTimeout(() => querySelector(".Q-outer").addClass('Qadd-in'), 1000)
+        querySelector(".Q-outer").removeClass('Qadd-out')
     }
 
-    if (count <= 0) {
+    if (obj.count <= 0) {
         this.classList.add('next-trans')
         setTimeout(() => this.classList.remove('next-trans'), 490)
     } else {
@@ -501,459 +525,293 @@ function nextStep() {
         setTimeout(() => this.classList.remove('next-trans-pos'), 490)
     }
 
-    if (count == -1) {
+    if (obj.count == -1) {
         this.classList.add('next-trans')
         this.style.cssText = 'opacity: 0;'
-        explainText.classList.remove('explain-show')
+        querySelector(".explain").removeClass('explain-show')
         window.removeEventListener('scroll', scrolls)
         scrollTop()
         setTimeout(() => {
             this.classList.remove('next-trans')
             this.style.cssText = 'opacity: 1;'
         }, 1000)
-        setTimeout(() => explainText.style.display = 'none', 1001);
-        setTimeout(() => Qouter.style.display = 'block', 1003);
-    } else if (count == -2) {
-        testText = ''
-        newString = ''
+        setTimeout(() => querySelector(".explain").styles("display", "none"), 1001);
+        setTimeout(() => querySelector(".Q-outer").styles("display", "block"), 1003);
+    } else if (obj.count == -2) {
+        obj.strTemp = ''
         this.classList.add('next-move-out')
-        typeTextContent.classList.add('type-text-content-hide')
+        querySelector(".type-text-content").addClass('type-text-content-hide')
         window.addEventListener('scroll', scrolls)
         scrollTop()
         setTimeout(() => {
-            explainText.style.display = 'block'
-            typeTextContent.style.display = 'none'
-            typeTextContent.textContent = ''
+            querySelector(".explain").styles("display", "block")
+            querySelector(".type-text-content").styles("display", "")
+            querySelector(".type-text-content").text("")
             this.classList.add('next-small')
         }, 990);
         setTimeout(() => {
-            explainText.classList.add('explain-show')
-            typeTextContent.classList.remove('type-text-content-hide')
-            typeTextContent.classList.remove('type-text-content-in')
+            querySelector(".explain").addClass('explain-show')
+            querySelector(".type-text-content").removeClass('type-text-content-hide')
+            querySelector(".type-text-content").removeClass('type-text-content-in')
             this.classList.remove('next-move-out')
             this.classList.remove('next-move')
         }, 1110);
         setTimeout(() => {
             this.classList.remove('next-small')
-            next.textContent = '開始'
+            querySelector(".next").text('開始')
             this.style.cssText = 'opacity: 1;'
         }, 1310);
     }
-    switchs = true
-    count += 1
-    newString += array.join('')
+    obj.switchs = true
+    obj.count++
+        if (obj.count >= 1) obj.array.push(obj.strTemp)
     setTimeout(() => {
-        switch (count) {
-            case 0:
+        obj.Qitems.forEach(key => {
+            if (key.qNum == obj.count) {
+                querySelector(".quest").text(key.qT)
+                querySelector(".text-first").text(key.ansA)
+                querySelector(".text-second").text(key.ansB)
+            }
+            if (key.qNum == 0 && obj.count == 0) {
                 this.textContent = '下一題'
                 this.classList.add('btn-start')
-                quest.textContent = Qitems.Q1T
-                chooseFt.textContent = Qitems.Q1A
-                chooseSd.textContent = Qitems.Q1B
-                chooseFt.classList.remove('texts-hide')
-                chooseSd.classList.remove('texts-hide')
-                break;
-            case 1:
+                querySelector(".text-first").removeClass('texts-hide')
+                querySelector(".text-second").removeClass('texts-hide')
+            } else if (key.qNum == 1 && obj.count == 1) {
                 this.classList.add('next-active')
-                prev.classList.add('prev-active')
-                prev.classList.add('btn-start')
-                prev.textContent = '上一題'
-                quest.textContent = Qitems.Q2T
-                chooseFt.textContent = Qitems.Q2A
-                chooseSd.textContent = Qitems.Q2B
-                break;
-            case 2:
-                quest.textContent = Qitems.Q3T
-                chooseFt.textContent = Qitems.Q3A
-                chooseSd.textContent = Qitems.Q3B
-                break;
-            case 3:
-                quest.textContent = Qitems.Q4T
-                chooseFt.textContent = Qitems.Q4A
-                chooseSd.textContent = Qitems.Q4B
-                break;
-            case 4:
-                quest.textContent = Qitems.Q5T
-                chooseFt.textContent = Qitems.Q5A
-                chooseSd.textContent = Qitems.Q5B
-                break;
-            case 5:
-                quest.textContent = Qitems.Q6T
-                chooseFt.textContent = Qitems.Q6A
-                chooseSd.textContent = Qitems.Q6B
-                break;
-            case 6:
-                quest.textContent = Qitems.Q7T
-                chooseFt.textContent = Qitems.Q7A
-                chooseSd.textContent = Qitems.Q7B
-                break;
-            case 7:
-                quest.textContent = Qitems.Q8T
-                chooseFt.textContent = Qitems.Q8A
-                chooseSd.textContent = Qitems.Q8B
-                break;
-            case 8:
-                quest.textContent = Qitems.Q9T
-                chooseFt.textContent = Qitems.Q9A
-                chooseSd.textContent = Qitems.Q9B
-                break;
-            case 9:
-                quest.textContent = Qitems.Q10T
-                chooseFt.textContent = Qitems.Q10A
-                chooseSd.textContent = Qitems.Q10B
-                break;
-            case 10:
-                quest.textContent = Qitems.Q11T
-                chooseFt.textContent = Qitems.Q11A
-                chooseSd.textContent = Qitems.Q11B
-                break;
-            case 11:
-                quest.textContent = Qitems.Q12T
-                chooseFt.textContent = Qitems.Q12A
-                chooseSd.textContent = Qitems.Q12B
-                break;
-            case 12:
-                quest.textContent = Qitems.Q13T
-                chooseFt.textContent = Qitems.Q13A
-                chooseSd.textContent = Qitems.Q13B
-                break;
-            case 13:
-                quest.textContent = Qitems.Q14T
-                chooseFt.textContent = Qitems.Q14A
-                chooseSd.textContent = Qitems.Q14B
-                break;
-            case 14:
-                quest.textContent = Qitems.Q15T
-                chooseFt.textContent = Qitems.Q15A
-                chooseSd.textContent = Qitems.Q15B
-                break;
-            case 15:
-                quest.textContent = Qitems.Q16T
-                chooseFt.textContent = Qitems.Q16A
-                chooseSd.textContent = Qitems.Q16B
-                break;
-            case 16:
-                quest.textContent = Qitems.Q17T
-                chooseFt.textContent = Qitems.Q17A
-                chooseSd.textContent = Qitems.Q17B
-                break;
-            case 17:
-                quest.textContent = Qitems.Q18T
-                chooseFt.textContent = Qitems.Q18A
-                chooseSd.textContent = Qitems.Q18B
-                break;
-            case 18:
-                quest.textContent = Qitems.Q19T
-                chooseFt.textContent = Qitems.Q19A
-                chooseSd.textContent = Qitems.Q19B
-                break;
-            case 19:
-                quest.textContent = Qitems.Q20T
-                chooseFt.textContent = Qitems.Q20A
-                chooseSd.textContent = Qitems.Q20B
-                break;
-            case 20:
-                quest.textContent = Qitems.Q21T
-                chooseFt.textContent = Qitems.Q21A
-                chooseSd.textContent = Qitems.Q21B
-                break;
-            case 21:
-                quest.textContent = Qitems.Q22T
-                chooseFt.textContent = Qitems.Q22A
-                chooseSd.textContent = Qitems.Q22B
-                break;
-            case 22:
-                quest.textContent = Qitems.Q23T
-                chooseFt.textContent = Qitems.Q23A
-                chooseSd.textContent = Qitems.Q23B
-                break;
-            case 23:
-                quest.textContent = Qitems.Q24T
-                chooseFt.textContent = Qitems.Q24A
-                chooseSd.textContent = Qitems.Q24B
-                break;
-            case 24:
-                quest.textContent = Qitems.Q25T
-                chooseFt.textContent = Qitems.Q25A
-                chooseSd.textContent = Qitems.Q25B
-                break;
-            case 25:
-                quest.textContent = Qitems.Q26T
-                chooseFt.textContent = Qitems.Q26A
-                chooseSd.textContent = Qitems.Q26B
-                break;
-            case 26:
-                quest.textContent = Qitems.Q27T
-                chooseFt.textContent = Qitems.Q27A
-                chooseSd.textContent = Qitems.Q27B
-                break;
-            case 27:
-                quest.textContent = Qitems.Q28T
-                chooseFt.textContent = Qitems.Q28A
-                chooseSd.textContent = Qitems.Q28B
+                querySelector(".prev").addClass('prev-active')
+                querySelector(".prev").addClass('btn-start')
+                querySelector(".prev").text('上一題')
+            } else if (key.qNum == 27 && obj.count == 27) {
                 this.textContent = '查詢結果'
-                break;
-            case 28:
-                count = -2
-                clearTimeout(stopTimeSet)
-                setTimeout(() => finalSum(), 500)
-                this.classList.remove('next-active')
-                this.classList.remove('btn-start')
-                prev.classList.remove('prev-active')
-                prev.classList.remove('btn-start')
-                this.classList.add('next-trans-hide')
-                break;
+            }
+        })
+        if (obj.count == 28) {
+            obj.count = -2
+            clearTimeout(obj.stopTimeSet)
+            setTimeout(() => finalSum(), 500)
+
+            this.classList.remove('next-active')
+            this.classList.remove('btn-start')
+            this.style.cssText = "opacity:0;"
+            querySelector(".prev").removeClass('prev-active')
+            querySelector(".prev").removeClass('btn-start')
+            this.classList.add('next-trans-hide')
         }
     }, 900)
     setTimeout(() => {
-        if (window.innerWidth <= 768) {
-            quest.textContent.length > 16 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
-                'center'
-            chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-                'center'
-            chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-                'center'
-        } else {
-            quest.textContent.length > 27 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
-                'center'
-            chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-                'center'
-            chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-                'center'
-        }
+        let getObj = textLength()
+        querySelector(".quest").styles("text-align", getObj.quest)
+        querySelector(".text-first").styles("text-align", getObj.chooseFt)
+        querySelector(".text-second").styles("text-align", getObj.chooseSd)
     }, 910)
-    setTimeout(() => array = [], 10)
 }
 
 // 設定點擊上一題的函式內容
 function backStep() {
-    count -= 1
-    if (count >= 0) {
+    obj.count--
+        if (obj.count == 0) {
+            querySelector(".next").removeClass('next-active')
+            querySelector(".prev").removeClass('prev-active')
+        } else
+    if (obj.count >= 0) {
         this.classList.add('prev-trans-pos')
         setTimeout(() => this.classList.remove('prev-trans-pos'), 490)
     }
-    if (Qouter.classList.length >= 3) {
-        Qouter.classList.add('Qremove-in')
-        Qouter.classList.remove('Qadd-in')
+    if (querySelector(".Q-outer").selected.classList.length >= 3) {
+        querySelector(".Q-outer").addClass('Qremove-in')
+        querySelector(".Q-outer").removeClass('Qadd-in')
         setTimeout(() => {
-            chooseFt.classList.remove('texts-trans')
-            chooseSd.classList.remove('texts-trans')
+            querySelector(".text-first").removeClass('texts-trans')
+            querySelector(".text-second").removeClass('texts-trans')
         }, 900)
         setTimeout(() => {
-            Qouter.classList.remove('Qremove-in')
-            Qouter.classList.add('Qadd-in')
+            querySelector(".Q-outer").removeClass('Qremove-in')
+            querySelector(".Q-outer").addClass('Qadd-in')
         }, 1000)
     }
-    newString = newString.substring(0, newString.length - 1)
+    obj.array.splice(obj.array.length - 1, 1)
     setTimeout(() => {
-        switch (count) {
-            case 0:
-                next.classList.remove('next-active')
-                prev.classList.remove('prev-active')
-                quest.textContent = Qitems.Q1T
-                chooseFt.textContent = Qitems.Q1A
-                chooseSd.textContent = Qitems.Q1B
-                break;
-            case 1:
-                quest.textContent = Qitems.Q2T
-                chooseFt.textContent = Qitems.Q2A
-                chooseSd.textContent = Qitems.Q2B
-                break;
-            case 2:
-                quest.textContent = Qitems.Q3T
-                chooseFt.textContent = Qitems.Q3A
-                chooseSd.textContent = Qitems.Q3B
-                break;
-            case 3:
-                quest.textContent = Qitems.Q4T
-                chooseFt.textContent = Qitems.Q4A
-                chooseSd.textContent = Qitems.Q4B
-                break;
-            case 4:
-                quest.textContent = Qitems.Q5T
-                chooseFt.textContent = Qitems.Q5A
-                chooseSd.textContent = Qitems.Q5B
-                break;
-            case 5:
-                quest.textContent = Qitems.Q6T
-                chooseFt.textContent = Qitems.Q6A
-                chooseSd.textContent = Qitems.Q6B
-                break;
-            case 6:
-                quest.textContent = Qitems.Q7T
-                chooseFt.textContent = Qitems.Q7A
-                chooseSd.textContent = Qitems.Q7B
-                break;
-            case 7:
-                quest.textContent = Qitems.Q8T
-                chooseFt.textContent = Qitems.Q8A
-                chooseSd.textContent = Qitems.Q8B
-                break;
-            case 8:
-                quest.textContent = Qitems.Q9T
-                chooseFt.textContent = Qitems.Q9A
-                chooseSd.textContent = Qitems.Q9B
-                break;
-            case 9:
-                quest.textContent = Qitems.Q10T
-                chooseFt.textContent = Qitems.Q10A
-                chooseSd.textContent = Qitems.Q10B
-                break;
-            case 10:
-                quest.textContent = Qitems.Q11T
-                chooseFt.textContent = Qitems.Q11A
-                chooseSd.textContent = Qitems.Q11B
-                break;
-            case 11:
-                quest.textContent = Qitems.Q12T
-                chooseFt.textContent = Qitems.Q12A
-                chooseSd.textContent = Qitems.Q12B
-                break;
-            case 12:
-                quest.textContent = Qitems.Q13T
-                chooseFt.textContent = Qitems.Q13A
-                chooseSd.textContent = Qitems.Q13B
-                break;
-            case 13:
-                quest.textContent = Qitems.Q14T
-                chooseFt.textContent = Qitems.Q14A
-                chooseSd.textContent = Qitems.Q14B
-                break;
-            case 14:
-                quest.textContent = Qitems.Q15T
-                chooseFt.textContent = Qitems.Q15A
-                chooseSd.textContent = Qitems.Q15B
-                break;
-            case 15:
-                quest.textContent = Qitems.Q16T
-                chooseFt.textContent = Qitems.Q16A
-                chooseSd.textContent = Qitems.Q16B
-                break;
-            case 16:
-                quest.textContent = Qitems.Q17T
-                chooseFt.textContent = Qitems.Q17A
-                chooseSd.textContent = Qitems.Q17B
-                break;
-            case 17:
-                quest.textContent = Qitems.Q18T
-                chooseFt.textContent = Qitems.Q18A
-                chooseSd.textContent = Qitems.Q18B
-                break;
-            case 18:
-                quest.textContent = Qitems.Q19T
-                chooseFt.textContent = Qitems.Q19A
-                chooseSd.textContent = Qitems.Q19B
-                break;
-            case 19:
-                quest.textContent = Qitems.Q20T
-                chooseFt.textContent = Qitems.Q20A
-                chooseSd.textContent = Qitems.Q20B
-                break;
-            case 20:
-                quest.textContent = Qitems.Q21T
-                chooseFt.textContent = Qitems.Q21A
-                chooseSd.textContent = Qitems.Q21B
-                break;
-            case 21:
-                quest.textContent = Qitems.Q22T
-                chooseFt.textContent = Qitems.Q22A
-                chooseSd.textContent = Qitems.Q22B
-                break;
-            case 22:
-                quest.textContent = Qitems.Q23T
-                chooseFt.textContent = Qitems.Q23A
-                chooseSd.textContent = Qitems.Q23B
-                break;
-            case 23:
-                quest.textContent = Qitems.Q24T
-                chooseFt.textContent = Qitems.Q24A
-                chooseSd.textContent = Qitems.Q24B
-                break;
-            case 24:
-                quest.textContent = Qitems.Q25T
-                chooseFt.textContent = Qitems.Q25A
-                chooseSd.textContent = Qitems.Q25B
-                break;
-            case 25:
-                quest.textContent = Qitems.Q26T
-                chooseFt.textContent = Qitems.Q26A
-                chooseSd.textContent = Qitems.Q26B
-                break;
-            case 26:
-                quest.textContent = Qitems.Q27T
-                chooseFt.textContent = Qitems.Q27A
-                chooseSd.textContent = Qitems.Q27B
-                next.textContent = '下一題'
-                break;
-        }
+        obj.Qitems.forEach(key => {
+            if (key.qNum == obj.count) {
+                querySelector(".quest").text(key.qT)
+                querySelector(".text-first").text(key.ansA)
+                querySelector(".text-second").text(key.ansB)
+            } else if (key.qNum == 27) {
+                querySelector(".next").text('下一題')
+            }
+
+
+        })
     }, 900)
     setTimeout(() => {
-        if (window.innerWidth <= 768) {
-            quest.textContent.length > 16 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
-                'center'
-            chooseFt.textContent.length > 17 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-                'center'
-            chooseSd.textContent.length > 17 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-                'center'
-        } else {
-            quest.textContent.length > 27 ? quest.style.textAlign = 'justify' : quest.style.textAlign =
-                'center'
-            chooseFt.textContent.length > 27 ? chooseFt.style.textAlign = 'justify' : chooseFt.style.textAlign =
-                'center'
-            chooseSd.textContent.length > 27 ? chooseSd.style.textAlign = 'justify' : chooseSd.style.textAlign =
-                'center'
-        }
+        let getObj = textLength()
+        querySelector(".quest").styles("text-align", getObj.quest)
+        querySelector(".text-first").styles("text-align", getObj.chooseFt)
+        querySelector(".text-second").styles("text-align", getObj.chooseSd)
     }, 910)
+}
+
+function textLength() {
+    let lenghtObj = {}
+    if (window.innerWidth <= 768) {
+        lenghtObj.quest = querySelector(".quest").text().length > 16 ? 'justify' : 'center'
+        lenghtObj.chooseFt = querySelector(".text-first").text().length > 17 ? 'justify' : 'center'
+        lenghtObj.chooseSd = querySelector(".text-second").text().length.length > 17 ? 'justify' : 'center'
+    } else {
+        lenghtObj.quest = querySelector(".quest").text().length > 27 ? 'justify' : 'center'
+        lenghtObj.chooseFt = querySelector(".text-first").text().length > 27 ? 'justify' : 'center'
+        lenghtObj.chooseSd = querySelector(".text-second").text().length > 27 ? 'justify' : 'center'
+    }
+    return lenghtObj
 }
 
 // 設定統計字數函式
 function finalSum() {
-    let eCount = 0
-    let iCount = 0
-    let sCount = 0
-    let nCount = 0
-    let tCount = 0
-    let fCount = 0
-    let jCount = 0
-    let pCount = 0
-    let finalText = newString.split('')
-    finalText.forEach(key => {
-        key === 'E' ? eCount += 1 : null
-        key === 'I' ? iCount += 1 : null
-        key === 'S' ? sCount += 1 : null
-        key === 'N' ? nCount += 1 : null
-        key === 'T' ? tCount += 1 : null
-        key === 'F' ? fCount += 1 : null
-        key === 'J' ? jCount += 1 : null
-        key === 'P' ? pCount += 1 : null
+    let testText = ""
+    let countAll = [{
+        num: 0,
+        type: "E",
+        typeName: "外向",
+        count: 0
+    }, {
+        num: 1,
+        type: "I",
+        typeName: "內向",
+        count: 0
+    }, {
+        num: 2,
+        type: "N",
+        typeName: "直覺",
+        count: 0
+    }, {
+        num: 3,
+        type: "S",
+        typeName: "感覺",
+        count: 0
+    }, {
+        num: 4,
+        type: "T",
+        typeName: "理性",
+        count: 0
+    }, {
+        num: 5,
+        type: "F",
+        typeName: "情感",
+        count: 0
+    }, {
+        num: 6,
+        type: "J",
+        typeName: "判斷",
+        count: 0
+    }, {
+        num: 7,
+        type: "P",
+        typeName: "理解",
+        count: 0
+    }]
+
+    countAll.forEach((key, index) => {
+        if (key.num == index) {
+            let filterArray = obj.array.filter(keyF => keyF == key.type)
+            key.count = filterArray.length
+        }
     })
     setTimeout(() => {
-        eCount >= 4 ? testText += 'E' : null
-        iCount >= 4 ? testText += 'I' : null
-        sCount >= 4 ? testText += 'S' : null
-        nCount >= 4 ? testText += 'N' : null
-        tCount >= 4 ? testText += 'T' : null
-        fCount >= 4 ? testText += 'F' : null
-        jCount >= 4 ? testText += 'J' : null
-        pCount >= 4 ? testText += 'P' : null
+        countAll.forEach((key, index) => {
+            if (key.num == index) {
+                if (key.count >= 4) testText += key.type
+            }
+        })
     }, 1000)
-    setTimeout(() => typeDetails(), 1001)
+    setTimeout(() => typeDetails(countAll, testText), 1001)
+}
+
+function isType(text) {
+    let typesText = ""
+    const types = [{
+        a: "E",
+        aName: "外向",
+        b: "I",
+        bName: "內向"
+    }, {
+        a: "N",
+        aName: "直覺",
+        b: "S",
+        bName: "感覺"
+    }, {
+        a: "T",
+        aName: "理性",
+        b: "F",
+        bName: "情感"
+    }, {
+        a: "J",
+        aName: "判斷",
+        b: "P",
+        bName: "理解"
+    }]
+    types.forEach(key => {
+        if (text == key.a) {
+            typesText = `${key.b} ( ${key.bName} )`
+        } else if (text == key.b) {
+            typesText = `${key.a} ( ${key.aName} )`
+        }
+    })
+    return typesText
+}
+
+function transType(array) {
+    let transText = ""
+    array.forEach((key, index) => {
+        transText += `
+    <div class="col-md-6">
+        <div class="percent">
+        ${key.maxType} 
+            <div class="progress-outer">
+                <div class="progress-bar-custom">
+                    <span>0 %<span>
+                </div>
+            </div>
+        ${key.minType}
+        </div>
+    </div>`
+        setTimeout(() => percentCount(key.percent, index), 5000)
+    })
+    return transText
+}
+
+function percentCount(num, index) {
+    let countNum = 0
+    let counter = setInterval(() => {
+        if (countNum == num) {
+            clearInterval(counter)
+        } else {
+            countNum++
+            querySelectorAll(".progress-bar-custom")[index].style.width = `${countNum}%`
+            querySelectorAll(".progress-bar-custom span")[index].textContent = `${countNum} %`
+        }
+    }, 16)
 }
 
 // 設定載入解析內容前與後
-function typeDetails() {
-    Qouter.style.display = 'none'
-    typeTextContent.style.display = 'flex'
+function typeDetails(countAll, testText) {
+    querySelector(".Q-outer").styles("display", "")
+    querySelector('.type-text-content').styles("display", "flex")
     let loadingCount = 0
+    let filterArray = []
+    let totalCount
     setTimeout(() => {
         setTimeout(() => {
-            function loadingFrame() {
-                document.querySelector('.loading-font').textContent = '計算完成'
-                clearInterval(loading)
-            }
-            const loading = setInterval(() => loadingCount >= 5 ? loadingFrame() : loadingCount += 1, 1000);
+            const loading = setInterval(() => {
+                if (loadingCount >= 5) {
+                    querySelector('.loading-font').text('計算完成')
+                    clearInterval(loading)
+                } else {
+                    loadingCount++
+                }
+            }, 1000);
         }, 10)
-        typeTextContent.innerHTML = `
+        querySelector('.type-text-content').selected.innerHTML = `
             <div class="loading-outer">
                 <div class="loading"></div>
                 <span class="loading-font">計算中</span>
@@ -961,19 +819,38 @@ function typeDetails() {
     }, 1000);
 
     setTimeout(() => {
-        document.querySelector('.loading-outer').classList.add('loading-outer-out')
+        querySelector('.loading-outer').addClass('loading-outer-out')
     }, 8000);
-    typeItems.forEach(key => {
+
+    testText.split("").forEach(keyT => {
+        countAll.forEach(key => {
+            if (key.type == keyT) {
+                totalCount = Math.floor((7 / key.count) * 100) / 100
+                filterArray.push({
+                    percent: Math.floor(100 / totalCount),
+                    maxType: `${key.type} ( ${key.typeName} )`,
+                    minType: isType(key.type)
+                })
+            }
+        })
+    })
+
+    obj.typeItems.forEach(key => {
         key.originsType == testText ? setTimeout(() => {
             scrollTop()
-            typeTextContent.classList.add('type-text-content-in')
-            typeTextContent.innerHTML = `
+            querySelector(".type-text-content").addClass('type-text-content-in')
+            querySelector('.type-text-content').selected.innerHTML = `
                 <div class="row">
                     <div class="col-md-12">
                         <span class="type-title">您的類型</span>
                         <span class="type-origins">${key.originsType}</span>
                         <span class="type-name">${key.nameType}</span>
                         <span class="type-think">( ${key.thinkType} )</span>
+                        <div class="percent-outer">
+                            <div class="row">
+                                ${transType(filterArray)}
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="type-think-details-group">
@@ -1022,21 +899,21 @@ function typeDetails() {
         }, 9500) : null
         setTimeout(() => {
             setTimeout(() => {
-                next.classList.remove('next-trans-hide')
-                next.classList.add('next-move')
+                querySelector(".prev").removeClass('next-trans-hide')
+                querySelector(".next").addClass('next-move')
             }, 200);
-            next.textContent = '重新測驗'
+            querySelector(".next").text('重新測驗')
         }, 26500);
     })
 }
 
 // 設定滾動到底部時顯示按鈕函式
 function scrolls() {
-    const nextOuter = document.querySelector('.next-outer')
+    const nextOuter = querySelector('.next-outer').selected
     const windowTop = window.scrollY
     const windowBottom = window.innerHeight + windowTop
     const nextY = nextOuter.offsetTop + nextOuter.offsetHeight / 2
-    nextY < windowBottom ? next.classList.add('next-in') : next.classList.remove('next-in')
+    nextY < windowBottom ? querySelector(".next").addClass('next-in') : querySelector(".prev").removeClass('next-in')
 }
 
 // 設定返回頂部函式
@@ -1056,16 +933,23 @@ function scrollTop() {
 
 // 設定畫面載入時函式
 function loadIn() {
-    const title = document.querySelector('.title')
     const titleString = 'MBTI16種性格測驗'
     let strCountF = -1
     let strCountB = 0
-    title.classList.add('title-in')
+    let strCountTemp = ""
+    querySelector('.title').addClass('title-in')
+    querySelector(".next").text('開始')
     const strIn = setInterval(() => {
-        strCountF == 10 && strCountB == 11 ? clearInterval(strIn) : title.textContent += `${titleString.slice(strCountF+=1,strCountB+=1)}`
+        if (strCountF == 10 && strCountB == 11) {
+            clearInterval(strIn)
+            strCountTemp = ""
+        } else {
+            strCountTemp += `${titleString.slice(strCountF+=1,strCountB+=1)}`
+            querySelector('.title').text(strCountTemp)
+        }
     }, 300)
-    explainText.classList.add('explain-show')
-    window.innerWidth <= 414 ? document.querySelector('.type-font-group').innerHTML = `
+    querySelector(".explain").addClass('explain-show')
+    window.innerWidth <= 414 ? querySelector('.type-font-group').selected.innerHTML = `
         <ul class="listA">
             <li>
                 I . 心理能力的走向<br>
@@ -1111,17 +995,16 @@ function loadIn() {
         </ul>` : null
 }
 
+loadIn()
+
 // 監聽選項內按鈕
-Qtext.forEach(key => {
-    key.addEventListener('click', choose)
-})
+querySelectorAll(".texts").forEach(key => key.addEventListener('click', choose))
 
 // 監聽上一題按鈕
-prev.addEventListener('click', backStep)
+querySelector(".prev").selected.addEventListener('click', backStep)
 
 // 監聽下一題按鈕
-next.addEventListener('click', nextStep)
+querySelector(".next").selected.addEventListener('click', nextStep)
 
 // 監聽畫面滾動時
 window.addEventListener('scroll', scrolls)
-window.addEventListener('load', loadIn)
