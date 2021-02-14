@@ -5,109 +5,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../To_Do_List/To_Do_List.css">
-    <title>Personal To Do List</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <title>ToDo List</title>
 </head>
 
 <body>
     <div class="wrap">
-        <div class="to-do-outer on-blur">
-            <div class="header">
-                <h1 class="header-title">Personal To Do List</h1>
+        <div class="header">
+            <h1>ToDo List</h1>
+        </div>
+        <div class="main">
+            <div class="times"></div>
+            <div class="input-bar">
+                <input class="input-text" type="text" placeholder="-- Enter your todoes --">
+                <div class="add-btn">Add</div>
             </div>
-            <div class="sign-option">
-                <div class="sign-change">Change Account Details</div>
-                <div class="sign-out">Sign Out</div>
-            </div>
-            <h2 class="user-title"></h2>
-            <div class="to-do-frame">
-                <div class="to-do-group">
-                    <div class="top-btn to-dos">To Do</div>
-                    <div class="top-btn delete-dos">Delete History</div>
+            <div class="board">
+                <div class="delete-btn-group">
+                    <div class="delete-btn">Delete</div>
+                    <div class="delete-all-btn">Delete All</div>
                 </div>
-                <div class="do-list">
-                    <div class="to-do-key">
-                        <input type="text" class="key-in" placeholder="- - please enter your to-do - -">
-                        <div class="add-btn">Add To Do</div>
+                <div class="table-outer">
+                    <div class="top-btn-group">
+                        <div class="top-btn I">Todo</div>
+                        <div class="top-btn II">Deleted</div>
                     </div>
-                    <table>
-                        <thead>
+                    <div class="search-bar">
+                        <input class="search-text" type="text" placeholder="-- Enter your todoes --">
+                        <div class="search-btn">Search</div>
+                    </div>
+                    <table class="table">
+                        <thead></thead>
+                        <tbody></tbody>
+                        <tfoot>
                             <tr>
-                                <th width="15%">Finish</th>
-                                <th width="20%">To Do</th>
-                                <th width="20%">Change</th>
-                                <th width="20%">Create Time</th>
-                                <th width="20%">Create Date</th>
+                                <td>
+                                    <div class="bottom-text-group">
+                                        <span class="searches"></span>
+                                        <span class="chooses"></span>
+                                        <span class="total"></span>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="list-content"></tbody>
+                        </tfoot>
                     </table>
-                    <div class="remove-outer">
-                        <div class="remove-all-btn">Remove All</div>
+                    <div class="pagination-group">
+                        <ul></ul>
                     </div>
                 </div>
-                <div class="delete-list">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th width="15%">Finish Status</th>
-                                <th width="25%">To Do</th>
-                                <th width="25%">Create / Delete Time</th>
-                                <th width="35%">Create / Delete Date</th>
-                            </tr>
-                        </thead>
-                        <tbody class="delete-content"></tbody>
-                    </table>
-                    <div class="remove-outer">
-                        <div class="remove-allF-btn">Remove All History</div>
-                    </div>
-                </div>
-                <div class="status">Undone&nbsp<span class="not-do"></span>&nbspitems，Completed&nbsp<span
-                        class="have-do"></span>
-                    &nbspitems</div>
-            </div>
-            <div class="footer">
-                <h3 class="footer-title">&copy Copyright Chen</h3>
             </div>
         </div>
-    </div>
-    <span class="welcome-title"></span>
-    <div class="modal">
-        <div class="modal-body">
-            <div class="modal-header">
-                <h2 class="modal-title"></h2>
-                <div class="forget-group">
-                    <span class="forget-prompt">Account Prompt</span>
-                    <span class="forget-prompt">Password Prompt</span>
-                </div>
-            </div>
-            <div class="modal-content">
-                <label for="nick" class="nickT">Nick Name</label>
-                <input type="text" name="word" id="nick" placeholder="- - please enter your nick name - -">
-                <p class="nkt">pos</p>
-                <br>
-                <label for="account">Account</label>
-                <br>
-                <input type="text" name="word" id="account" placeholder="- - please enter your accout - -">
-                <p class="act">pos</p>
-                <br>
-                <label for="password">Password</label>
-                <br>
-                <input type="password" name="word" id="password" placeholder="- - please enter your password - -">
-                <p class="pst">pos</p>
-            </div>
-            <div class="modal-footer confirm"></div>
-        </div>
-    </div>
-    <div class="modalS">
-        <div class="modal-bodyS">
-            <div class="modal-header">
-                <h2 class="modal-title">Message</h2>
-            </div>
-            <div class="modal-contentS">
-                <p class="modal-contentS-Ft">Thanks for your use</p>
-                <p class="modal-contentS-Sd">Page will refresh to Sign In after&nbsp<span
-                        class="couting">5</span>&nbspsecodes</p>
-            </div>
+        <div class="footer">
+            &copy CopyRight By Chen
         </div>
     </div>
 </body>
