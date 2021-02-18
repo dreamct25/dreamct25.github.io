@@ -5,7 +5,7 @@ obj.jsonData = [];
 obj.jsonBlockData = [];
 obj.filterWeatherState = []
 obj.renderWeatherTemp = []
-objrenderCount = 0
+obj.renderCount = 0
 
 for (let x = 1; x <= 85; x += 4) {
     let orders = x <= 9 ? "00" : "0"
@@ -103,11 +103,7 @@ function backgroundChange() {
     let currentOption = null
     if (this == window) {
         currentOption = backgroundToggleOptions.notHand
-        if (date.getHours() >= 6 && date.getHours() <= 17) {
-            changeMoring(currentOption)
-        } else {
-            changeNight(currentOption)
-        }
+        date.getHours() >= 6 && date.getHours() <= 17 ? changeMoring(currentOption) : changeNight(currentOption)
         return
     } else {
         currentOption = backgroundToggleOptions.byHand
