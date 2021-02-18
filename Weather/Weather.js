@@ -1,8 +1,34 @@
 const querySelectorFactory = currentClass => document.querySelector(currentClass)
 const querySelectorAllFactory = currentClass => document.querySelectorAll(currentClass)
-let jsonData = [];
-let filterWeatherState = []
-let renderCount = 0
+let obj = {}
+obj.jsonData = [];
+obj.jsonBlockData = [];
+obj.filterWeatherState = []
+obj.renderWeatherTemp = []
+objrenderCount = 0
+
+for (let x = 1; x <= 85; x += 4) {
+    let orders = x <= 9 ? "00" : "0"
+    fetch(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-093/?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B&locationId=F-D0047-${orders}${x}`).then(res => res.json()).then(res => {
+        if (res.success == "true") {
+            res.records.locations.forEach(key => {
+                let arrayTemp = []
+                key.location.forEach(keyL => arrayTemp.push({
+                    blockGeoCode: keyL.geocode,
+                    blockName: keyL.locationName,
+                    blockLat: keyL.lat,
+                    blockLon: keyL.lon,
+                    blockElement: keyL.weatherElement
+                }))
+                arrayTemp = arrayTemp.sort((a, b) => a.blockGeoCode - b.blockGeoCode)
+                obj.jsonBlockData.push({
+                    locationsName: key.locationsName,
+                    block: arrayTemp
+                })
+            })
+        }
+    })
+}
 
 fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => {
     loadingAnimate(true)
@@ -13,9 +39,9 @@ fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorizati
             let jsonDataTemp = []
             res.records.locations[0].location.forEach(key => jsonDataTemp.push(key))
             loadingAnimate(false)
-            setTimeout(() => cityType(jsonDataTemp), 2000)
+            setTimeout(() => cityType(jsonDataTemp), 2500)
         }
-    }, 3000)
+    }, 3500)
 }).catch(err => console.log(err))
 
 function cityType(arry) {
@@ -23,10 +49,14 @@ function cityType(arry) {
     querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
     arrySort = arry.sort((a, b) => b.lon - a.lon)
     arrySort.forEach((key, index) => {
-        jsonData.push(key)
+        obj.jsonData.push(key)
         querySelectorFactory(".select-city").innerHTML += `<span class="city-name" data-num="${index}" onclick="selectCityPart(this)">${key.locationName}</span>`
     });
-    jsonData.forEach(key => key.locationName == '臺北市' ? console.log(key) : null)
+    obj.jsonData.forEach(key => {
+        obj.jsonBlockData.forEach(keyBlock => {
+            if (key.locationName == keyBlock.locationsName) key.block = keyBlock.block
+        })
+    })
 }
 
 function scrolls() {
@@ -121,7 +151,7 @@ function selectCity(currentTaget) {
     let currentTagetTemp = currentTaget.className == undefined ? currentTaget.target.className : currentTaget.className
     switch (currentTagetTemp) {
         case "city-name selected":
-            filterWeatherState = jsonData.filter(key => key.locationName == currentTaget.textContent)
+            obj.filterWeatherState = obj.jsonData.filter(key => key.locationName == currentTaget.textContent)
             renderList(false)
             chooseDayBtn()
             break;
@@ -188,7 +218,7 @@ function dateTrans(time) {
 }
 
 function today(renderWeather, order) {
-    filterWeatherState.forEach(key => {
+    obj.filterWeatherState.forEach(key => {
         renderWeather.push({
             cityName: key.locationName,
             minTemp: addTempSign(key.weatherElement[8].time[0].elementValue[0].value),
@@ -206,15 +236,16 @@ function today(renderWeather, order) {
             weatherSign: key.weatherElement[6].time[0].elementValue[0].value,
             weatherSignState: transWeatherIcon(key.weatherElement[6].time[0].elementValue[1].value),
             weatherNightDesc: key.weatherElement[10].time[1].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[0].elementValue[0].value
-
+            weatherMoringDesc: key.weatherElement[10].time[0].elementValue[0].value,
+            areaBlock: key.block
         })
     })
+    obj.renderWeatherTemp = renderWeather
     renderView(renderWeather, order)
 }
 
 function tomorrow(renderWeather, order) {
-    filterWeatherState.forEach(key => {
+    obj.filterWeatherState.forEach(key => {
         renderWeather.push({
             cityName: key.locationName,
             minTemp: addTempSign(key.weatherElement[8].time[3].elementValue[0].value),
@@ -232,9 +263,11 @@ function tomorrow(renderWeather, order) {
             weatherSign: key.weatherElement[6].time[1].elementValue[0].value,
             weatherSignState: transWeatherIcon(key.weatherElement[6].time[1].elementValue[1].value),
             weatherNightDesc: key.weatherElement[10].time[3].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[2].elementValue[0].value
+            weatherMoringDesc: key.weatherElement[10].time[2].elementValue[0].value,
+            areaBlock: key.block
         })
     })
+    obj.renderWeatherTemp = renderWeather
     renderView(renderWeather, order)
 }
 
@@ -242,7 +275,7 @@ function week(renderWeather, order) {
     const date = new Date()
     let moringTemp = []
     let nightTemp = []
-    filterWeatherState.forEach(key => {
+    obj.filterWeatherState.forEach(key => {
         for (var x = 0; x < key.weatherElement[8].time.length; x++) {
             if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 6) {
                 moringTemp.push({
@@ -265,7 +298,7 @@ function week(renderWeather, order) {
     })
 
     renderWeather.push({
-        cityName: filterWeatherState[0].locationName,
+        cityName: obj.filterWeatherState[0].locationName,
         moring: moringTemp,
         night: nightTemp
     })
@@ -298,7 +331,7 @@ function weekBlock(renderWeather, filterCurrentCity, text) {
         }
     })
     renderWeather.push({
-        cityName: filterWeatherState[renderCount].locationName,
+        cityName: obj.filterWeatherState[obj.renderCount].locationName,
         moring: moringTemp,
         night: nightTemp
     })
@@ -309,14 +342,14 @@ function renderCurrentCity(lengthCount) {
     let text = ""
     let filterCurrentCity = []
     let renderWeather = []
-    for (let x = 0; x <= filterWeatherState.length; x++) {
-        if (renderCount == x) filterCurrentCity.push(filterWeatherState[x])
+    for (let x = 0; x <= obj.filterWeatherState.length; x++) {
+        if (obj.renderCount == x) filterCurrentCity.push(obj.filterWeatherState[x])
     }
     text = `
     <div class="city-name-title-switch">
         <i class="fas fa-chevron-left arrow-left" onclick="renderCountCenter(this,${lengthCount})"></i>
             <div class="city-name-outer">
-                <div class="city-name">${filterWeatherState[renderCount].locationName}</div>
+                <div class="city-name">${obj.filterWeatherState[obj.renderCount].locationName}</div>
             </div>
         <i class="fas fa-chevron-right arrow-right" onclick="renderCountCenter(this,${lengthCount})"></i>
     </div>`
@@ -364,17 +397,13 @@ function chooseBlockBtn() {
 }
 
 function chooseArea(cityCode) {
-    renderCount = 0
-    filterWeatherState = []
+    obj.renderCount = 0
+    obj.filterWeatherState = []
     cityCode.forEach((code, index) => {
-        jsonData.forEach(key => {
-            if (code == key.geocode) {
-                filterWeatherState.push(key)
-            }
+        obj.jsonData.forEach(key => {
+            if (code == key.geocode) obj.filterWeatherState.push(key)
         })
-        if ((cityCode.length - 1) == index) {
-            renderCurrentCity(cityCode.length)
-        }
+        if ((cityCode.length - 1) == index) renderCurrentCity(cityCode.length)
     })
 }
 
@@ -422,15 +451,15 @@ function selectAnimate(element) {
 
 function loadingAnimate(state) {
     if (state == true) {
-        querySelectorFactory(".loading-outer").classList.remove("loading-outer-hide")
+        querySelectorFactory(".loading-outer").classList.add("loading-outer-toggle")
         querySelectorFactory(".loading-text").textContent = "Loading"
     } else {
         querySelectorFactory(".loading-text").textContent = "Completed"
-        setTimeout(() => querySelectorFactory(".loading-outer").classList.add("loading-outer-hide"), 1000)
+        setTimeout(() => querySelectorFactory(".loading-outer").classList.remove("loading-outer-toggle"), 1000)
         setTimeout(() => {
             querySelectorFactory(".select-group").classList.remove("select-toggle")
             querySelectorFactory(".other-block").classList.remove("other-block-toggle")
-        }, 2010)
+        }, 3010)
     }
 }
 
@@ -442,6 +471,11 @@ function weatherOuterAnimate(state) {
         querySelectorFactory(".weathers-outer").style.marginTop = `-${querySelectorFactory(".weathers-outer").offsetHeight}px`
         querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
     }
+}
+
+function showBlockSelectAnimate(element) {
+    element.classList.toggle("block-select-outer-toggle")
+    querySelectorFactory(".block-has-select-title .arrow").classList.toggle("arrow-toggle")
 }
 
 function renderList(state) {
@@ -482,16 +516,86 @@ function renderList(state) {
 
 function renderCountCenter(element, lengthCount) {
     if (element.classList[2] == "arrow-left") {
-        renderCount == 0 ? renderCount = (lengthCount - 1) : renderCount--
+        obj.renderCount == 0 ? obj.renderCount = (lengthCount - 1) : obj.renderCount--
     } else {
-        renderCount == (lengthCount - 1) ? renderCount = 0 : renderCount++
+        obj.renderCount == (lengthCount - 1) ? obj.renderCount = 0 : obj.renderCount++
     }
     renderCurrentCity(lengthCount)
 }
 
+function currentBlockChoose(element, array, order, cityName, equalTemp, uivLevel, uivDesc) {
+    if (cityName != undefined && equalTemp != undefined && uivLevel != undefined && uivDesc != undefined) {
+        let blockFilterArray = array.filter(key => key.blockName == element.textContent)
+        let blockArray = order == 0 ? todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) : tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc)
+        setTimeout(() => renderView(blockArray, order, element.textContent), 700)
+    } else {
+        setTimeout(() => renderView(array, order, element.textContent), 700)
+    }
+    setTimeout(() => querySelectorAllFactory(".block-select span").forEach(key => key.dataset.num == element.dataset.num ? key.classList.add("block-selected") : key.classList.remove("block-selected")), 702)
+
+    querySelectorFactory(".block-has-select-title span").textContent = element.textContent
+}
+
+function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
+    let blockArrayTemp = []
+    blockFilterArray.forEach(key => {
+        blockArrayTemp.push({
+            cityName: cityName,
+            minTemp: addTempSign(key.blockElement[3].time[0].elementValue[0].value),
+            maxTemp: addTempSign(key.blockElement[3].time[3].elementValue[0].value),
+            minFeelTemp: addTempSign(key.blockElement[2].time[0].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.blockElement[2].time[3].elementValue[0].value),
+            equalTemp: addTempSign(equalTemp),
+            comferMinPerc: addPercent(key.blockElement[5].time[0].elementValue[0].value),
+            comferMaxPerc: addPercent(key.blockElement[5].time[3].elementValue[0].value),
+            rainNightPerc: addPercent(key.blockElement[7].time[1].elementValue[0].value),
+            rainMoringPerc: addPercent(key.blockElement[7].time[0].elementValue[0].value),
+            uivLevel: uivLevel,
+            uivDesc: uivDesc,
+            wetEqualPerc: addPercent(key.blockElement[4].time[0].elementValue[0].value),
+            weatherSign: key.blockElement[1].time[0].elementValue[0].value,
+            weatherSignState: transWeatherIcon(key.blockElement[1].time[0].elementValue[1].value),
+            weatherNightDesc: key.blockElement[6].time[2].elementValue[0].value,
+            weatherMoringDesc: key.blockElement[6].time[0].elementValue[0].value,
+            areaBlock: array
+        })
+    })
+    return blockArrayTemp
+}
+
+function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
+    let blockArrayTemp = []
+    blockFilterArray.forEach(key => {
+        blockArrayTemp.push({
+            cityName: cityName,
+            minTemp: addTempSign(key.blockElement[3].time[9].elementValue[0].value),
+            maxTemp: addTempSign(key.blockElement[3].time[6].elementValue[0].value),
+            minFeelTemp: addTempSign(key.blockElement[2].time[9].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.blockElement[2].time[6].elementValue[0].value),
+            equalTemp: addTempSign(equalTemp),
+            comferMinPerc: addPercent(key.blockElement[5].time[9].elementValue[0].value),
+            comferMaxPerc: addPercent(key.blockElement[5].time[6].elementValue[0].value),
+            rainNightPerc: addPercent(key.blockElement[7].time[4].elementValue[0].value),
+            rainMoringPerc: addPercent(key.blockElement[7].time[2].elementValue[0].value),
+            uivLevel: uivLevel,
+            uivDesc: uivDesc,
+            wetEqualPerc: addPercent(key.blockElement[4].time[6].elementValue[0].value),
+            weatherSign: key.blockElement[1].time[4].elementValue[0].value,
+            weatherSignState: transWeatherIcon(key.blockElement[1].time[4].elementValue[1].value),
+            weatherNightDesc: key.blockElement[6].time[9].elementValue[0].value,
+            weatherMoringDesc: key.blockElement[6].time[4].elementValue[0].value,
+            areaBlock: array
+        })
+    })
+    return blockArrayTemp
+}
+
 function renderViewWeekWithoutRwd(renderWeather, text) {
     renderWeather.forEach(render => {
-                text = `<div class="city-name-title">${render.cityName}</div>
+                text = `
+            <div class="city-title-outer">
+                <div class="city-name-title">${render.cityName}</div>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -569,19 +673,30 @@ function renderViewWeekOnRwd(renderWeather,text){
     })
     return text
 }
+
 function renderViewWeek(renderWeather, text) {
     let newText = text
     window.innerWidth <= 768 ? newText = renderViewWeekOnRwd(renderWeather,text) : newText = renderViewWeekWithoutRwd(renderWeather,text)
     return newText
 }
 
-function renderViewWithoutWeek(renderWeather,order,text){
-    renderWeather.forEach(render=> 
+function renderViewWithoutWeek(renderWeather,order,text,currentBlock){
+    renderWeather.forEach(render=> {
         text = 
         `<div class="row no-gutters">
             <div class="col-md-12">
-                <div class="city-name-title">
-                    ${render.cityName}
+                <div class="city-title-outer">
+                    <div class="block-select-outer" onclick="showBlockSelectAnimate(this)">
+                        <div class="block-has-select-title">
+                            區域：<span>${currentBlock == undefined ? "全區":currentBlock}</span>
+                            <i class="fas fa-chevron-up arrow"></i>
+                        </div>
+                            <div class="block-select">`
+                                text+=`<span class="block-selected" data-num="0" onclick='currentBlockChoose(this,${JSON.stringify(obj.renderWeatherTemp)},${order})'>全區</span>`
+                                render.areaBlock.forEach((renderBlock,index)=>text+= `<span data-num="${index+=1}" onclick='currentBlockChoose(this,${JSON.stringify(render.areaBlock)},${order},"${render.cityName}",${Number(render.equalTemp.split("&degC")[0])},${Number(render.uivLevel)},"${render.uivDesc}")'>${renderBlock.blockName}</span>`)
+                    text+= `</div>
+                    </div>
+                    <div class="city-name-title">${render.cityName}</div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -630,13 +745,13 @@ function renderViewWithoutWeek(renderWeather,order,text){
                     </div>
                 </div>
             </div>
-        </div>`)
+        </div>`})
     return text
 }
 
-function renderView(renderWeather, order) {
+function renderView(renderWeather, order,currentBlock) {
     let text = ""
-    order == 2 ? text = renderViewWeek(renderWeather,text) : text = renderViewWithoutWeek(renderWeather,order,text)
+    order == 2 ? text = renderViewWeek(renderWeather,text) : text = renderViewWithoutWeek(renderWeather,order,text,currentBlock)
     querySelectorFactory(".weathers").innerHTML = text
     setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
 }
