@@ -537,13 +537,13 @@ function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivD
     blockFilterArray.forEach(key => {
         blockArrayTemp.push({
             cityName: cityName,
-            minTemp: addTempSign(key.blockElement[3].time[0].elementValue[0].value),
-            maxTemp: addTempSign(key.blockElement[3].time[3].elementValue[0].value),
-            minFeelTemp: addTempSign(key.blockElement[2].time[0].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.blockElement[2].time[3].elementValue[0].value),
+            minTemp: addTempSign(key.blockElement[3].time[2].elementValue[0].value),
+            maxTemp: addTempSign(key.blockElement[3].time[0].elementValue[0].value),
+            minFeelTemp: addTempSign(key.blockElement[2].time[2].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.blockElement[2].time[0].elementValue[0].value),
             equalTemp: addTempSign(equalTemp),
-            comferMinPerc: addPercent(key.blockElement[5].time[0].elementValue[0].value),
-            comferMaxPerc: addPercent(key.blockElement[5].time[3].elementValue[0].value),
+            comferMinPerc: addPercent(key.blockElement[5].time[2].elementValue[0].value),
+            comferMaxPerc: addPercent(key.blockElement[5].time[0].elementValue[0].value),
             rainNightPerc: addPercent(key.blockElement[7].time[1].elementValue[0].value),
             rainMoringPerc: addPercent(key.blockElement[7].time[0].elementValue[0].value),
             uivLevel: uivLevel,
@@ -564,13 +564,13 @@ function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, u
     blockFilterArray.forEach(key => {
         blockArrayTemp.push({
             cityName: cityName,
-            minTemp: addTempSign(key.blockElement[3].time[9].elementValue[0].value),
-            maxTemp: addTempSign(key.blockElement[3].time[6].elementValue[0].value),
-            minFeelTemp: addTempSign(key.blockElement[2].time[9].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.blockElement[2].time[6].elementValue[0].value),
+            minTemp: addTempSign(key.blockElement[3].time[6].elementValue[0].value),
+            maxTemp: addTempSign(key.blockElement[3].time[8].elementValue[0].value),
+            minFeelTemp: addTempSign(key.blockElement[2].time[6].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.blockElement[2].time[8].elementValue[0].value),
             equalTemp: addTempSign(equalTemp),
-            comferMinPerc: addPercent(key.blockElement[5].time[9].elementValue[0].value),
-            comferMaxPerc: addPercent(key.blockElement[5].time[6].elementValue[0].value),
+            comferMinPerc: addPercent(key.blockElement[5].time[6].elementValue[0].value),
+            comferMaxPerc: addPercent(key.blockElement[5].time[8].elementValue[0].value),
             rainNightPerc: addPercent(key.blockElement[7].time[4].elementValue[0].value),
             rainMoringPerc: addPercent(key.blockElement[7].time[2].elementValue[0].value),
             uivLevel: uivLevel,
@@ -578,8 +578,8 @@ function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, u
             wetEqualPerc: addPercent(key.blockElement[4].time[6].elementValue[0].value),
             weatherSign: key.blockElement[1].time[4].elementValue[0].value,
             weatherSignState: transWeatherIcon(key.blockElement[1].time[4].elementValue[1].value),
-            weatherNightDesc: key.blockElement[6].time[9].elementValue[0].value,
-            weatherMoringDesc: key.blockElement[6].time[4].elementValue[0].value,
+            weatherNightDesc: key.blockElement[6].time[10].elementValue[0].value,
+            weatherMoringDesc: key.blockElement[6].time[6].elementValue[0].value,
             areaBlock: array
         })
     })
@@ -631,7 +631,10 @@ return text
 
 function renderViewWeekOnRwd(renderWeather,text){
     renderWeather.forEach(render=>{
-        text +=`<div class="city-name-title">${render.cityName}</div>
+        text +=`
+    <div class="city-title-outer">
+        <div class="city-name-title">${render.cityName}</div>
+    </div>
     <table class="table">
         <thead>
             <tr>
