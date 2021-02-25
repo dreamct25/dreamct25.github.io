@@ -5,7 +5,9 @@
 #### src
 > customPlugin (個人自行開發的 modal css、js)
 > components (所有元件與路由分頁)
+
 >> Collect.vue (收藏影片)
+
 >> Home.vue (主頁)
 >> Modal.vue (互動視窗)
 >> ModalAlert.vue (提示視窗)
