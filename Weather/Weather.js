@@ -7,6 +7,20 @@ obj.filterWeatherState = []
 obj.renderWeatherTemp = []
 obj.renderCount = 0
 
+Date.prototype.getFullDateTime = function(time, have) {
+    let fullDateTimeFormat = {}
+    const dates = time == null ? new Date() : new Date(time)
+    const year = dates.getFullYear()
+    const month = `${dates.getMonth() + 1 < 10 ? "0":""}${dates.getMonth() + 1}`
+    const date = `${dates.getDate() < 10 ? "0":""}${dates.getDate()}`
+    const hour = `${dates.getHours() < 10 ? "0":""}${dates.getHours()}`
+    const minute = `${dates.getMinutes() < 10 ? "0":""}${dates.getMinutes()}`
+    const secondes = `${dates.getSeconds() < 10 ? "0":""}${dates.getSeconds()}`
+    fullDateTimeFormat.haveDate = `${year}-${month}-${date}`
+    fullDateTimeFormat.haveTime = `${hour}：${minute}：${secondes}`
+    return have == "date" ? fullDateTimeFormat.haveDate : fullDateTimeFormat.haveTime
+}
+
 for (let x = 1; x <= 85; x += 4) {
     let orders = x <= 9 ? "00" : "0"
     fetch(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-093/?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B&locationId=F-D0047-${orders}${x}`).then(res => res.json()).then(res => {
@@ -532,18 +546,33 @@ function currentBlockChoose(element, array, order, cityName, equalTemp, uivLevel
     querySelectorFactory(".block-has-select-title span").textContent = element.textContent
 }
 
+function currentTimeMatch(datas, hasMax) {
+    let str = ""
+    let filterMaxArray = []
+    let timeSelectCount = Number(new Date().getFullDateTime(null, "time").split("：")[0]) >= 18 ? 0 : 1
+    const currentDate = new Date().getFullDateTime(null, "date")
+    const currentTime = new Date().getFullDateTime(null, "time")
+    datas.forEach(key => {
+        let dataDate = new Date().getFullDateTime(key.dataTime, "date")
+        let dataTime = new Date().getFullDateTime(key.dataTime, "time")
+        if (dataDate == currentDate && Number(dataTime.split("：")[0]) >= Number(currentTime.split("：")[0]) - 3 && Number(dataTime.split("：")[0]) <= Number(currentTime.split("：")[0]) + 3) filterMaxArray.push(key)
+    })
+    str = hasMax == true ? filterMaxArray[0 + timeSelectCount].elementValue[0].value : filterMaxArray[1 - timeSelectCount].elementValue[0].value
+    return str
+}
+
 function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
     let blockArrayTemp = []
     blockFilterArray.forEach(key => {
         blockArrayTemp.push({
             cityName: cityName,
-            minTemp: addTempSign(key.blockElement[3].time[2].elementValue[0].value),
-            maxTemp: addTempSign(key.blockElement[3].time[0].elementValue[0].value),
-            minFeelTemp: addTempSign(key.blockElement[2].time[2].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.blockElement[2].time[0].elementValue[0].value),
+            minTemp: addTempSign(currentTimeMatch(key.blockElement[3].time, false)),
+            maxTemp: addTempSign(currentTimeMatch(key.blockElement[3].time, true)),
+            minFeelTemp: addTempSign(currentTimeMatch(key.blockElement[2].time, false)),
+            maxFeelTemp: addTempSign(currentTimeMatch(key.blockElement[2].time, true)),
             equalTemp: addTempSign(equalTemp),
-            comferMinPerc: addPercent(key.blockElement[5].time[2].elementValue[0].value),
-            comferMaxPerc: addPercent(key.blockElement[5].time[0].elementValue[0].value),
+            comferMinPerc: addPercent(currentTimeMatch(key.blockElement[5].time, false)),
+            comferMaxPerc: addPercent(currentTimeMatch(key.blockElement[5].time, true)),
             rainNightPerc: addPercent(key.blockElement[7].time[1].elementValue[0].value),
             rainMoringPerc: addPercent(key.blockElement[7].time[0].elementValue[0].value),
             uivLevel: uivLevel,
@@ -561,16 +590,17 @@ function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivD
 
 function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
     let blockArrayTemp = []
+    let timeSelectCount = Number(new Date().getFullDateTime(null, "time").split("：")[0]) >= 18 ? 2 : 0
     blockFilterArray.forEach(key => {
         blockArrayTemp.push({
             cityName: cityName,
-            minTemp: addTempSign(key.blockElement[3].time[6].elementValue[0].value),
-            maxTemp: addTempSign(key.blockElement[3].time[8].elementValue[0].value),
-            minFeelTemp: addTempSign(key.blockElement[2].time[6].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.blockElement[2].time[8].elementValue[0].value),
+            minTemp: addTempSign(key.blockElement[3].time[6 + timeSelectCount].elementValue[0].value),
+            maxTemp: addTempSign(key.blockElement[3].time[8 - timeSelectCount].elementValue[0].value),
+            minFeelTemp: addTempSign(key.blockElement[2].time[6 + timeSelectCount].elementValue[0].value),
+            maxFeelTemp: addTempSign(key.blockElement[2].time[8 - timeSelectCount].elementValue[0].value),
             equalTemp: addTempSign(equalTemp),
-            comferMinPerc: addPercent(key.blockElement[5].time[6].elementValue[0].value),
-            comferMaxPerc: addPercent(key.blockElement[5].time[8].elementValue[0].value),
+            comferMinPerc: addPercent(key.blockElement[5].time[6 + timeSelectCount].elementValue[0].value),
+            comferMaxPerc: addPercent(key.blockElement[5].time[8 - timeSelectCount].elementValue[0].value),
             rainNightPerc: addPercent(key.blockElement[7].time[4].elementValue[0].value),
             rainMoringPerc: addPercent(key.blockElement[7].time[2].elementValue[0].value),
             uivLevel: uivLevel,
