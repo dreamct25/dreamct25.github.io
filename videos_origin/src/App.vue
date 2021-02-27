@@ -7,7 +7,7 @@
     >
       <div class="title">
         <i class="fas fa-film"></i>
-        <h1>Videos</h1>
+        <h1>Video</h1>
       </div>
       <div class="nav-bar">
         <div
