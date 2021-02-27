@@ -18,59 +18,41 @@
     </div>
     <div class="row justify-content-center" v-if="rwdState == false">
       <div class="col-10">
-        <div class="table-outer">
-          <table class="table">
-            <thead>
-              <tr>
-                <th width="12.8%"></th>
-                <th width="10%">影片頻道</th>
-                <th>影片名稱</th>
-                <th>影片連結</th>
-                <th width="10%">觀看次數</th>
-                <th width="8%">刪除收藏</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in collectTemp" :key="index">
-                <td>
-                  <span>
-                    <img :src="item.videoImgUrl" />
-                  </span>
-                </td>
-                <td>
-                  <span>{{ item.videoChannelTitle }}</span>
-                </td>
-                <td>
-                  <span>{{ item.videoTitle }}</span>
-                </td>
-                <td>
-                  <span @click="goVideo(item.videoUrl, item.videoID)">{{
-                    item.videoUrl
-                  }}</span>
-                </td>
-                <td>
-                  <span>{{ item.videoViewsTimes }}</span>
-                </td>
-                <td>
-                  <span @click="deleteCollect(item.videoID)"
-                    ><i class="fas fa-times cross"></i
-                  ></span>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="6">
-                  <div class="collect-count-outer">
-                    <div v-if="searchCount != 0">
-                      已搜尋到 {{ searchCount }} 部收藏影片，
-                    </div>
-                    <div>收藏影片總數 {{ collect.length }} 部</div>
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+        <div class="collect-grid-outer">
+          <div class="collect-grid-header">
+            <div></div>
+            <div>影片頻道</div>
+            <div>影片名稱</div>
+            <div>影片連結</div>
+            <div>觀看次數</div>
+            <div>刪除收藏</div>
+          </div>
+          <div class="collect-grid-body">
+            <div
+              class="collect-grid"
+              v-for="(item, index) in collectTemp"
+              :key="index"
+            >
+              <span>
+                <img :src="item.videoImgUrl" />
+              </span>
+              <span>{{ item.videoChannelTitle }}</span>
+              <span>{{ item.videoTitle }}</span>
+              <span @click="goVideo(item.videoUrl, item.videoID)"
+                >{{ item.videoUrl }}<span></span
+              ></span>
+              <span>{{ item.videoViewsTimes }}</span>
+              <span @click="deleteCollect(item.videoID)"
+                ><i class="fas fa-times cross"></i
+              ></span>
+            </div>
+          </div>
+          <div class="collect-grid-footer">
+            <div v-if="searchCount != 0">
+              已搜尋到 {{ searchCount }} 部收藏影片，
+            </div>
+            <div>收藏影片總數 {{ collect.length }} 部</div>
+          </div>
         </div>
       </div>
     </div>
@@ -197,149 +179,119 @@
     }
   }
 }
-.table-outer {
-  .table {
+.collect-grid-outer {
+  .collect-grid-header {
+    display: grid;
+    grid-template-columns: 172px 200px 350px auto 100px 100px;
+    grid-template-rows: auto;
     color: white;
-    margin-bottom: 0;
-    table-layout: fixed;
-    thead {
-      tr {
-        th {
-          text-align: center;
-          border-top: none;
-          border-bottom: none;
-          font-size: 18px;
-          text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7);
-        }
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7);
+    padding: 10px 0 20px 0;
+  }
+  .collect-grid-body {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+    grid-row-gap: 20px;
+    .collect-grid {
+      display: grid;
+      grid-template-columns: 172px 200px 350px auto 100px 100px;
+      grid-template-rows: auto;
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 10px;
+      text-align: center;
+      overflow: hidden;
+      box-shadow: 0 0 5px 1px rgba(60, 60, 60, 0.7);
+      transform: scale(1);
+      transition: 0.7s ease;
+      span {
+        display: block;
+        color: black;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 35px 5px 35px 5px;
       }
-    }
-    tbody {
-      tr {
-        transform: scale(1);
+      span:nth-of-type(1) {
+        position: relative;
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
         transition: 0.7s ease;
-        td {
-          border-top: none;
-          padding: 10px 0 10px 0;
-          span {
-            display: block;
-            color: black;
-            background-color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 35px 5px 35px 5px;
-            transition: 0.7s ease;
-          }
-        }
-        td:nth-of-type(1) {
-          span {
-            overflow: hidden;
-            position: relative;
-            height: 94px;
-            border-radius: 10px 0 0 10px;
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
-            transition: 0.7s ease;
-            img {
-              position: absolute;
-              width: 172px;
-              top: -17%;
-              left: 0;
-              right: 0;
-              bottom: 0;
-            }
-          }
-        }
-        td:nth-of-type(4) {
-          span {
-            position: relative;
-            cursor: pointer;
-            user-select: none;
-            transition: 0.7s ease;
-          }
-          span:after {
-            content: "";
-            position: absolute;
-            top: 65%;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background-color: rgba(255, 255, 255, 0);
-            transition: 0.7s ease;
-          }
-        }
-        td:nth-of-type(4):hover {
-          span {
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
-          }
-          span:after {
-            left: 0%;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 1);
-          }
-        }
-        td:nth-of-type(6) {
-          span {
-            position: relative;
-            border-radius: 0 10px 10px 0;
-            height: 94px;
-            .cross {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              font-size: 20px;
-              transform: translate(-50%, -45%) scale(1);
-              transition: 0.35s ease;
-              cursor: pointer;
-              user-select: none;
-            }
-          }
-        }
-        td:nth-of-type(6) {
-          span {
-            .cross:hover {
-              transform: translate(-50%, -45%) scale(1.5);
-            }
-          }
+        img {
+          width: 100%;
+          position: absolute;
+          top: -18%;
+          left: 0;
+          right: 0;
+          bottom: 0;
         }
       }
-      tr:hover {
-        transform: scale(1.05);
-        td {
-          span {
-            background-color: rgba(0, 153, 255, 0.7);
-            color: white;
-          }
+      span:nth-of-type(4) {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        transition: 0.7s ease;
+        span {
+          position: absolute;
+          transform: translateX(5.5%);
+          top: 70%;
+          left: 50%;
+          width: 0;
+          height: 2px;
+          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+          background-color: rgba(255, 255, 255, 0);
+          transition: 0.7s ease;
+          border-radius: 20px;
+          padding: 0;
         }
-        td:nth-of-type(1) {
-          span {
-            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.7);
-          }
+      }
+
+      span:nth-of-type(4):hover {
+        text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.7);
+        span {
+          left: 0%;
+          box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.7);
+          width: 90%;
+          background-color: rgba(255, 255, 255, 0.7);
         }
-        td:nth-of-type(6) {
-          span {
-            .cross {
-              color: white;
-            }
-          }
+      }
+      span:nth-of-type(6) {
+        position: relative;
+        border-radius: 0 10px 10px 0;
+        .cross {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          font-size: 20px;
+          transform: translate(-50%, -45%) scale(1);
+          transition: 0.35s ease;
+          cursor: pointer;
+          user-select: none;
+        }
+      }
+      span:nth-of-type(6) {
+        .cross:hover {
+          transform: translate(-50%, -45%) scale(1.5);
         }
       }
     }
-    tfoot {
-      tr {
-        td {
-          border-top: none;
-          padding: 3px 0;
-          font-size: 18px;
-          font-weight: bold;
-          text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7);
-          .collect-count-outer {
-            display: flex;
-            justify-content: flex-end;
-          }
-        }
+    .collect-grid:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.7);
+      span:nth-of-type(1) {
+        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.7);
       }
     }
+  }
+  .collect-grid-footer {
+    color: white;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.7);
+    padding: 20px 0 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 @media screen and (max-width: 768px) {

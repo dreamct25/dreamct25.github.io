@@ -467,14 +467,15 @@ export default {
       }
     },
     whenScroll() {
-      window.scrollY > this.domSelector(".header").offsetHeight
-        ? (this.headerAnimate = true)
-        : (this.headerAnimate = false);
-      this.headerAnimate == false
-        ? (document.body.style.paddingTop = "")
-        : (document.body.style.paddingTop = `${
-            this.domSelector(".header").offsetHeight
-          }px`);
+      if (window.scrollY > 100) {
+        this.headerAnimate = true;
+        document.body.style.paddingTop = `${
+          this.domSelector(".header").offsetHeight
+        }px`;
+      } else {
+        this.headerAnimate = false;
+        document.body.style.paddingTop = "";
+      }
     },
     whenRwdScroll() {
       window.scrollY > this.domSelector(".header-rwd").offsetHeight
