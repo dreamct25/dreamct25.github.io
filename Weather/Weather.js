@@ -382,11 +382,11 @@ function chooseDayBtn() {
 }
 
 function chooseBlockBtn() {
-    const northCode = [10002, 10017, 65, 63, 68, 10004, 10018, 10005]
-    const middleCode = [66, 10007, 10009, 10008]
-    const southCode = [10010, 10020, 67, 64, 10013]
-    const eastCode = [10015, 10014]
-    const outeCode = [09007, 09020, 10016]
+    const northCode = [10002000, 10017000, 65000000, 63000000, 68000000, 10004000, 10018000, 10005000]
+    const middleCode = [66000000, 10007000, 10009000, 10008000]
+    const southCode = [10010000, 10020000, 67000000, 64000000, 10013000]
+    const eastCode = [10015000, 10014000]
+    const outeCode = [09007000, 09020000, 10016000]
     const blockBtnItem = [{
         order: 0,
         fn: () => chooseArea(northCode)
