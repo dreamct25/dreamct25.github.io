@@ -4253,7 +4253,7 @@ body {
       -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
-      z-index: 3;
+      z-index: 4;
       font-size: 18px;
       padding: 5px 30px;
       border-radius: 20px;
