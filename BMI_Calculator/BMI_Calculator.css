@@ -4288,7 +4288,9 @@ body {
             overflow: hidden;
             -webkit-transition: 1s ease;
             -o-transition: 1s ease;
-            transition: 1s ease; }
+            transition: 1s ease;
+            position: relative;
+            z-index: 3; }
             body .main .render-data-outer-frame .render-data-outer .render-data .list-item .pos {
               color: black;
               position: relative; }
