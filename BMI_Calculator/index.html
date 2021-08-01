@@ -7,79 +7,51 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="stylesheet" href="../BMI_Calculator/BMI_Calculator.css">
+    <script src="../my_library/Library.js"></script>
     <title>BMI Calculator</title>
 </head>
 
 <body>
-    <div class="header">
-        <span class="T2">Take care your health</span>
-        <span class="T3">In your whole life</span>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">
+                <i class="fal fa-male fa-5x mx-1 py-3"></i>
+                <i class="fal fa-female fa-5x mx-1 py-3"></i>
+                <br>
+                BMI Calculator
+            </h1>
+            <div class="input-group">
+                <div class="height-input">
+                    <span>身高 ( Cm )</span>
+                    <input class="height" type="tel" placeholder="請輸入您的身高">
+                    <p class="height-check">請輸入身高</p>
+                </div>
+                <div class="weight-input">
+                    <span>體重 ( Kg )</span>
+                    <input class="weight" type="tel" placeholder="請輸入您的體重">
+                    <p class="weight-check">請輸入體重</p>
+                </div>
+            </div>
+            <div class="add-btn">檢測</div>
+        </div>
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="row justify-content-center">
-                                <h1 class="T1"><i class="fal fa-male fa-5x mx-1 py-3"></i><i
-                                        class="fal fa-female fa-5x mx-1"></i><br>BMI Calculator</h1>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row justify-content-center">
-                                <form class="form pt-5" name="form" action="BMI Calculator.html">
-                                    <label for="height">身高 ( Cm )</label>
-                                    <br>
-                                    <input class="countH mt-2" type="tel" placeholder="請輸入您的身高">
-                                    <p class="checkH"></p>
-                                    <br>
-                                    <label for="weight">體重 ( Kg )</label>
-                                    <br>
-                                    <input class="countW mt-2" type="tel" placeholder="請輸入您的體重">
-                                    <p class="checkW"></p>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row justify-content-center">
-                                <div class="btn-outerbox">
-                                    <div class="btn btn-change">
-                                        <p class="turn">計算</p>
-                                    </div>
-                                    <i
-                                        class="fas fa-chevron-double-down fa-3x d-flex justify-content-center arrow-down"></i>
-                                </div>
-                            </div>
-                        </div>
+            <div class="main">
+                <div class="toggle-data-btn">檢測紀錄</div>
+                <div class="render-data-outer-frame">
+                    <div class="render-data-outer">
+                        <div class="render-data"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="content">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="text-center text-white p-3 pb-1">BMI 計算結果紀錄</h2>
-                    <div class="d-flex justify-content-center mb-4">
-                        <select class="body-value" name="select" id="" data-action="change-1">
-                            <option value="--參考值--" selected>--BMI參考值--</option>
-                            <option value="過輕呦">過輕呦</option>
-                            <option value="理想型">理想型</option>
-                            <option value="開始胖">開始胖</option>
-                            <option value="輕度胖">輕度胖</option>
-                            <option value="中度胖">中度胖</option>
-                            <option value="幸福胖">幸福胖</option>
-                        </select>
-                    </div>
-                    <p class="body-value-show text-center mt-none">隱藏文字</p>
-                    <div class="list"></div>
-                </div>
+        <div class="footer">
+            <div class="footer-icons">
+                <i class="fal fa-male fa-3x"></i>
+                <i class="fal fa-female fa-3x"></i>
+                <span>BMI Calculator</span>
             </div>
+            <h4>&copy&nbspCopyright Chen</h4>
         </div>
-    </div>
-    <div class="footer pt-2 pb-1">
-        <i class="fal fa-male fa-3x mx-1"></i><i class="fal fa-female fa-3x mx-1"></i><br>BMI Calculator<br>
-        <p class="text-white mb-0">&copy&nbspCopyright Chen</p>
     </div>
     <script src="../BMI_Calculator/BMI_Calculator.js "></script>
 </body>
