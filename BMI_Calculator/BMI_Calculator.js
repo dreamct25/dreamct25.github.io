@@ -140,20 +140,20 @@ const renderItem = dataCath => {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}">BMI ＜ 18.5 過輕呦</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "理想型" ? "class='math-val'":""}">18.5 ≦ BMI ＜ 24 理想型</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}>BMI ＜ 18.5 過輕呦</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "理想型" ? "class='math-val'":""}>18.5 ≦ BMI ＜ 24 理想型</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}">24 ≦ BMI ＜ 27 開始胖</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}">27 ≦ BMI ＜ 30 輕度胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}>24 ≦ BMI ＜ 27 開始胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}>27 ≦ BMI ＜ 30 輕度胖</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}">30 ≦ BMI ＜ 35 中度胖</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}">BMI ≧ 35 幸福胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}>30 ≦ BMI ＜ 35 中度胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}>BMI ≧ 35 幸福胖</span>
                                     </div>
                                 </div>
                             </div>
