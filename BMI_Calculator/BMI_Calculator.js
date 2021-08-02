@@ -33,7 +33,6 @@ const countCenter = ({ target:{ className,value } }) => {
     vals.check = rulePos === -1
 
     if(rulePos === 0 || rulePos === 1){
-        console.log(rulePos)
         $(".height-check").text(ruleItem[rulePos].ruleTxtH)
         $(".weight-check").text(ruleItem[rulePos].ruleTxtW)
     }else if(rulePos === 2){
@@ -98,7 +97,7 @@ const addItem = () => {
         timesTemp:new Date().getFullDateTime("full")
     }
 
-    data.unshift(collectObj)
+    data = [collectObj,...data]
 
     dataSet("set","data",data)
     data = dataSet("get","data")
