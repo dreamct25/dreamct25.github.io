@@ -51,15 +51,6 @@ export type paginationOptions = {
     pageSize: number
 }
 
-export type searchPostType = {
-    searchVal: string,
-    selectValI: string,
-    selectValII: string,
-    selectTextI: string,
-    selectTextII: string,
-    checked: boolean
-}
-
 export type selectType = {
     selectName: string,
     selectColumn: string,
