@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { selectType, modalContentType } from '../../types/types'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -114,9 +114,9 @@ export class SearchGroupComponent implements OnInit {
           selectValI,
           selectValII,
           this.selectTextI,
-          this.selectTextII,
           this.checkBoxToggle,
-          JSON.stringify(haveValid)]
+          JSON.stringify(haveValid)
+        ]
       }
     })
   }

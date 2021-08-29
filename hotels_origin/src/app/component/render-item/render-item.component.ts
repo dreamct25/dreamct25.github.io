@@ -8,14 +8,14 @@ import { dataType } from '../../types/types'
 })
 export class RenderItemComponent implements OnInit {
 
-  public topFrameToggle: boolean = false
-  public currentIndex!: number
   @Input()
   public propsData!: dataType[]
 
   @Output()
   public idPost: EventEmitter<string> = new EventEmitter()
 
+  public topFrameToggle: boolean = false
+  public currentIndex!: number
   constructor() { }
 
   ngOnInit() { }
@@ -24,7 +24,6 @@ export class RenderItemComponent implements OnInit {
     this.topFrameToggle = haveToggle
     this.currentIndex = currentIndex
   }
-  getSingleId(id: string) {
-    this.idPost.emit(id)
-  }
+
+  getSingleId = (id: string) => this.idPost.emit(id)
 }

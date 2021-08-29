@@ -22,13 +22,12 @@ export class MainComponent implements OnInit {
   public haveLoading: boolean = false
   public modalToggle: boolean = false
   public startSearching: boolean = true
+  public searchParams: any[] = []
   public msObj: modalContentType = {
     msTitle: "",
     msContent: "",
     msItem: {}
   }
-
-  public searchParams: any[] = []
 
   constructor(
     public getDataServic: GetDataService,
@@ -49,17 +48,11 @@ export class MainComponent implements OnInit {
   }
 
   async getData() {
-    console.log("loading")
     this.haveLoading = true
     this.data = await this.getDataServic.datas()
-    console.log("complated")
     this.haveLoading = false
     this.dataOnly = this.data[0].data
-    this.route.queryParamMap.subscribe((paramsMap: Params) => {
-      if (paramsMap.params["searchItems"] === undefined) {
-        this.getLocationAndRender()
-      }
-    })
+    this.route.queryParamMap.subscribe((paramsMap: Params) => paramsMap.params["searchItems"] === undefined && this.getLocationAndRender())
   }
 
   async getLocationAndRender() {
@@ -85,11 +78,10 @@ export class MainComponent implements OnInit {
     this.locationRange.latitude = pos.coords.latitude.toFixed(3)
     this.locationRange.longitude = pos.coords.longitude.toFixed(3)
     let { latitude, longitude } = this.locationRange
-    this.dataOnly = this.dataOnly.filter(({ Px, Py }: { Px: number, Py: number }) => {
-      return (Px + 0.08 >= longitude && Px - 0.08 <= longitude) && (Py + 0.08 >= latitude && Py - 0.08 <= latitude)
-    })
+    this.dataOnly = this.dataOnly.filter(({ Px, Py }: { Px: number, Py: number }) => (Px + 0.08 >= longitude && Px - 0.08 <= longitude) && (Py + 0.08 >= latitude && Py - 0.08 <= latitude))
     navigator.geolocation.clearWatch(this.posMember!)
   }
+
   errorGetLocation() {
     this.openModal(true, {
       msTitle: "提示",
@@ -99,7 +91,6 @@ export class MainComponent implements OnInit {
   }
 
   goSingleInfo(id: string) {
-
     this.router.navigate(["/details"], {
       queryParams: {
         itemID: id,
@@ -108,15 +99,7 @@ export class MainComponent implements OnInit {
       }
     })
   }
-  searchItem([
-    searchVal,
-    selectValI,
-    selectValII,
-    selectTextI,
-    selectTextII,
-    checked,
-    haveValid]: any[]
-  ) {
+  searchItem([searchVal, selectValI, selectValII, selectTextI, checked, haveValid]: any[]) {
     let backPaginationParamsTemp: { [key: string]: any } = this.backPaginationParams === undefined ?
       { currentPage: 1, partPage: window.innerWidth < 767 ? 8 : 12, pageSize: window.innerWidth < 767 ? 6 : 10 } :
       this.backPaginationParams
@@ -146,17 +129,22 @@ export class MainComponent implements OnInit {
       })
     } else {
       if (selectValI === "") {
-        this.filterData = checked ? this.dataOnly.filter((item: any) => item.Picture1 !== "") : this.dataOnly
-        this.filterData = selectValII === "" ? this.filterData : this.filterData.filter(({ Name }: { Name: string }) => Name.includes(selectValII))
-
+        this.filterData = checked ? this.dataOnly.filter((item: any) => item[selectValI] !== null && item.Picture1 !== "") : this.dataOnly
+        this.filterData = searchVal === "" ? this.filterData : this.filterData.filter(({ Name, Add, Description, Region, Town }: dataType) =>
+          Name !== null && Name.includes(searchVal) ||
+          Add !== null && Add.includes(searchVal) ||
+          Description !== null && Description.includes(searchVal) ||
+          Region !== null && Region.includes(searchVal) ||
+          Town !== null && Town.includes(searchVal))
+        this.filterData = selectValII === "" ? this.filterData : this.filterData.filter(({ Name }: dataType) => Name.indexOf(selectValII) !== -1)
         this.renderPagination(this.filterData, {
           pages: currentPage,
           partPage: partPage,
           pageSize: pageSize
         })
       } else {
-        this.filterData = checked ? this.dataOnly.filter((item: any) => item[selectValI] !== null && item[selectValI].includes(searchVal) && item.Picture1 !== "") : this.dataOnly.filter((item: any) => item[selectValI] !== null && item[selectValI].includes(searchVal))
-        this.filterData = selectValII === "" ? this.filterData : this.filterData.filter(({ Name }: { Name: string }) => Name.includes(selectValII))
+        this.filterData = checked ? this.dataOnly.filter((item: any) => item[selectValI].includes(searchVal) && item.Picture1 !== "") : this.dataOnly.filter((item: any) => item[selectValI].includes(searchVal))
+        this.filterData = selectValII === "" ? this.filterData : this.filterData.filter(({ Name }: dataType) => Name.includes(selectValII))
         this.renderPagination(this.filterData, {
           pages: currentPage,
           partPage: partPage,
