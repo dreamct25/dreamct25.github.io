@@ -56,7 +56,7 @@
 //         return targetThis
 //     }
 //     return $
-// }((el: object | string): any => typeof el === "object" ? el : document.querySelector(el)))
+// }((el: object | string): any => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : el))) // 更新元素指向 2021/8/31
 //
 // $.each = (item: {}[] | [], fn: Function,) => item.forEach((items: any, index: number) => fn.call(item, items, index))
 // $.maps = (item: {}[] | [], fn: Function) => item.map((items: any, index: number) => fn.call(item, items, index))
@@ -125,7 +125,7 @@ const $ = (function (el) {
         return targetThis;
     };
     return $;
-}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)));
+}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : el)); // 更新元素指向 2021/8/31
 
 $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
 $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
