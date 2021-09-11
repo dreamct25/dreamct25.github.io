@@ -89,3 +89,56 @@ $.eachKeys = (item: object): string[] => Object.keys(item)                // 更
 $.isNum = (val: any): boolean => typeof val === "number" ? true : false   // 更新方法 2021/8/31
 $.isStr = (val: any): boolean => typeof val === "string" ? true : false   // 更新方法 2021/8/31
 $.isBool = (val: any): boolean => typeof val === "boolean" ? true : false // 更新方法 2021/8/31
+$.fetch = async (settingParams: { // 更新類 ajax 方法 2021/9/11
+    method: string,
+    url: string,
+    contentType: string,
+    data: object | undefined,
+    beforePost: Function,
+    successFn: Function,
+    errorFn: Function
+}) => {
+
+    //#region settingParams 參數
+    // {
+    //     method:字串,
+    //     url:字串,
+    //     contentType:字串,
+    //     data:物件,
+    //     beforePost:回呼函式
+    //     successFn:回呼函式,
+    //     errorFn:回呼函式,
+    // }
+    //#endregion
+
+    let settings: { [key: string]: any } = {}
+    let { method, url, contentType, data, beforePost, successFn, errorFn } = settingParams
+
+    settings.method = method
+    settings.url = url
+
+    if (data != undefined) {
+        settings.headers = { "Content-Type": contentType }
+        settings.body = JSON.stringify(data)
+    }
+
+    try {
+        beforePost.call(beforePost)
+        let res = await fetch(url, settings);
+        if (res.status === 200) {
+            res.json().then((resItem: object | string) => successFn.call(successFn, typeof resItem === "string" ? JSON.parse(resItem) : resItem))
+        }
+        else {
+            let msObj: { [key: string]: any } = {
+                message: {
+                    statusCode: res.status,
+                    statusText: res.statusText
+                }
+            }
+            throw new Error(JSON.stringify(msObj));
+        }
+    }
+    catch (err: any) {
+        errorFn.call(errorFn, JSON.parse(err.message))
+    }
+};
