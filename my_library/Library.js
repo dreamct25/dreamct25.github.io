@@ -84,6 +84,51 @@ $.eachKeys = (item) => Object.keys(item);
 $.isNum = (val) => typeof val === "number" ? true : false;   // 更新方法 2021/8/31
 $.isStr = (val) => typeof val === "string" ? true : false;   // 更新方法 2021/8/31
 $.isBool = (val) => typeof val === "boolean" ? true : false; // 更新方法 2021/8/31
+$.fetch = async (settingParams) => { // 更新類 ajax 方法 2021/9/11
+
+    //#region settingParams 參數
+    // {
+    //     method:字串,
+    //     url:字串,
+    //     contentType:字串,
+    //     data:物件,
+    //     beforePost:回呼函式
+    //     successFn:回呼函式,
+    //     errorFn:回呼函式,
+    // }
+    //#endregion
+
+    let settings = {}
+    let { method, url, contentType, data,beforePost,successFn,errorFn } = settingParams
+
+    settings.method = method
+    settings.url = url
+
+    if(data != undefined){
+        settings.headers = {"Content-Type": contentType}
+        settings.body = JSON.stringify(data)
+    }
+
+    try {
+        beforePost.call(beforePost)
+
+        let res = await fetch(url, settings);
+        if (res.status === 200) {
+            res.json().then(resItem=> successFn.call(successFn, typeof resItem === "string" ? JSON.parse(resItem):resItem))
+        }
+        else {
+            throw new Error(JSON.stringify({
+                message:{
+                    statusCode:res.status,
+                    statusText:res.statusText
+                }
+            }));
+        }
+    }
+    catch (err) {
+        errorFn.call(errorFn,JSON.parse(err.message))
+    }
+};
 
 
 Date.prototype.getFullDateTime = function(formatType) {
