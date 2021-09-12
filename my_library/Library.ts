@@ -65,11 +65,14 @@ const $: any = (function (el) {
         targetThis.attr = (props: string, val: any) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
         targetThis.props = (props: string, val: any) => val === undefined ? targetThis[props] : targetThis[props] = val;
         targetThis.styles = (cssType: string, cssParameter: string) => targetThis.style.setProperty(cssType, cssParameter);
-        targetThis.sibling = (num: number) => $(targetThis[num])        // 更新方法 2021/8/31
-        targetThis.child = (num: number) => $(targetThis.children[num]) // 更新方法 2021/8/31
-        targetThis.firstChild = () => $(targetThis.firstElementChild)   // 更新方法 2021/8/31
-        targetThis.lastChild = () => $(targetThis.lastElementChild)     // 更新方法 2021/8/31
-        targetThis.parent = () => $(targetThis.parentNode)              // 更新方法 2021/8/31
+        targetThis.sibling = (num: number) => $(targetThis[num])                // 更新方法 2021/8/31
+        targetThis.child = (num: number) => $(targetThis.children[num])         // 更新方法 2021/8/31
+        targetThis.firstChild = () => $(targetThis.firstElementChild)           // 更新方法 2021/8/31
+        targetThis.lastChild = () => $(targetThis.lastElementChild)             // 更新方法 2021/8/31
+        targetThis.parent = () => $(targetThis.parentNode)                      // 更新方法 2021/8/31
+        targetThis.appendDom = (el: HTMLElement) => $(targetThis).append(el)    // 更新方法 2021/9/12
+        targetThis.removeDom = () => $(targetThis).remove()                     // 更新方法 2021/9/12
+        targetThis.appendDomText = (el: Text) => $(targetThis).appendChild(el)  // 更新方法 2021/9/12
 
         return targetThis
 
@@ -89,6 +92,16 @@ $.eachKeys = (item: object): string[] => Object.keys(item)                // 更
 $.isNum = (val: any): boolean => typeof val === "number" ? true : false   // 更新方法 2021/8/31
 $.isStr = (val: any): boolean => typeof val === "string" ? true : false   // 更新方法 2021/8/31
 $.isBool = (val: any): boolean => typeof val === "boolean" ? true : false // 更新方法 2021/8/31
+$.createDom = (tag: string, props: { [key: string]: any }): HTMLElement => { // 更新方法 2021/9/12
+    let el: any = document.createElement(tag)
+    let propsArr: [string, any][] = Object.entries(props)
+    propsArr.forEach((getProps: any[]) => {
+        getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
+        el[getProps[0].toString()] = getProps[1]
+    })
+    return el
+}
+$.createDomText = (text: string): Text => document.createTextNode(text) // 更新方法 2021/9/12
 $.fetch = async (settingParams: { // 更新類 ajax 方法 2021/9/11
     method: string,
     url: string,

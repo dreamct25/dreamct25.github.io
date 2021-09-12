@@ -68,6 +68,9 @@ const $ = (function (el) {
         targetThis.childFirst = () => $(targetThis.firstElementChild);                                      // 更新方法 2021/8/31
         targetThis.childLast = () => $(targetThis.lastElementChild);                                        // 更新方法 2021/8/31
         targetThis.parent = () => $(targetThis.parentNode);                                                 // 更新方法 2021/8/31
+        targetThis.appendDom = (el) => $(targetThis).append(el)                                             // 更新方法 2021/9/12
+        targetThis.removeDom = () => $(targetThis).remove()                                                 // 更新方法 2021/9/12
+        targetThis.appendDomText = (el) => $(targetThis).appendChild(el)                                    // 更新方法 2021/9/12
         return targetThis;
     };
     return $;
@@ -84,6 +87,16 @@ $.eachKeys = (item) => Object.keys(item);
 $.isNum = (val) => typeof val === "number" ? true : false;   // 更新方法 2021/8/31
 $.isStr = (val) => typeof val === "string" ? true : false;   // 更新方法 2021/8/31
 $.isBool = (val) => typeof val === "boolean" ? true : false; // 更新方法 2021/8/31
+$.createDom = (tag,props) => { // 更新方法 2021/9/12
+    let el = document.createElement(tag)
+    let propsArr = Object.entries(props)
+    propsArr.forEach(getProps => {
+        getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
+        el[getProps[0].toString()] = getProps[1]
+    })
+    return el
+}
+$.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/9/12
 $.fetch = async (settingParams) => { // 更新類 ajax 方法 2021/9/11
 
     //#region settingParams 參數
@@ -117,19 +130,19 @@ $.fetch = async (settingParams) => { // 更新類 ajax 方法 2021/9/11
             res.json().then(resItem=> successFn.call(successFn, typeof resItem === "string" ? JSON.parse(resItem):resItem))
         }
         else {
-            throw new Error(JSON.stringify({
+            let msObj = {
                 message:{
                     statusCode:res.status,
                     statusText:res.statusText
                 }
-            }));
+            }
+            throw new Error(JSON.stringify(msObj));
         }
     }
     catch (err) {
         errorFn.call(errorFn,JSON.parse(err.message))
     }
 };
-
 
 Date.prototype.getFullDateTime = function(formatType) {
     let fullDateTimeFormat = {}
