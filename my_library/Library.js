@@ -58,6 +58,7 @@ const $ = (function (el) {
         targetThis.html = (dom) => targetThis.innerHTML = dom;
         targetThis.addClass = (classText) => targetThis.classList.add(classText);
         targetThis.removeClass = (classTxt) => targetThis.classList.remove(classTxt);
+        targetThis.on = (eventType,fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); } // 更新方法 2021/9/20
         targetThis.listener = (eventType, fn) => targetThis.addEventListener(eventType, fn);
         targetThis.val = (valTemp) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props, val) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);

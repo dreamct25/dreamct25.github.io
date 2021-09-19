@@ -60,6 +60,7 @@ const $: any = (function (el) {
         targetThis.html = (dom: string) => targetThis.innerHTML = dom;
         targetThis.addClass = (classText: string) => targetThis.classList.add(classText);
         targetThis.removeClass = (classTxt: string) => targetThis.classList.remove(classTxt);
+        targetThis.on = (eventType: string, fn: Function) => { targetThis[["on", eventType].join("")] = (t: Event) => fn.call(targetThis, t); } // 更新方法 2021/9/20
         targetThis.listener = (eventType: string, fn: Function) => targetThis.addEventListener(eventType, fn);
         targetThis.val = (valTemp: string | undefined) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props: string, val: any) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
