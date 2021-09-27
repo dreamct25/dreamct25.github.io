@@ -57,8 +57,8 @@ const $ = (function (el) {
         targetThis.text = (txt) => txt === undefined ? targetThis.textContent : targetThis.textContent = txt;
         targetThis.html = (dom) => targetThis.innerHTML = dom;
         targetThis.addClass = (classText) => targetThis.classList.add(classText);
-        targetThis.removeClass = (classTxt) => targetThis.classList.remove(classTxt);
-        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText) // 更新方法 2021/9/20
+        targetThis.removeClass = (classText) => targetThis.classList.remove(classText);
+        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText); // 更新方法 2021/9/20
         targetThis.on = (eventType,fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); } // 更新方法 2021/9/20
         targetThis.listener = (eventType, fn) => targetThis.addEventListener(eventType, fn);
         targetThis.val = (valTemp) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
@@ -89,6 +89,8 @@ $.eachKeys = (item) => Object.keys(item);
 $.isNum = (val) => typeof val === "number" ? true : false;   // 更新方法 2021/8/31
 $.isStr = (val) => typeof val === "string" ? true : false;   // 更新方法 2021/8/31
 $.isBool = (val) => typeof val === "boolean" ? true : false; // 更新方法 2021/8/31
+$.convert = (val,type) => { if(typeof val === "object"){ alert("Invalid Convert Type.") }else{ switch(type){ case "string":return String(val); case "number":return parseInt(val); case "float":return parseFloat(val); case "boolean":return Boolean(val) }}} // 更新方法 2021/9/22
+$.convertJSON = (val,type) => { let valTemp = false; if(type === "string") valTemp = JSON.stringify(val); if(type === "object") valTemp = JSON.parse(val); return valTemp === false ? alert("Invalid Convert Type") : valTemp } // 更新方法 2021/9/22
 $.createDom = (tag,props) => { // 更新方法 2021/9/12
     let el = document.createElement(tag)
     let propsArr = Object.entries(props)
@@ -125,11 +127,11 @@ $.fetch = async (settingParams) => { // 更新類 ajax 方法 2021/9/11
     }
 
     try {
-        beforePost.call(beforePost)
+        if(beforePost != undefined) beforePost.call(beforePost)
 
         let res = await fetch(url, settings);
         if (res.status === 200) {
-            res.json().then(resItem=> successFn.call(successFn, typeof resItem === "string" ? JSON.parse(resItem):resItem))
+            res.json().then(resItem=> successFn.call(successFn, resItem))
         }
         else {
             let msObj = {
@@ -146,20 +148,13 @@ $.fetch = async (settingParams) => { // 更新類 ajax 方法 2021/9/11
     }
 };
 
-Date.prototype.getFullDateTime = function(formatType) {
-    let fullDateTimeFormat = {}
+Date.prototype.getFullDateTime = (type) => { // 更新方法內容與回傳內容 2021/9/22
+    let formatType = {}
     let dateStr = new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toJSON()
     let dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-")
     let [year,month,date,hour,minute,second] = dateSplit
-    fullDateTimeFormat.typeDate = `${year}-${month}-${date}`
-    fullDateTimeFormat.typeTime = `${hour}：${minute}：${second}`
-    fullDateTimeFormat.typeFull = `${fullDateTimeFormat.typeDate} ${fullDateTimeFormat.typeTime}`
-    switch (formatType) {
-        case "time":
-            return fullDateTimeFormat.typeTime
-        case "date":
-            return fullDateTimeFormat.typeDate
-        case "full":
-            return fullDateTimeFormat.typeFull
-    }
+    formatType.date = `${year}-${month}-${date}`
+    formatType.time = `${hour}:${minute}:${second}`
+    formatType.full = `${formatType.date}T${formatType.time}`
+    return type === undefined ? formatType : formatType[type]
 }
