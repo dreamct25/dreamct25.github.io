@@ -53,7 +53,7 @@
 // $.isBool = (val: any): boolean => typeof val === "boolean" ? true : false // 更新方法 2021/8/31
 
 const $: any = (function (el) {
-    const $ = (targets: any) => {
+    const $ = (targets: any): any => {
         let targetThis: { [key: string]: any } = el.call(el, targets) || targets
         targetThis.targets = targets
         targetThis.text = (txt: string | undefined) => txt === undefined ? targetThis.textContent : targetThis.textContent = txt
@@ -77,7 +77,6 @@ const $: any = (function (el) {
         targetThis.appendDomText = (el: Text) => $(targetThis).appendChild(el)  // 更新方法 2021/9/12
 
         return targetThis
-
     }
 
     return $
@@ -157,3 +156,15 @@ $.fetch = async (settingParams: { // 更新類 ajax 方法 2021/9/11
         errorFn.call(errorFn, JSON.parse(err.message))
     }
 };
+
+interface Date { getFullDateTime(type: string | undefined): string | object }
+Date.prototype.getFullDateTime = (type: string | undefined): string | object => { // 更新方法內容與回傳內容 2021/9/22
+    let formatType: { [key: string]: any } = {}
+    let dateStr: string = new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toJSON()
+    let dateSplit: string[] = dateStr.replace(/T/g, "-").replace(/:/g, "-").split(".")[0].split("-")
+    let [year, month, date, hour, minute, second] = dateSplit
+    formatType.date = `${year}-${month}-${date}`
+    formatType.time = `${hour}:${minute}:${second}`
+    formatType.full = `${formatType.date}T${formatType.time}`
+    return type === undefined ? formatType : formatType[type]
+}
