@@ -116,7 +116,6 @@ const $ = (function (el) {
         let propsArr = Object.entries(props)
         propsArr.forEach(getProps => {
             getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
-            console.log(getProps[0],getProps[1])
             el[getProps[0]] = getProps[1]
         })
         return el
