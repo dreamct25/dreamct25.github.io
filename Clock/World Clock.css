@@ -73,6 +73,7 @@ html .wrap .main .clock-outer-fram .clock-outer .clock {
     height: 100%;
     position: relative;
     backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 
 html .wrap .main .clock-outer-fram .clock-outer .clock .point-icon-outer {
@@ -269,7 +270,7 @@ html .wrap .main .show-text-group .time-show.time-show-in {
 html .wrap .main .select-group{
     width: 100px;
     position: fixed;
-    bottom:-57%;
+    bottom:-44%;
     right:0;
     color:white;
     text-align: center;
@@ -278,7 +279,7 @@ html .wrap .main .select-group{
 
 @media screen and (max-width: 768px) {
     html .wrap .main .select-group{
-        bottom:-48.6%;
+        bottom:-49%;
     }
 }
 
@@ -292,6 +293,7 @@ html .wrap .main .select-group .select-outer{
     flex-direction: column;
     justify-content: center;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 5px;
     box-shadow: 0 0 3px 0 rgba(255, 255, 255, .7);
     overflow: hidden;
@@ -303,6 +305,7 @@ html .wrap .main .select-group .toggle-bar-btn{
     cursor: pointer;
     user-select: none;
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 0 3px 0 rgba(255, 255, 255, .7);
     display: flex;
     justify-content: center;
@@ -360,6 +363,7 @@ html .wrap .main .loading-outer{
     left: 0;
     bottom: 0;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     background-color: rgba(0, 0, 0, .3);
     opacity: 0;
     z-index: -1;
