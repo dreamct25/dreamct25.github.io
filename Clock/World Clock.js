@@ -3,7 +3,7 @@ let timer = undefined
 
 $.fetch({
     method:'get',
-    url:'http://worldtimeapi.org/api/timezone',
+    url:'https://worldtimeapi.org/api/timezone',
     successFn:(data) => initalRightBarItem(data),
     errorFn:(err) => $.console('log',err)
 })
@@ -85,7 +85,7 @@ const selectCity = (listIndex,optionIndex,path) => {
 
     $.fetch({
         method:'get',
-        url:`http://worldtimeapi.org/api/timezone/${path}`,
+        url:`https://worldtimeapi.org/api/timezone/${path}`,
         beforePost:()=> $('.loading-outer').addClass('active'),
         successFn:(data) => {
             timeSet(data.raw_offset,path.split('/')[path.split('/').length - 1].replace(/_/g,' '))
