@@ -268,9 +268,9 @@ html .wrap .main .show-text-group .time-show.time-show-in {
 }
 
 html .wrap .main .select-group{
-    width: 100px;
+    width: 110px;
     position: fixed;
-    bottom:-44%;
+    bottom:-333px;
     right:0;
     color:white;
     text-align: center;
@@ -279,7 +279,7 @@ html .wrap .main .select-group{
 
 @media screen and (max-width: 768px) {
     html .wrap .main .select-group{
-        bottom:-49%;
+        bottom:-352px;
     }
 }
 
@@ -297,11 +297,12 @@ html .wrap .main .select-group .select-outer{
     border-radius: 5px;
     box-shadow: 0 0 3px 0 rgba(255, 255, 255, .7);
     overflow: hidden;
+    background-color: rgba(0, 0, 0, .2);
 }
 html .wrap .main .select-group .toggle-bar-btn{
     margin:0 5px;
     border-radius: 5px;
-    padding: 5px 0 8px 0;
+    padding: 5px 3px 8px 10px;
     cursor: pointer;
     user-select: none;
     backdrop-filter: blur(10px);
@@ -310,6 +311,7 @@ html .wrap .main .select-group .toggle-bar-btn{
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(0, 0, 0, .2);
 }
 html .wrap .main .select-group .toggle-bar-btn .arrow-icon{
     font-size: 20px;

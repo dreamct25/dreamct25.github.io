@@ -96,7 +96,7 @@ const selectCity = (listIndex,optionIndex,path) => {
 }
 
 // 設定 timeSet 函式
-function timeSet(areaTime = 8 * 60 * 60,city = 'Taipei') {
+const timeSet = (areaTime = 8 * 60 * 60,city = 'Taipei') => {
     const weekendTextItems = [{
         weekNum: 1,
         weekName: 'Monday'
