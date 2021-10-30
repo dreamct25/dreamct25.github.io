@@ -50,7 +50,7 @@
 // $.eachKeys = item => Object.keys(item)
 
 // Javascript function 版，不需要 new 更新方法 2021/8/28 ( 正式版本 )
-const $ = (function (el) {
+const $ = ((el) => {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
         targetThis.targets = targets;
@@ -105,171 +105,173 @@ const $ = (function (el) {
         }
         return targetThis;
     };
+
+    // Public Function
+    $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
+    $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
+    $.filter = (item, fn) => item.filter((items) => fn.call(item, items));
+    $.sort = (item,fn) => item.sort((a,b) => fn.call(item,a,b))
+    $.indexOf = (item, x) => item.indexOf(x);
+    $.includes = (item, x) => item.includes(x);
+    $.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
+    $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
+    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType // 更新方法 2021/10/26
+    $.console = (type,...item) => console[type](...item) // 更新方法 2021/10/26
+    $.convert = (val,type) => { // 更新方法 2021/10/22
+        if(val === undefined || type === undefined || !['string','number','float','boolean','json','stringify'].includes(type)){
+            $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
+            return
+        } else if(typeof val === 'object' && ['string','number','float','boolean'].includes(type)){
+            $.console('error',`Convert value can't be object when use convert type ${type}.`)
+            return
+        }
+        switch(type){
+            case 'string':
+                return String(val)
+            case 'number':
+                return parseInt(val)
+            case 'float':
+                return parseFloat(val)
+            case 'boolean':
+                return Boolean(val)
+            case 'json':
+                return JSON.parse(val)
+            case 'stringify':
+                return JSON.stringify(val)
+        }
+    }
+    $.createDom = (tag,props) => { // 更新方法 2021/9/12
+        let el = document.createElement(tag)
+        let propsArr = Object.entries(props)
+        propsArr.forEach(getProps => {
+            getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
+            el[getProps[0]] = getProps[1]
+        })
+        return el
+    }
+    $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/9/12
+    $.objDetails = (obj,method) => method === undefined || !['keys','values','entries'].includes(method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/9/12
+    $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
+
+        //#region 參數設定
+        /**
+         * @param {object} obj <= 型別物件 要管理的物件
+         * @param {string} action <= 型別字串，要執行的動作，有分為 get ( 取得管理物件內容 )、set ( 設定管理物件指定鍵與值 )、add ( 新增管理物件鍵與值 )、delete ( 刪除管理物件指定鍵與值 )
+         * @param {string} key <= 型別字串，為鍵值的鍵
+         * @param {any} value <= 型別任意，為鍵值的值
+         * @returns {object | void}
+         */
+        //#endregion
+
+        const check = () => {
+            if(obj === undefined){
+                return "Please put want to manage's object at first parameters"
+            }
+        
+            if(action === undefined || !['get','set','add','delete'].includes(action)){
+                return 'Please enter want to use methods "get、set、add、delete" at seconde parameters'
+            } else if(typeof action !== 'string'){
+                return 'Seconde parameters must use type string.'
+            }
+        
+            if(key === undefined){
+                return 'Please enter want to use key name at third parameters'
+            } else if(typeof key !== 'string'){
+                return 'Third parameters must use type string.'
+            }
+        
+            if(value === undefined){
+                return `Please enter want to set value at forth parameters.`
+            }
+        }
+
+        switch(action){
+            case 'get':
+                return obj;
+            case 'set':
+                check() !== undefined ? $.console('error',check()) : key in obj ? obj[key] = value : $.console('error',`Key name ${key} not in this object.`)
+                break;
+            case 'add':
+                check() !== undefined ? $.console('error',check()) : key in obj ? $.console('error',`Key name ${key} already in this object`) : obj[key] = value
+                break;
+            case 'delete':
+                check() !== undefined ? $.console('error',check()) : key in obj ? delete obj[key] : $.console('error',`Key name ${key} not in this object.`)
+                break;
+        }
+    }
+
+    $.fetch = async (settingParams = {
+        method:'',
+        url:'',
+        headers:{},
+        contentType:'',
+        data:{},
+        beforePost:undefined,
+        successFn:undefined,
+        errorFn:undefined
+    }) => { 
+        // 更新類 ajax 方法 2021/9/11
+        // 更新類 ajax 方法內容 2021/10/21
+
+        //#region 參數設定
+        /**
+         * @param {string} method
+         * @param {string} url
+         * @param {object} header 追加 hearder 物件 2021/10/21
+         * @param {string} contentType
+         * @param {Function} beforePost <= 回呼函式
+         * @param {Function} successFn <= 回呼函式
+         * @param {Function} errorFn <= 回呼函式
+         */
+        //#endregion
+
+        let resError = undefined
+        let settings = {}
+        let { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams
+
+        settings.method = method
+        settings.url = url
+
+        if(headers !== undefined){
+            settings.headers = headers
+        } else if (data !== undefined) {
+            settings.headers = {"Content-Type": contentType}
+            settings.body = JSON.stringify(data)
+        } else if(headers !== undefined && data !== undefined){
+            settings.headers = {...headers,"Content-Type": contentType}
+            settings.body = JSON.stringify(data)
+        }
+
+        if(beforePost !== undefined){
+            beforePost.call(beforePost)
+        }
+        
+        if(successFn === undefined){
+            $.console('error','Function Name successFn is required in obejct parameters.')
+            return
+        }
+
+        if(errorFn === undefined){
+            $.console('error','Function Name errorFn is required in obejct parameters.')
+            return
+        } 
+
+        try {
+            let res = await fetch(url, settings);
+            if (res.status === 200) {
+                res.json().then(resItem => successFn.call(successFn,resItem))
+            }
+            else {
+                resError = res
+                throw new Error();
+            }
+        }
+        catch (err) {
+            errorFn.call(errorFn,resError)
+        }
+    };
     return $;
-}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/8/31
-$.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
-$.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
-$.filter = (item, fn) => item.filter((items) => fn.call(item, items));
-$.sort = (item,fn) => item.sort((a,b) => fn.call(item,a,b))
-$.indexOf = (item, x) => item.indexOf(x);
-$.includes = (item, x) => item.includes(x);
-$.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
-$.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
-$.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType // 更新方法 2021/10/26
-$.console = (type,...item) => console[type](...item) // 更新方法 2021/10/26
-$.convert = (val,type) => { // 更新方法 2021/10/22
-    if(val === undefined || type === undefined || !['string','number','float','boolean','json','stringify'].includes(type)){
-        $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
-        return
-    } else if(typeof val === 'object' && ['string','number','float','boolean'].includes(type)){
-        $.console('error',`Convert value can't be object when use convert type ${type}.`)
-        return
-    }
-    switch(type){
-        case 'string':
-            return String(val)
-        case 'number':
-            return parseInt(val)
-        case 'float':
-            return parseFloat(val)
-        case 'boolean':
-            return Boolean(val)
-        case 'json':
-            return JSON.parse(val)
-        case 'stringify':
-            return JSON.stringify(val)
-    }
-}
-$.createDom = (tag,props) => { // 更新方法 2021/9/12
-    let el = document.createElement(tag)
-    let propsArr = Object.entries(props)
-    propsArr.forEach(getProps => {
-        getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
-        el[getProps[0]] = getProps[1]
-    })
-    return el
-}
-$.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/9/12
-$.objDetails = (obj,method) => method === undefined || !['keys','values','entries'].includes(method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/9/12
-$.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
-
-    //#region 參數設定
-    /**
-     * @param {object} obj <= 型別物件 要管理的物件
-     * @param {string} action <= 型別字串，要執行的動作，有分為 get ( 取得管理物件內容 )、set ( 設定管理物件指定鍵與值 )、add ( 新增管理物件鍵與值 )、delete ( 刪除管理物件指定鍵與值 )
-     * @param {string} key <= 型別字串，為鍵值的鍵
-     * @param {any} value <= 型別任意，為鍵值的值
-     * @returns {object | void}
-     */
-    //#endregion
-
-    const check = () => {
-        if(obj === undefined){
-            return "Please put want to manage's object at first parameters"
-        }
-    
-        if(action === undefined || !['get','set','add','delete'].includes(action)){
-            return 'Please enter want to use methods "get、set、add、delete" at seconde parameters'
-        } else if(typeof action !== 'string'){
-            return 'Seconde parameters must use type string.'
-        }
-    
-        if(key === undefined){
-            return 'Please enter want to use key name at third parameters'
-        } else if(typeof key !== 'string'){
-            return 'Third parameters must use type string.'
-        }
-    
-        if(value === undefined){
-            return `Please enter want to set value at forth parameters.`
-        }
-    }
-
-    switch(action){
-        case 'get':
-            return obj;
-        case 'set':
-            check() !== undefined ? $.console('error',check()) : key in obj ? obj[key] = value : $.console('error',`Key name ${key} not in this object.`)
-            break;
-        case 'add':
-            check() !== undefined ? $.console('error',check()) : key in obj ? $.console('error',`Key name ${key} already in this object`) : obj[key] = value
-            break;
-        case 'delete':
-            check() !== undefined ? $.console('error',check()) : key in obj ? delete obj[key] : $.console('error',`Key name ${key} not in this object.`)
-            break;
-    }
-}
-
-$.fetch = async (settingParams = {
-    method:'',
-    url:'',
-    headers:{},
-    contentType:'',
-    data:{},
-    beforePost:undefined,
-    successFn:undefined,
-    errorFn:undefined
-}) => { 
-    // 更新類 ajax 方法 2021/9/11
-    // 更新類 ajax 方法內容 2021/10/21
-
-    //#region 參數設定
-    /**
-     * @param {string} method
-     * @param {string} url
-     * @param {object} header 追加 hearder 物件 2021/10/21
-     * @param {string} contentType
-     * @param {Function} beforePost <= 回呼函式
-     * @param {Function} successFn <= 回呼函式
-     * @param {Function} errorFn <= 回呼函式
-     */
-    //#endregion
-
-    let resError = undefined
-    let settings = {}
-    let { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams
-
-    settings.method = method
-    settings.url = url
-
-    if(headers !== undefined){
-        settings.headers = headers
-    } else if (data !== undefined) {
-        settings.headers = {"Content-Type": contentType}
-        settings.body = JSON.stringify(data)
-    } else if(headers !== undefined && data !== undefined){
-        settings.headers = {...headers,"Content-Type": contentType}
-        settings.body = JSON.stringify(data)
-    }
-
-    if(beforePost !== undefined){
-        beforePost.call(beforePost)
-    }
-    
-    if(successFn === undefined){
-        $.console('error','Function Name successFn is required in obejct parameters.')
-        return
-    }
-
-    if(errorFn === undefined){
-        $.console('error','Function Name errorFn is required in obejct parameters.')
-        return
-    } 
-
-    try {
-        let res = await fetch(url, settings);
-        if (res.status === 200) {
-            res.json().then(resItem => successFn.call(successFn,resItem))
-        }
-        else {
-            resError = res
-            throw new Error();
-        }
-    }
-    catch (err) {
-        errorFn.call(errorFn,resError)
-    }
-};
+})((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/8/31
 
 Date.prototype.getFullDateTime = function(format) {
 
