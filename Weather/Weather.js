@@ -1,5 +1,3 @@
-const querySelectorFactory = currentClass => document.querySelector(currentClass)
-const querySelectorAllFactory = currentClass => document.querySelectorAll(currentClass)
 let obj = {}
 obj.jsonData = [];
 obj.jsonBlockData = [];
@@ -7,152 +5,135 @@ obj.filterWeatherState = []
 obj.renderWeatherTemp = []
 obj.renderCount = 0
 
-Date.prototype.getFullDateTime = function(time, have) {
-    let fullDateTimeFormat = {}
-    const dates = time == null ? new Date() : new Date(time)
-    const year = dates.getFullYear()
-    const month = `${dates.getMonth() + 1 < 10 ? "0":""}${dates.getMonth() + 1}`
-    const date = `${dates.getDate() < 10 ? "0":""}${dates.getDate()}`
-    const hour = `${dates.getHours() < 10 ? "0":""}${dates.getHours()}`
-    const minute = `${dates.getMinutes() < 10 ? "0":""}${dates.getMinutes()}`
-    const secondes = `${dates.getSeconds() < 10 ? "0":""}${dates.getSeconds()}`
-    fullDateTimeFormat.haveDate = `${year}-${month}-${date}`
-    fullDateTimeFormat.haveTime = `${hour}：${minute}：${secondes}`
-    return have == "date" ? fullDateTimeFormat.haveDate : fullDateTimeFormat.haveTime
+const loadingAnimate = state => {
+    if (state == true) {
+        $(".loading-outer").addClass("loading-outer-toggle")
+        $(".loading-text").text("Loading")
+    } else {
+        $(".loading-text").text("Completed")
+        setTimeout(() => $(".loading-outer").removeClass("loading-outer-toggle"), 1000)
+        setTimeout(() => {
+            $(".select-group").removeClass("select-toggle")
+            $(".other-block").removeClass("other-block-toggle")
+        }, 3010)
+    }
 }
 
-for (let x = 1; x <= 85; x += 4) {
-    let orders = x <= 9 ? "00" : "0"
-    fetch(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-093/?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B&locationId=F-D0047-${orders}${x}`).then(res => res.json()).then(res => {
-        if (res.success == "true") {
-            res.records.locations.forEach(key => {
-                let arrayTemp = []
-                key.location.forEach(keyL => arrayTemp.push({
-                    blockGeoCode: keyL.geocode,
-                    blockName: keyL.locationName,
-                    blockLat: keyL.lat,
-                    blockLon: keyL.lon,
-                    blockElement: keyL.weatherElement
-                }))
-                arrayTemp = arrayTemp.sort((a, b) => a.blockGeoCode - b.blockGeoCode)
-                obj.jsonBlockData.push({
-                    locationsName: key.locationsName,
-                    block: arrayTemp
-                })
-            })
-        }
-    })
-}
-
-fetch('https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B').then(res => {
+const getData = async () => {
     loadingAnimate(true)
-    return res.json()
-}).then(res => {
-    setTimeout(() => {
-        if (res.success == "true") {
-            let jsonDataTemp = []
-            res.records.locations[0].location.forEach(key => jsonDataTemp.push(key))
-            loadingAnimate(false)
-            setTimeout(() => cityType(jsonDataTemp), 2500)
-        }
-    }, 3500)
-}).catch(err => console.log(err))
-
-function cityType(arry) {
-    let arrySort = []
-    querySelectorFactory(".current-select").textContent = "-- 請選擇欲查詢縣市氣象 --"
-    arrySort = arry.sort((a, b) => b.lon - a.lon)
-    arrySort.forEach((key, index) => {
-        obj.jsonData.push(key)
-        querySelectorFactory(".select-city").innerHTML += `<span class="city-name" data-num="${index}" onclick="selectCityPart(this)">${key.locationName}</span>`
-    });
-    obj.jsonData.forEach(key => {
-        obj.jsonBlockData.forEach(keyBlock => {
-            if (key.locationName == keyBlock.locationsName) key.block = keyBlock.block
+    for (let x = 1; x <= 85; x += 4) {
+        let orders = x <= 9 ? "00" : "0"
+        await $.fetch({
+            method:"get",
+            url:`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-093/?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B&locationId=F-D0047-${orders}${x}`,
+            beforePost:() => {},
+            successFn:(item) => {
+                $.each(item.records.locations,items => {
+                    let arrayTemp = []
+                    $.each(items.location,itemL => arrayTemp.push({
+                        blockGeoCode: itemL.geocode,
+                        blockName: itemL.locationName,
+                        blockLat: itemL.lat,
+                        blockLon: itemL.lon,
+                        blockElement: itemL.weatherElement
+                    }))
+                    arrayTemp = arrayTemp.sort((a, b) => a.blockGeoCode - b.blockGeoCode)
+                    obj.jsonBlockData.push({
+                        locationsName: items.locationsName,
+                        block: arrayTemp
+                    })
+                })
+            },
+            errorFn:err => alert(err)
         })
+    }
+
+    await $.fetch({
+        method:"get",
+        url:"https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B",
+        beforePost:() => {},
+        successFn: (item) => {
+            let jsonDataTemp = []
+            $.each(item.records.locations[0].location,items => jsonDataTemp = [...jsonDataTemp,items])
+            cityType(jsonDataTemp)
+        },
+        errorFn:err => alert(err)
     })
+
+    loadingAnimate(false)
 }
 
-function scrolls() {
-    let timer = null;
-    cancelAnimationFrame(timer);
-    timer = requestAnimationFrame(function animation() {
-        let toTop = document.body.scrollTop || document.documentElement.scrollTop;
-        if (toTop > 0) {
-            scrollTo(0, toTop - 8);
-            timer = requestAnimationFrame(animation);
-        } else {
-            cancelAnimationFrame(timer);
-        }
-    });
+getData()
+
+const cityType = arry => {
+    let arrySort = []
+    let cityTagTemp = []
+    $(".current-select").text("-- 請選擇欲查詢縣市氣象 --")
+    arrySort = $.sort(arry,(a, b) => b.lon - a.lon)
+    $.each(arrySort,(key, index) => {
+        obj.jsonData.push(key)
+        cityTagTemp.push(`<span class="city-name" data-num="${index}" onclick="selectCityPart(this)">${key.locationName}</span>`)
+    })
+    $(".select-city").html(cityTagTemp.join(""))
+    $.each(obj.jsonData,item => 
+        $.each(obj.jsonBlockData,itemBlock => {
+            if(item.locationName === itemBlock.locationsName) item.block = itemBlock.block
+        })
+    )
 }
 
-function changeMoring(currentOption) {
-    querySelectorFactory(".background-text").textContent = 'Moring'
-    querySelectorFactory(".header").classList.add("header-moring")
-    querySelectorFactory(".header").classList.remove("header-night")
-    querySelectorFactory('html').classList.remove('night')
-    querySelectorFactory('html').classList.add('moring')
-    currentOption.classList.remove('background-controller-toggle')
-    querySelectorFactory('.circle').classList.remove('circle-toggle')
+const scrolls = () => $('html').scrollToTop({ scrollTop:0,duration:3000 })
+
+const changeMoring = () => {
+    $(".background-text").text('Moring')
+    $(".header").addClass("header-moring")
+    $(".header").removeClass("header-night")
+    $('html').removeClass('night')
+    $('html').addClass('moring')
+    $(".background-controller").removeClass('background-controller-toggle')
+    $('.circle').removeClass('circle-toggle')
 }
 
-function changeNight(currentOption) {
-    querySelectorFactory(".background-text").textContent = 'Night'
-    querySelectorFactory(".header").classList.add("header-night")
-    querySelectorFactory(".header").classList.remove("header-moring")
-    querySelectorFactory('html').classList.add('night')
-    querySelectorFactory('html').classList.remove('moring')
-    currentOption.classList.add('background-controller-toggle')
-    querySelectorFactory('.circle').classList.add('circle-toggle')
+const changeNight = () => {
+    $(".background-text").text('Night')
+    $(".header").addClass("header-night")
+    $(".header").removeClass("header-moring")
+    $('html').addClass('night')
+    $('html').removeClass('moring')
+    $(".background-controller").addClass('background-controller-toggle')
+    $('.circle').addClass('circle-toggle')
 }
 
 // 設定背景圖隨畫面時間不同更換背景圖
-function backgroundChange() {
-    const date = new Date()
-    let backgroundToggleOptions = {
-        byHand: this,
-        notHand: querySelectorFactory(".background-controller")
-    }
-    let currentOption = null
-    if (this == window) {
-        currentOption = backgroundToggleOptions.notHand
-        date.getHours() >= 6 && date.getHours() <= 17 ? changeMoring(currentOption) : changeNight(currentOption)
+const backgroundChange = currentVal => {
+    if (currentVal == 'global') {
+         new Date().getHours() >= 6 &&  new Date().getHours() <= 17 ? changeMoring() : changeNight()
         return
     } else {
-        currentOption = backgroundToggleOptions.byHand
-        let haveMoringClass = null
-        haveMoringClass = querySelectorFactory('html').className.split(" ").indexOf("moring")
-        console.log(haveMoringClass)
-        haveMoringClass != -1 ? changeNight(currentOption) : changeMoring(currentOption)
+        let haveMoringClass = $.indexOf($('html').attr('class').split(" "),"moring")
+        haveMoringClass != -1 ? changeNight() : changeMoring()
     }
-
 }
 
-function switchTopBar() {
+const switchTopBar = () => {
     let height = document.documentElement.scrollTop || document.body.scrollTop;
-    height > 28 ? querySelectorFactory('.header').classList.add('header-toggle') : querySelectorFactory('.header').classList.remove('header-toggle')
-    height > 200 ? querySelectorFactory('.go-top').classList.add('go-top-toggle') : querySelectorFactory('.go-top').classList.remove('go-top-toggle')
+    const heightI = height > 28 ? 'addClass':'removeClass'
+    const heightII = height > 28 ? 'addClass':'removeClass'
+    $('.header')[heightI]('header-toggle')
+    $('.go-top')[heightII]('go-top-toggle')
 }
 
 // 畫面時間內容設定
-function time() {
-    const date = new Date()
-    let year = date.getFullYear()
-    let month = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1)
-    let dates = (date.getDate() < 10 ? '0' : '') + date.getDate()
-    let hour = (date.getHours() < 10 ? '0' : '') + date.getHours()
-    let minute = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-    let seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds()
-    let dateText = `${year} / ${month} / ${dates}`
-    let timeText = `${hour}：${minute}：${seconds}`
-    querySelectorFactory(".date").textContent = dateText
-    querySelectorFactory(".time").textContent = timeText
+const time = () => {
+    $(".date").text(new Date().getFullDateTime({ formatType:'date' }))
+    $(".time").text(new Date().getFullDateTime({ formatType:'time' }))
 }
 
-function selectCityPart(element) {
-    querySelectorFactory(".current-select").textContent = element.textContent
-    querySelectorAllFactory(".city-name").forEach(key => key.dataset.num == element.dataset.num ? key.classList.add("selected") : key.classList.remove("selected"))
+const selectCityPart = element => {
+    $(".current-select").text(element.textContent)
+    
+    $.each($(".city-name"),item => $(item).attr("data-num") === $(element).attr("data-num") ? $(item).addClass("selected") : $(item).removeClass("selected"))
+    
     setTimeout(() => selectAnimate(element), 700)
     setTimeout(() => selectCity(element), 2100)
 }
@@ -161,7 +142,7 @@ function selectCity(currentTaget) {
     let currentTagetTemp = currentTaget.className == undefined ? currentTaget.target.className : currentTaget.className
     switch (currentTagetTemp) {
         case "city-name selected":
-            obj.filterWeatherState = obj.jsonData.filter(key => key.locationName == currentTaget.textContent)
+            obj.filterWeatherState = $.filter(obj.jsonData,key => key.locationName === currentTaget.textContent)
             renderList(false)
             chooseDayBtn()
             break;
@@ -170,23 +151,17 @@ function selectCity(currentTaget) {
             chooseBlockBtn()
             break;
     }
-    querySelectorFactory(".select-group").classList.toggle("select-toggle")
-    querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
-    setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 701)
+    $(".select-group").toggleClass("select-toggle")
+    $(".other-block").toggleClass("other-block-toggle")
+    setTimeout(() => $(".option-group").toggleClass("option-group-toggle"), 701)
 
 }
 
-function addTempSign(text) {
-    let transText = `${text}&degC`
-    return transText
-}
+const addTempSign = text => `${text}&degC`
 
-function addPercent(text) {
-    let transText = `${text}%`
-    return transText
-}
+const addPercent = text => `${text}%`
 
-function transWeatherIcon(text) {
+const transWeatherIcon = text => {
     let transText = ""
     const iconsItem = [{
         num: 1,
@@ -204,7 +179,7 @@ function transWeatherIcon(text) {
         num: 8,
         icon: '<i class="fas fa-cloud-showers-heavy"></i>'
     }]
-    iconsItem.forEach(key => {
+    $.each(iconsItem,key => {
         if (key.num == Number(text)) {
             transText = key.icon
         } else if (Number(text) >= 4 && Number(text) <= 7 && key.num >= 4 && key.num <= 7) {
@@ -216,88 +191,86 @@ function transWeatherIcon(text) {
     return transText
 }
 
-function dateTrans(time) {
-    const inputTime = time.replace(/-/g, "/")
-    const dateTime = new Date(inputTime)
-    let timeObject = {}
-    timeObject.year = dateTime.getFullYear()
-    timeObject.month = dateTime.getMonth() + 1
-    timeObject.date = dateTime.getDate()
-    timeObject.hour = dateTime.getHours()
-    return timeObject
+const dateTrans = time => {
+    const [year,month,date,hour] = new Date(+new Date(time) + (8*60*60*1000)).toJSON().replace(/T/g,'-').replace(/:/g,'-').split('.')[0].split('-')
+    return { year:year,month:month,date:date,hour:hour}
 }
 
-function today(renderWeather, order) {
-    obj.filterWeatherState.forEach(key => {
-        renderWeather.push({
-            cityName: key.locationName,
-            minTemp: addTempSign(key.weatherElement[8].time[0].elementValue[0].value),
-            maxTemp: addTempSign(key.weatherElement[12].time[0].elementValue[0].value),
-            minFeelTemp: addTempSign(key.weatherElement[11].time[0].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.weatherElement[5].time[0].elementValue[0].value),
-            equalTemp: addTempSign(key.weatherElement[1].time[0].elementValue[0].value),
-            comferMinPerc: addPercent(key.weatherElement[3].time[0].elementValue[0].value),
-            comferMaxPerc: addPercent(key.weatherElement[7].time[0].elementValue[0].value),
-            rainNightPerc: addPercent(key.weatherElement[0].time[0].elementValue[0].value),
-            rainMoringPerc: addPercent(key.weatherElement[0].time[1].elementValue[0].value),
-            uivLevel: key.weatherElement[9].time[0].elementValue[0].value,
-            uivDesc: key.weatherElement[9].time[0].elementValue[1].value,
-            wetEqualPerc: addPercent(key.weatherElement[2].time[0].elementValue[0].value),
-            weatherSign: key.weatherElement[6].time[0].elementValue[0].value,
-            weatherSignState: transWeatherIcon(key.weatherElement[6].time[0].elementValue[1].value),
-            weatherNightDesc: key.weatherElement[10].time[1].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[0].elementValue[0].value,
-            areaBlock: key.block
-        })
+const today = (renderWeather, order) => {
+    const [{ locationName,block,weatherElement }] = obj.filterWeatherState
+    const [rainPercent,equalTemp,wetEqualPercent,comferMinPercent,,maxFeelTemp,weatherSignState,comferMaxPercent,minTemp,uiv,weatherDesc,minFeelTemp,maxTemp] = weatherElement
+
+    renderWeather.push({
+        cityName: locationName,
+        minTemp: addTempSign(minTemp.time[0].elementValue[0].value),
+        maxTemp: addTempSign(maxTemp.time[0].elementValue[0].value),
+        minFeelTemp: addTempSign(minFeelTemp.time[0].elementValue[0].value),
+        maxFeelTemp: addTempSign(maxFeelTemp.time[0].elementValue[0].value),
+        equalTemp: addTempSign(equalTemp.time[0].elementValue[0].value),
+        comferMinPerc: addPercent(comferMinPercent.time[0].elementValue[0].value),
+        comferMaxPerc: addPercent(comferMaxPercent.time[0].elementValue[0].value),
+        rainNightPerc: addPercent(rainPercent.time[0].elementValue[0].value),
+        rainMoringPerc: addPercent(rainPercent.time[1].elementValue[0].value),
+        uivLevel: uiv.time[0].elementValue[0].value,
+        uivDesc: uiv.time[0].elementValue[1].value,
+        wetEqualPerc: addPercent(wetEqualPercent.time[0].elementValue[0].value),
+        weatherSign: weatherSignState.time[0].elementValue[0].value,
+        weatherSignState: transWeatherIcon(weatherSignState.time[1].elementValue[0].value),
+        weatherNightDesc: weatherDesc.time[1].elementValue[0].value,
+        weatherMoringDesc:weatherDesc.time[0].elementValue[0].value,
+        areaBlock: block
     })
+
     obj.renderWeatherTemp = renderWeather
     renderView(renderWeather, order)
 }
 
-function tomorrow(renderWeather, order) {
-    obj.filterWeatherState.forEach(key => {
-        renderWeather.push({
-            cityName: key.locationName,
-            minTemp: addTempSign(key.weatherElement[8].time[3].elementValue[0].value),
-            maxTemp: addTempSign(key.weatherElement[12].time[2].elementValue[0].value),
-            minFeelTemp: addTempSign(key.weatherElement[11].time[2].elementValue[0].value),
-            maxFeelTemp: addTempSign(key.weatherElement[5].time[2].elementValue[0].value),
-            equalTemp: addTempSign(key.weatherElement[1].time[2].elementValue[0].value),
-            comferMinPerc: addPercent(key.weatherElement[3].time[2].elementValue[0].value),
-            comferMaxPerc: addPercent(key.weatherElement[7].time[2].elementValue[0].value),
-            rainNightPerc: addPercent(key.weatherElement[0].time[2].elementValue[0].value),
-            rainMoringPerc: addPercent(key.weatherElement[0].time[3].elementValue[0].value),
-            uivLevel: key.weatherElement[9].time[1].elementValue[0].value,
-            uivDesc: key.weatherElement[9].time[1].elementValue[1].value,
-            wetEqualPerc: addPercent(key.weatherElement[2].time[2].elementValue[0].value),
-            weatherSign: key.weatherElement[6].time[1].elementValue[0].value,
-            weatherSignState: transWeatherIcon(key.weatherElement[6].time[1].elementValue[1].value),
-            weatherNightDesc: key.weatherElement[10].time[3].elementValue[0].value,
-            weatherMoringDesc: key.weatherElement[10].time[2].elementValue[0].value,
-            areaBlock: key.block
-        })
+const tomorrow = (renderWeather, order) => {
+    const [{ locationName,block,weatherElement }] = obj.filterWeatherState
+    const [rainPercent,equalTemp,wetEqualPercent,comferMinPercent,,maxFeelTemp,weatherSignState,comferMaxPercent,minTemp,uiv,weatherDesc,minFeelTemp,maxTemp] = weatherElement
+
+    renderWeather.push({
+        cityName: locationName,
+        minTemp: addTempSign(minTemp.time[3].elementValue[0].value),
+        maxTemp: addTempSign(maxTemp.time[2].elementValue[0].value),
+        minFeelTemp: addTempSign(minFeelTemp.time[2].elementValue[0].value),
+        maxFeelTemp: addTempSign(maxFeelTemp.time[2].elementValue[0].value),
+        equalTemp: addTempSign(equalTemp.time[2].elementValue[0].value),
+        comferMinPerc: addPercent(comferMinPercent.time[2].elementValue[0].value),
+        comferMaxPerc: addPercent(comferMaxPercent.time[2].elementValue[0].value),
+        rainNightPerc: addPercent(rainPercent.time[2].elementValue[0].value),
+        rainMoringPerc: addPercent(rainPercent.time[3].elementValue[0].value),
+        uivLevel: uiv.time[1].elementValue[0].value,
+        uivDesc: uiv.time[1].elementValue[1].value,
+        wetEqualPerc: addPercent(wetEqualPercent.time[2].elementValue[0].value),
+        weatherSign: weatherSignState.time[1].elementValue[0].value,
+        weatherSignState: transWeatherIcon(weatherSignState.time[1].elementValue[1].value),
+        weatherNightDesc: weatherDesc.time[3].elementValue[0].value,
+        weatherMoringDesc: weatherDesc.time[2].elementValue[0].value,
+        areaBlock: block
     })
+
     obj.renderWeatherTemp = renderWeather
     renderView(renderWeather, order)
 }
 
-function week(renderWeather, order) {
-    const date = new Date()
+const week = (renderWeather, order) => {
     let moringTemp = []
     let nightTemp = []
-    obj.filterWeatherState.forEach(key => {
+    $.each(obj.filterWeatherState,(key => {
         for (var x = 0; x < key.weatherElement[8].time.length; x++) {
-            if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 6) {
+            const { month,date,hour } = dateTrans(key.weatherElement[8].time[x].startTime)
+            if (hour == 6) {
                 moringTemp.push({
-                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    date: `${month}-${date}`,
                     weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
                     minTemp: key.weatherElement[8].time[x].elementValue[0].value,
                     maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
                     rainPerc: key.weatherElement[0].time[x].elementValue[0].value
                 })
-            } else if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 18) {
+            } else if (hour == 18) {
                 nightTemp.push({
-                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    date: `${month}-${date}`,
                     weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
                     minTemp: key.weatherElement[8].time[x].elementValue[0].value,
                     maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
@@ -305,7 +278,7 @@ function week(renderWeather, order) {
                 })
             }
         }
-    })
+    }))
 
     renderWeather.push({
         cityName: obj.filterWeatherState[0].locationName,
@@ -315,23 +288,23 @@ function week(renderWeather, order) {
     renderView(renderWeather, order)
 }
 
-function weekBlock(renderWeather, filterCurrentCity, text) {
-    const date = new Date()
+const weekBlock = (renderWeather, filterCurrentCity, text) => {
     let moringTemp = []
     let nightTemp = []
-    filterCurrentCity.forEach(key => {
+    $.each(filterCurrentCity,(key => {
         for (let x = 0; x < key.weatherElement[8].time.length; x++) {
-            if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 6) {
+            const { month,date,hour } = dateTrans(key.weatherElement[8].time[x].startTime)
+            if (hour == 6) {
                 moringTemp.push({
-                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    date: `${month}-${date}`,
                     weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
                     minTemp: key.weatherElement[8].time[x].elementValue[0].value,
                     maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
                     rainPerc: key.weatherElement[0].time[x].elementValue[0].value
                 })
-            } else if (dateTrans(key.weatherElement[8].time[x].startTime).hour == 18) {
+            } else if (hour == 18) {
                 nightTemp.push({
-                    date: `${dateTrans(key.weatherElement[8].time[x].startTime).year} / ${dateTrans(key.weatherElement[8].time[x].startTime).month} / ${dateTrans(key.weatherElement[8].time[x].startTime).date}`,
+                    date: `${month}-${date}`,
                     weatherDesc: key.weatherElement[6].time[x].elementValue[0].value,
                     minTemp: key.weatherElement[8].time[x].elementValue[0].value,
                     maxTemp: key.weatherElement[12].time[x].elementValue[0].value,
@@ -339,7 +312,7 @@ function weekBlock(renderWeather, filterCurrentCity, text) {
                 })
             }
         }
-    })
+    }))
     renderWeather.push({
         cityName: obj.filterWeatherState[obj.renderCount].locationName,
         moring: moringTemp,
@@ -348,7 +321,7 @@ function weekBlock(renderWeather, filterCurrentCity, text) {
     renderBlockView(renderWeather, text)
 }
 
-function renderCurrentCity(lengthCount) {
+const renderCurrentCity = lengthCount => {
     let text = ""
     let filterCurrentCity = []
     let renderWeather = []
@@ -406,89 +379,71 @@ function chooseBlockBtn() {
     chooseAnimate(blockBtnItem, this)
 }
 
-function chooseArea(cityCode) {
+const chooseArea = cityCode => {
     obj.renderCount = 0
     obj.filterWeatherState = []
-    cityCode.forEach((code, index) => {
-        obj.jsonData.forEach(key => {
-            if (code == key.geocode) obj.filterWeatherState.push(key)
-        })
-        if ((cityCode.length - 1) == index) renderCurrentCity(cityCode.length)
-    })
+    $.each(cityCode,(code => $.each(obj.jsonData,(key => code == key.geocode && obj.filterWeatherState.push(key)))))
+    renderCurrentCity(cityCode.length)
 }
 
-function chooseAnimate(array, element) {
-    array.forEach(key => {
+const chooseAnimate = (array, element) => {
+    $.each(array,(key => {
         if (element == window) {
             if (key.order == 0) {
-                querySelectorAllFactory(".btn-session")[key.order].classList.add("btn-session-active")
+                $($(".btn-session")[key.order]).addClass("btn-session-active")
                 key.fn(key.order)
             }
             return
         }
 
         if (key.order == element.dataset.order) {
-            element.classList.add("btn-session-active")
+            $(element).addClass("btn-session-active")
             key.fn(key.order)
         } else {
-            querySelectorAllFactory(".btn-session")[key.order].classList.remove("btn-session-active")
+            $($(".btn-session")[key.order]).removeClass("btn-session-active")
         }
-    })
+    }))
 }
 
-function selectAnimate(element) {
-    let currentElement = element.target == undefined ? querySelectorFactory(".current-select") : element.target
-    let haveClass = currentElement.className.split(" ").indexOf("current-select-toggle")
+const selectAnimate = element => {
+    let currentElement = element.target == undefined ? ".current-select" : element.target
+    let haveClass = $.indexOf($(currentElement).attr('class'),"current-select-toggle")
     if (haveClass == -1) {
-        currentElement.classList.add("current-select-toggle")
-        querySelectorFactory(".select-group").classList.add("select-group-action")
-        querySelectorFactory(".other-block").classList.add("other-block-action")
+        $(currentElement).addClass("current-select-toggle")
+        $(".select-group").addClass("select-group-action")
+        $(".other-block").addClass("other-block-action")
         setTimeout(() => {
-            querySelectorFactory(".select-city-outer").classList.add("select-city-toggle")
-            querySelectorFactory(".arrow").classList.add("arrow-toggle")
+            $(".select-city-outer").addClass("select-city-toggle")
+            $(".arrow").addClass("arrow-toggle")
         }, 700)
     } else {
-        querySelectorFactory(".select-city-outer").classList.remove("select-city-toggle")
-        querySelectorFactory(".arrow").classList.remove("arrow-toggle")
+        $(".select-city-outer").removeClass("select-city-toggle")
+        $(".arrow").removeClass("arrow-toggle")
         setTimeout(() => {
-            querySelectorFactory(".select-group").classList.remove("select-group-action")
-            querySelectorFactory(".other-block").classList.remove("other-block-action")
-            currentElement.classList.remove("current-select-toggle")
+            $(".select-group").removeClass("select-group-action")
+            $(".other-block").removeClass("other-block-action")
+            $(currentElement).removeClass("current-select-toggle")
         }, 700)
     }
 
 }
 
-function loadingAnimate(state) {
+const weatherOuterAnimate = state => {
     if (state == true) {
-        querySelectorFactory(".loading-outer").classList.add("loading-outer-toggle")
-        querySelectorFactory(".loading-text").textContent = "Loading"
+        $(".weathers-outer").addClass("weathers-outer-active")
+        $(".weathers-outer").styles('set','margin-top','0px')
     } else {
-        querySelectorFactory(".loading-text").textContent = "Completed"
-        setTimeout(() => querySelectorFactory(".loading-outer").classList.remove("loading-outer-toggle"), 1000)
-        setTimeout(() => {
-            querySelectorFactory(".select-group").classList.remove("select-toggle")
-            querySelectorFactory(".other-block").classList.remove("other-block-toggle")
-        }, 3010)
+        $(".weathers-outer").styles('set','margin-top',`-${$(".weathers-outer").props('offsetHeight')}px`)
+        $(".weathers-outer").removeClass("weathers-outer-active")
     }
 }
 
-function weatherOuterAnimate(state) {
-    if (state == true) {
-        querySelectorFactory(".weathers-outer").classList.add("weathers-outer-active")
-        querySelectorFactory(".weathers-outer").style.marginTop = "0px"
-    } else {
-        querySelectorFactory(".weathers-outer").style.marginTop = `-${querySelectorFactory(".weathers-outer").offsetHeight}px`
-        querySelectorFactory(".weathers-outer").classList.remove("weathers-outer-active")
-    }
+const showBlockSelectAnimate = element => {
+    $(element).toggleClass("block-select-outer-toggle")
+    $(".block-has-select-title .arrow").toggleClass("arrow-toggle")
 }
 
-function showBlockSelectAnimate(element) {
-    element.classList.toggle("block-select-outer-toggle")
-    querySelectorFactory(".block-has-select-title .arrow").classList.toggle("arrow-toggle")
-}
-
-function renderList(state) {
+const renderList = state => {
     let domObject = ""
     const btnItem = [{
         matchSwitch: false,
@@ -515,17 +470,16 @@ function renderList(state) {
         matchSwitch: true,
         btnText: "外島",
     }]
-    btnItem.forEach(key => { if (key.matchSwitch == state) domObject += `<div class="btn-session">${key.btnText}</div>` })
-    querySelectorFactory(".btn-session-group").innerHTML = domObject
-    querySelectorAllFactory(".btn-session").forEach((key, index) => key.setAttribute("data-order", index))
+
+    domObject = $.maps(btnItem,(item => { if(item.matchSwitch == state){ return `<div class="btn-session">${item.btnText}</div>`} })).join('')
+    $(".btn-session-group").html(domObject)
+    $.each($(".btn-session"),(item, index) => $(item).attr("data-order", index))
     setTimeout(() => weatherOuterAnimate(true), 1401)
-    querySelectorAllFactory(".btn-session").forEach(key => {
-        state == false ? key.addEventListener("click", chooseDayBtn) : key.addEventListener("click", chooseBlockBtn)
-    })
+    $.each($(".btn-session"),item => item.addEventListener("click", state == false ? chooseDayBtn : chooseBlockBtn))
 }
 
-function renderCountCenter(element, lengthCount) {
-    if (element.classList[2] == "arrow-left") {
+const renderCountCenter = (element, lengthCount) => {
+    if ($.indexOf($(element).attr('class'),"arrow-left") !==  -1) {
         obj.renderCount == 0 ? obj.renderCount = (lengthCount - 1) : obj.renderCount--
     } else {
         obj.renderCount == (lengthCount - 1) ? obj.renderCount = 0 : obj.renderCount++
@@ -533,37 +487,34 @@ function renderCountCenter(element, lengthCount) {
     renderCurrentCity(lengthCount)
 }
 
-function currentBlockChoose(element, array, order, cityName, equalTemp, uivLevel, uivDesc) {
+const currentBlockChoose = (element, ...items) => {
+    const [array, order, cityName, equalTemp, uivLevel, uivDesc] = items
     if (cityName != undefined && equalTemp != undefined && uivLevel != undefined && uivDesc != undefined) {
-        let blockFilterArray = array.filter(key => key.blockName == element.textContent)
+        let blockFilterArray = $.filter(array,item => item.blockName == $(element).text())
         let blockArray = order == 0 ? todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) : tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc)
-        setTimeout(() => renderView(blockArray, order, element.textContent), 700)
+        setTimeout(() => renderView(blockArray, order, $(element).text()), 700)
     } else {
-        setTimeout(() => renderView(array, order, element.textContent), 700)
+        setTimeout(() => renderView(array, order, $(element).text()), 700)
     }
-    setTimeout(() => querySelectorAllFactory(".block-select span").forEach(key => key.dataset.num == element.dataset.num ? key.classList.add("block-selected") : key.classList.remove("block-selected")), 702)
+    setTimeout(() => $.each($(".block-select span"),item => item.dataset.num == element.dataset.num ? $(item).addClass("block-selected") : $(item).removeClass("block-selected")), 702)
 
-    querySelectorFactory(".block-has-select-title span").textContent = element.textContent
+    $(".block-has-select-title span").text($(element).text())
 }
 
-function currentTimeMatch(datas, hasMax) {
-    let str = ""
+const currentTimeMatch = (datas, hasMax) => {
     let filterMaxArray = []
-    let timeSelectCount = Number(new Date().getFullDateTime(null, "time").split("：")[0]) >= 18 ? 0 : 1
-    const currentDate = new Date().getFullDateTime(null, "date")
-    const currentTime = new Date().getFullDateTime(null, "time")
-    datas.forEach(key => {
-        let dataDate = new Date().getFullDateTime(key.dataTime, "date")
-        let dataTime = new Date().getFullDateTime(key.dataTime, "time")
-        if (dataDate == currentDate && Number(dataTime.split("：")[0]) >= Number(currentTime.split("：")[0]) - 3 && Number(dataTime.split("：")[0]) <= Number(currentTime.split("：")[0]) + 3) filterMaxArray.push(key)
-    })
-    str = hasMax == true ? filterMaxArray[0 + timeSelectCount].elementValue[0].value : filterMaxArray[1 - timeSelectCount].elementValue[0].value
-    return str
+    const currentDate = new Date().getFullDateTime({ formatType:'date' })
+    const currentTime = new Date().getFullDateTime({ formatType:'time' })
+    let timeSelectCount = Number(currentTime.split("：")[0]) >= 18 ? 0 : 1
+    
+    $.each(datas,key => key.dataTime.split(' ')[0] == currentDate && filterMaxArray.push(key))
+    return hasMax == true ? filterMaxArray[0 + timeSelectCount].elementValue[0].value : filterMaxArray[1 - timeSelectCount].elementValue[0].value
 }
 
-function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
+const todayBlock = (...items) => {
     let blockArrayTemp = []
-    blockFilterArray.forEach(key => {
+    const [blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc] = items
+    $.each(blockFilterArray,(key => {
         blockArrayTemp.push({
             cityName: cityName,
             minTemp: addTempSign(currentTimeMatch(key.blockElement[3].time, false)),
@@ -584,14 +535,15 @@ function todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivD
             weatherMoringDesc: key.blockElement[6].time[0].elementValue[0].value,
             areaBlock: array
         })
-    })
+    }))
     return blockArrayTemp
 }
 
-function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) {
+const tomorrowBlock = (...items) => {
     let blockArrayTemp = []
-    let timeSelectCount = Number(new Date().getFullDateTime(null, "time").split("：")[0]) >= 18 ? 2 : 0
-    blockFilterArray.forEach(key => {
+    const timeSelectCount = Number(new Date().getFullDateTime({ formatType:'time'}).split("：")[0]) >= 18 ? 2 : 0
+    const [blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc] = items
+    $.each(blockFilterArray,(key => {
         blockArrayTemp.push({
             cityName: cityName,
             minTemp: addTempSign(key.blockElement[3].time[6 + timeSelectCount].elementValue[0].value),
@@ -612,56 +564,52 @@ function tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, u
             weatherMoringDesc: key.blockElement[6].time[6].elementValue[0].value,
             areaBlock: array
         })
-    })
+    }))
     return blockArrayTemp
 }
 
-function renderViewWeekWithoutRwd(renderWeather, text) {
-    renderWeather.forEach(render => {
-                text = `
-            <div class="city-title-outer">
-                <div class="city-name-title">${render.cityName}</div>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>`
-                render.moring.forEach(key => text += `<th scope="col">${key.date.replace("2021 / ","")}</th>`)
-                text += `</tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <td>白天</td>`
-                render.moring.forEach(key =>
-                        text += `<td>
-                            <div class="week-desc">
-                                <span>${key.weatherDesc}</span>
-                                <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
-                                <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
-                            </div>
-                        </td>`)
-            text += `</tr>
-                    <tr>
-                        <td>夜晚</td>`
-                        render.night.forEach((key, index) => {
-                            if (index == 0) return
-                            text += 
-                        `<td>
-                            <div class="week-desc">
-                                <span>${key.weatherDesc}</span>
-                                <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
-                                <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
-                            </div>
-                        </td>`})
-            text += `</tr>
-                <tbody>
-            </table>`})
-return text
-}
+const renderViewWeekWithoutRwd = renderWeather => $.maps(renderWeather,(render => `
+    <div class="city-title-outer">
+        <div class="city-name-title">${render.cityName}</div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                ${$.maps(render.moring,(key => `<th scope="col">${key.date.replace("2021 / ","")}</th>`)).join('')}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <td>白天</td>
+            ${$.maps(render.moring,(key =>
+                `<td>
+                    <div class="week-desc">
+                        <span>${key.weatherDesc}</span>
+                        <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                        <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                    </div>
+                </td>`
+            )).join('')}
+            </tr>
+            <tr>
+                <td>夜晚</td>
+                ${$.maps(render.night,((key, index) => index !== 0 && `
+                    <td>
+                        <div class="week-desc">
+                            <span>${key.weatherDesc}</span>
+                            <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                            <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                        </div>
+                    </td>`
+                )).join('').replace(/false/g,'')}
+            </tr>
+        <tbody>
+    </table>`
+)).join('')
 
-function renderViewWeekOnRwd(renderWeather,text){
-    renderWeather.forEach(render=>{
-        text +=`
+
+const renderViewWeekOnRwd = renderWeather => $.maps(renderWeather,(render=> `
     <div class="city-title-outer">
         <div class="city-name-title">${render.cityName}</div>
     </div>
@@ -670,240 +618,215 @@ function renderViewWeekOnRwd(renderWeather,text){
             <tr>
                 <th scope="col"></th>
                 <th scope="col">白天</th>
-                <th scope="col">夜晚</th>`
-            text += `</tr>
+                <th scope="col">夜晚</th>
+            </tr>
         </thead>
-        <tbody>`
-            render.moring.forEach(moringData => {
-                render.night.forEach(nightData=>{
-                    if(moringData.date == nightData.date){
-                        text += `
-                        <tr>
-                            <td>${moringData.date.replace("2021 / ","")}</td>
-                            <td>
-                                <div class="week-desc">
-                                    <span>${moringData.weatherDesc}</span>
-                                    <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
-                                    <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="week-desc">
-                                    <span>${nightData.weatherDesc}</span>
-                                    <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
-                                    <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
-                                </div>
-                            </td>
-                        </tr>`
-                    }
-                })
-            })
-        text += `<tbody></table>`
-    })
-    return text
-}
-
-function renderViewWeek(renderWeather, text) {
-    let newText = text
-    window.innerWidth <= 768 ? newText = renderViewWeekOnRwd(renderWeather,text) : newText = renderViewWeekWithoutRwd(renderWeather,text)
-    return newText
-}
-
-function renderViewWithoutWeek(renderWeather,order,text,currentBlock){
-    renderWeather.forEach(render=> {
-        text = 
-        `<div class="row no-gutters">
-            <div class="col-md-12">
-                <div class="city-title-outer">
-                    <div class="block-select-outer" onclick="showBlockSelectAnimate(this)">
-                        <div class="block-has-select-title">
-                            區域：<span>${currentBlock == undefined ? "全區":currentBlock}</span>
-                            <i class="fas fa-chevron-up arrow"></i>
-                        </div>
-                            <div class="block-select">`
-                                text+=`<span class="block-selected" data-num="0" onclick='currentBlockChoose(this,${JSON.stringify(obj.renderWeatherTemp)},${order})'>全區</span>`
-                                render.areaBlock.forEach((renderBlock,index)=>text+= `<span data-num="${index+=1}" onclick='currentBlockChoose(this,${JSON.stringify(render.areaBlock)},${order},"${render.cityName}",${Number(render.equalTemp.split("&degC")[0])},${Number(render.uivLevel)},"${render.uivDesc}")'>${renderBlock.blockName}</span>`)
-                    text+= `</div>
-                    </div>
-                    <div class="city-name-title">${render.cityName}</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="temp-desc">
-                    <div class="temp-desc-title">溫度資訊</div>
-                    <span>氣溫：${render.minTemp} ~ ${render.maxTemp}</span>
-                    <span>${order == 0?"本日":"明日"}均溫：${render.equalTemp}</span>
-                    <span>體感溫度：${render.minFeelTemp} ~ ${render.maxFeelTemp}</span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="rain-desc">
-                    <div class="rain-desc-title">${order == 0?"本日":"明日"}降雨機率</div>
-                    <div class="rain-sign">${render.weatherSign}</div>
-                    <div class="rain-icon">${render.weatherSignState}</div>
-                    <div class="rain-percent">
-                        <span>白天：${render.rainMoringPerc}</span>
-                        <span>夜晚：${render.rainNightPerc}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="other-desc">
-                    <div class="other-desc-title">各項指數</div>
-                    <span>舒適度指數：${render.comferMinPerc} ~ ${render.comferMaxPerc}</span>
-                    <span>紫外線指數：${render.uivLevel} ${render.uivDesc}</span>
-                    <span>濕度：${render.wetEqualPerc}</span>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="weather-desc">
-                    <div class="weather-desc-title">${order == 0?"本日":"明日"}天氣概況</div>
-                    <div class="row no-gutters">  
-                        <div class="col-md-6">  
-                            <div class="weather-desc-moring">
-                                <span>白天至夜晚</span>
-                                <span>${render.weatherMoringDesc}</span>
+        <tbody>
+            ${$.maps(render.moring,(moringData =>
+                $.maps(render.night,(nightData=> moringData.date == nightData.date && `
+                    <tr>
+                        <td>${moringData.date.replace("2021 / ","")}</td>
+                        <td>
+                            <div class="week-desc">
+                                <span>${moringData.weatherDesc}</span>
+                                <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
+                                <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="weather-desc-night">
-                                <span>夜晚至凌晨</span>
-                                <span>${render.weatherNightDesc}</span>
+                        </td>
+                        <td>
+                            <div class="week-desc">
+                                <span>${nightData.weatherDesc}</span>
+                                <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
+                                <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
                             </div>
+                        </td>
+                    </tr>`
+                )).join('').replace(/false/g,'')
+            )).join('')}
+        <tbody>
+    </table>`
+)).join('')
+
+
+const renderViewWeek = renderWeather => window.innerWidth <= 768 ? renderViewWeekOnRwd(renderWeather) : renderViewWeekWithoutRwd(renderWeather)
+
+const renderViewWithoutWeek = (renderWeather,order,currentBlock) => $.maps(renderWeather,(render=>`
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <div class="city-title-outer">
+                <div class="block-select-outer" onclick="showBlockSelectAnimate(this)">
+                    <div class="block-has-select-title">
+                        區域：<span>${currentBlock == undefined ? "全區":currentBlock}</span>
+                        <i class="fas fa-chevron-up arrow"></i>
+                    </div>
+                    <div class="block-select">
+                        <span class="block-selected" data-num="0" onclick='currentBlockChoose(this,${JSON.stringify(obj.renderWeatherTemp)},${order})'>全區</span>
+                        ${$.maps(render.areaBlock,((renderBlock,index)=> `<span data-num="${index+=1}" onclick='currentBlockChoose(this,${JSON.stringify(render.areaBlock)},${order},"${render.cityName}",${Number(render.equalTemp.split("&degC")[0])},${Number(render.uivLevel)},"${render.uivDesc}")'>${renderBlock.blockName}</span>`)).join('')}
+                    </div>
+                </div>
+                <div class="city-name-title">${render.cityName}</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="temp-desc">
+                <div class="temp-desc-title">溫度資訊</div>
+                <span>氣溫：${render.minTemp} ~ ${render.maxTemp}</span>
+                <span>${order == 0?"本日":"明日"}均溫：${render.equalTemp}</span>
+                <span>體感溫度：${render.minFeelTemp} ~ ${render.maxFeelTemp}</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="rain-desc">
+                <div class="rain-desc-title">${order == 0?"本日":"明日"}降雨機率</div>
+                <div class="rain-sign">${render.weatherSign}</div>
+                <div class="rain-icon">${render.weatherSignState}</div>
+                <div class="rain-percent">
+                    <span>白天：${render.rainMoringPerc}</span>
+                    <span>夜晚：${render.rainNightPerc}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="other-desc">
+                <div class="other-desc-title">各項指數</div>
+                <span>舒適度指數：${render.comferMinPerc} ~ ${render.comferMaxPerc}</span>
+                <span>紫外線指數：${render.uivLevel} ${render.uivDesc}</span>
+                <span>濕度：${render.wetEqualPerc}</span>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="weather-desc">
+                <div class="weather-desc-title">${order == 0?"本日":"明日"}天氣概況</div>
+                <div class="row no-gutters">  
+                    <div class="col-md-6">  
+                        <div class="weather-desc-moring">
+                            <span>白天至夜晚</span>
+                            <span>${render.weatherMoringDesc}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="weather-desc-night">
+                            <span>夜晚至凌晨</span>
+                            <span>${render.weatherNightDesc}</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`})
-    return text
+        </div>
+    </div>`
+)).join('')
+
+
+const renderView = (renderWeather, order,currentBlock) => {
+    let text = order == 2 ? renderViewWeek(renderWeather) : renderViewWithoutWeek(renderWeather,order,currentBlock)
+    $(".weathers").html(text)
+    setTimeout(()=>$(".go-back-options").addClass("go-back-options-toggle"),1500)
 }
 
-function renderView(renderWeather, order,currentBlock) {
-    let text = ""
-    order == 2 ? text = renderViewWeek(renderWeather,text) : text = renderViewWithoutWeek(renderWeather,order,text,currentBlock)
-    querySelectorFactory(".weathers").innerHTML = text
-    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
-}
-
-function renderBlockWithoutRwd(renderWeather,text){
-    renderWeather.forEach(render=>{
-        text +=
-    `<table class="table">
+const renderBlockWithoutRwd = renderWeather => $.maps(renderWeather,(render=>`
+    <table class="table">
         <thead>
             <tr>
-                <th scope="col"></th>`
-                render.moring.forEach(key => {
-                    text += `<th scope="col">${key.date.replace("2021 / ","")}</th>`
-                })
-                text += `</tr>
+                <th scope="col"></th>
+                ${$.maps(render.moring,(key =>`<th scope="col">${key.date.replace("2021 / ","")}</th>`)).join('')}
+            </tr>
         </thead>
         <tbody>
             <tr>
-                <td>白天</td>`
-                render.moring.forEach(key => {
-                        text +=
-                                `<td>
-                    <div class="week-desc">
-                        <span>${key.weatherDesc}</span>
-                        <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
-                        <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
-                    </div>
-                </td>`
-        })
-        text += `</tr>
-                <tr>
-                    <td>夜晚</td>`
-        render.night.forEach((key, index) => {
-            if (index == 0) return
-            text += 
-            `<td>
-                <div class="week-desc">
-                    <span>${key.weatherDesc}</span>
-                    <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
-                    <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
-                </div>
-            </td>`
-        })
-        text += `</tr>
-            <tbody>
-        </table>`
-    })
-    return text
-}
+                <td>白天</td>
+                ${$.maps(render.moring,(key => `
+                    <td>
+                        <div class="week-desc">
+                            <span>${key.weatherDesc}</span>
+                            <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                            <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                        </div>
+                    </td>`
+                )).join('')}
+            </tr>
+            <tr>
+                <td>夜晚</td>
+                ${$.maps(render.night,((key, index) => index !== 0 &&
+                    `<td>
+                        <div class="week-desc">
+                            <span>${key.weatherDesc}</span>
+                            <span>${addTempSign(key.minTemp)} ~ ${addTempSign(key.maxTemp)}</span>
+                            <span>${key.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(key.rainPerc)}`}</span>
+                        </div>
+                    </td>`
+                )).join('').replace(/false/g,'')}
+            </tr>
+        <tbody>
+    </table>`
+)).join('')
 
-function renderBlockOnRwd(renderWeather,text){
-    renderWeather.forEach(render=>{
-        text +=
-    `<table class="table">
+
+const renderBlockOnRwd = renderWeather => $.maps(renderWeather,(render=>`
+    <table class="table">
         <thead>
             <tr>
                 <th scope="col"></th>
                 <th scope="col">白天</th>
-                <th scope="col">夜晚</th>`
-            text += `</tr>
+                <th scope="col">夜晚</th>
+            </tr>
         </thead>
-        <tbody>`
-            render.moring.forEach(moringData => {
-                render.night.forEach(nightData=>{
-                    if(moringData.date == nightData.date){
-                        text += `
-                        <tr>
-                            <td>${moringData.date.replace("2021 / ","")}</td>
-                            <td>
-                                <div class="week-desc">
-                                    <span>${moringData.weatherDesc}</span>
-                                    <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
-                                    <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="week-desc">
-                                    <span>${nightData.weatherDesc}</span>
-                                    <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
-                                    <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
-                                </div>
-                            </td>
-                        </tr>`
-                    }
-                })
-            })
-        text += `<tbody></table>`
-    })
-    return text
+        <tbody>
+            ${$.maps(render.moring,(moringData =>
+                $.maps(render.night,(nightData=> moringData.date == nightData.date && `
+                    <tr>
+                        <td>${moringData.date.replace("2021 / ","")}</td>
+                        <td>
+                            <div class="week-desc">
+                                <span>${moringData.weatherDesc}</span>
+                                <span>${addTempSign(moringData.minTemp)} ~ ${addTempSign(moringData.maxTemp)}</span>
+                                <span>${moringData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(moringData.rainPerc)}`}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="week-desc">
+                                <span>${nightData.weatherDesc}</span>
+                                <span>${addTempSign(nightData.minTemp)} ~ ${addTempSign(nightData.maxTemp)}</span>
+                                <span>${nightData.rainPerc == " "?"氣象局暫無資料":`降雨機率 ${addPercent(nightData.rainPerc)}`}</span>
+                            </div>
+                        </td>
+                    </tr>`
+                )).join('').replace(/false/g,'')
+            )).join('')}
+        <tbody>
+    </table>`
+)).join('')
+
+const renderBlockView = (renderWeather,text) => {
+    let newText = window.innerWidth <= 768 ? renderBlockOnRwd(renderWeather):renderBlockWithoutRwd(renderWeather)
+    $(".weathers").html(`${text}${newText}`)
+    setTimeout(()=>$(".go-back-options").addClass("go-back-options-toggle"),1500)
 }
 
-function renderBlockView(renderWeather,text){
-    let newText = text
-    window.innerWidth <= 768 ? newText = renderBlockOnRwd(renderWeather,newText):newText = renderBlockWithoutRwd(renderWeather,newText)
-    querySelectorFactory(".weathers").innerHTML = newText
-    setTimeout(()=>querySelectorFactory(".go-back-options").classList.add("go-back-options-toggle"),1500)
-}
-
-function returnOptions(){
-    this.classList.remove("go-back-options-toggle")
+const returnOptions = ({ target }) => {
+    $(target).removeClass("go-back-options-toggle")
     weatherOuterAnimate(false)
-    setTimeout(()=>querySelectorFactory(".weathers").textContent = "",1200) 
-    setTimeout(() => querySelectorFactory(".option-group").classList.toggle("option-group-toggle"), 1210)
+    setTimeout(()=>$(".weathers").text(""),1200) 
+    setTimeout(() => $(".option-group").toggleClass("option-group-toggle"), 1210)
     setTimeout(()=>{
-        querySelectorFactory(".select-group").classList.toggle("select-toggle")
-        querySelectorFactory(".other-block").classList.toggle("other-block-toggle")
+        $(".select-group").toggleClass("select-toggle")
+        $(".other-block").toggleClass("other-block-toggle")
     },2010)
 }
 
 setInterval(time, 1000)
 
-backgroundChange()
+backgroundChange('global')
 
-querySelectorFactory(".background-controller").addEventListener("click",backgroundChange)
+$(".background-controller").listener("click",backgroundChange.bind(this,'controller'))
 
-querySelectorFactory(".weathers-outer").style.marginTop = `-${window.innerHeight}px`
+$(".weathers-outer").styles("set","margin-top",`-${window.innerHeight}px`)
 
-querySelectorFactory(".current-select").addEventListener("click",selectAnimate)
+$(".current-select").listener("click",selectAnimate)
 
-querySelectorFactory(".other-block").addEventListener("click",selectCity)
+$(".other-block").listener("click",selectCity)
 
-querySelectorFactory(".go-back-options").addEventListener("click",returnOptions)
+$(".go-back-options").listener("click",returnOptions)
 
-querySelectorFactory('.go-top').addEventListener('click', scrolls)
+$('.go-top').listener('click', scrolls)
 
-window.addEventListener('scroll', switchTopBar)
+$(window).listener('scroll', switchTopBar)
