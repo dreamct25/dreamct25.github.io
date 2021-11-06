@@ -192,6 +192,9 @@ const transWeatherIcon = text => {
 }
 
 const dateTrans = time => {
+    const browserVersion = navigator.userAgent.toLowerCase().indexOf('chrome')
+    const replaceWord = browserVersion === -1 ? '/' : '-'
+    time = time.replace(/-/g,replaceWord)
     const [year,month,date,hour] = new Date(+new Date(time) + (8*60*60*1000)).toJSON().replace(/T/g,'-').replace(/:/g,'-').split('.')[0].split('-')
     return { year:year,month:month,date:date,hour:hour}
 }
