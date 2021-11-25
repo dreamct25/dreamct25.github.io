@@ -50,7 +50,7 @@
 // $.eachKeys = item => Object.keys(item)
 
 // Javascript function 版，不需要 new 更新方法 2021/8/28 ( 正式版本 )
-const $ = ((el) => {
+const $ = (function (el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
         targetThis.targets = targets;
@@ -75,8 +75,8 @@ const $ = ((el) => {
         targetThis.removeDom = () => $(targetThis).remove()                                                        // 更新方法 2021/9/12
         targetThis.removeChildDom = () => $(targetThis).replaceChildren()                                          // 更新方法 2021/10/25
         targetThis.appendDomText = (el) => $(targetThis).appendChild(el)                                           // 更新方法 2021/9/12
+        targetThis.easyAppendDom = (orderBy,domStr) => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr)                // 更新方法 2021/11/25
         targetThis.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
-            // const element = document.scrollingElement || document.documentElement;
             let animateScroll = undefined
             const [keyI,keyII] = Object.keys(scrollSetting)
             const startPos = targetThis[keyI];
@@ -94,7 +94,7 @@ const $ = ((el) => {
 
             (animateScroll = () => {
                 const currentTimeStamp = +new Date() - startTimeStamp;
-                targetThis.scrollTop = parseInt(animationSettings({
+                targetThis.scrollTop = Number(animationSettings({
                     currentTime:currentTimeStamp, 
                     startVal:startPos,
                     changeVal:changePos, 
@@ -106,7 +106,7 @@ const $ = ((el) => {
         return targetThis;
     };
 
-    // Public Function
+    // public function
     $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
     $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
     $.filter = (item, fn) => item.filter((items) => fn.call(item, items));
@@ -270,8 +270,9 @@ const $ = ((el) => {
             errorFn.call(errorFn,resError)
         }
     };
+
     return $;
-})((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/8/31
+}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/8/31
 
 Date.prototype.getFullDateTime = function(format) {
 
