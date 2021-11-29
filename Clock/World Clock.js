@@ -1,5 +1,6 @@
 let selectTemp = []
 let timer = undefined
+let weekendTextItems = []
 
 $.fetch({
     method:'get',
@@ -97,28 +98,6 @@ const selectCity = (listIndex,optionIndex,path) => {
 
 // 設定 timeSet 函式
 const timeSet = (areaTime = 8 * 60 * 60,city = 'Taipei') => {
-    const weekendTextItems = [{
-        weekNum: 1,
-        weekName: 'Monday'
-    }, {
-        weekNum: 2,
-        weekName: 'Tuesday'
-    }, {
-        weekNum: 3,
-        weekName: 'Wednesday'
-    }, {
-        weekNum: 4,
-        weekName: 'Thursday'
-    }, {
-        weekNum: 5,
-        weekName: 'Friday'
-    }, {
-        weekNum: 6,
-        weekName: 'Saturday'
-    }, {
-        weekNum: 0,
-        weekName: 'Sunday'
-    }]
 
     clearInterval(timer)
 
@@ -144,10 +123,10 @@ const timeSet = (areaTime = 8 * 60 * 60,city = 'Taipei') => {
         // 顯示年月日時間
         $('.time-show').html(`${year} / ${month} / ${date}<br>${hour}：${minute}：${seconds}`)
 
-        $('.city-show').text(city)
+        $('.city-show').texts(city)
 
         // 顯示星期
-        weekendTextItems.forEach(item => item.weekNum == Number(new Date(+new Date() + (areaTime * 1000)).getUTCDay()) && $('.time-show-day').text(item.weekName))
+        weekendTextItems.forEach(item => item.weekNum == Number(new Date(+new Date() + (areaTime * 1000)).getUTCDay()) && $('.time-show-day').texts(item.weekName))
 
     },1000)
 }
@@ -156,6 +135,8 @@ timeSet();
 
 // 視窗載入時啟用載入動畫
 (()=>{
+    const weekendText = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+    weekendTextItems = $.maps(weekendText,(text,index) => ({ weekNum: index,weekName: text }))
     $('.title').addClass('title-in')
     setTimeout(() => $('.clock-outer').addClass('clock-outer-in'), 1000);
     setTimeout(() => {
