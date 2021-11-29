@@ -1,84 +1,33 @@
-// Javascript Class 版 ( 雛型版本 )
-// class element {
-//     constructor(el){
-//         return typeof(el) === "object" ? el : document.querySelector(el)
-//     }
-// }
-//
-// class $ extends element {
-//     constructor(el){
-//         super(el)
-//         this.text = txt => txt === undefined ? this.textContent : this.textContent = txt
-//         this.addClass = classTxt => this.classList.add(classTxt)
-//         this.removeClass = classTxt => this.classList.remove(classTxt)
-//         this.listener = (eventType,fn) => this.addEventListener(eventType,fn)
-//         this.val = valTemp => valTemp === undefined ? this.value : this.value = valTemp
-//     }
-// }
-
-// Javascript function 版，不需要 new 2021/7/29 ( 雛型版本 )
-// const element = (function () {
-//     function element (el) {
-//         this.el = el;
-//         return typeof (el) === "object" ? el : document.querySelector(el);
-//     }
-//     return element;
-// }());
-//
-// const $ = (function (supers) {
-//     function $(el){
-//         let scopeThis = supers.call(this, el) || this;
-//         scopeThis.el = el;
-//         scopeThis.text = txt => txt === undefined ? scopeThis.textContent : scopeThis.textContent = txt;
-//         scopeThis.html = dom => scopeThis.innerHTML = dom;
-//         scopeThis.addClass = classText => scopeThis.classList.add(classText);
-//         scopeThis.removeClass = classTxt => scopeThis.classList.remove(classTxt);
-//         scopeThis.listener = (eventType, fn) => scopeThis.addEventListener(eventType, fn);
-//         scopeThis.val = valTemp => valTemp === undefined ? scopeThis.value : scopeThis.value = valTemp;
-//         scopeThis.attr = (props,val) => val === undefined ? scopeThis.getAttribute(props) : scopeThis.setAttribute(props,val);
-//         scopeThis.styles = (cssType, cssParameter) => scopeThis.style.setProperty(cssType, cssParameter);
-//         return scopeThis;
-//     }
-//     return $
-// }(element));
-//
-// $.each = (item,fn) => item.forEach((items,index)=> fn.call(this,items,index))
-// $.maps = (item,fn) => item.map((items,index)=> fn.call(this,items,index))
-// $.indexOf = (item,x) => item.indexOf(x)
-// $.findIndexOfObj = (item,fn) => item.findIndex(where => fn.call(this,where))
-// $.sum = (item,fn) => item.reduce((a,b)=> fn.call(this,a,b))
-// $.eachKeys = item => Object.keys(item)
-
-// Javascript function 版，不需要 new 更新方法 2021/8/28 ( 正式版本 )
+// CopyRight by Chen 2021/11 Library language - javascript ver 1.2.9
 const $ = (function (el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
         targetThis.targets = targets;
-        targetThis.text = (txt) => txt === undefined ? targetThis.textContent : targetThis.textContent = txt;
+        targetThis.texts = (txt) => txt === undefined ? targetThis.textContent : targetThis.textContent = txt;
         targetThis.html = (dom) => dom === undefined ? targetThis.innerHTML : targetThis.innerHTML = dom;
         targetThis.addClass = (classText) => targetThis.classList.add(classText);
         targetThis.removeClass = (classTxt) => targetThis.classList.remove(classTxt);
-        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText)
-        targetThis.on = (eventType, fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); } // 更新方法 2021/9/20
+        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText);
+        targetThis.on = (eventType, fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); }; // 更新方法 2021/9/20
         targetThis.listener = (eventType, fn) => targetThis.addEventListener(eventType, fn);
         targetThis.val = (valTemp) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props, val) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
-        targetThis.styles = (method,cssType, cssParameter) => { const checkStr = ['set','remove']; if(!checkStr.includes(method)){ console.error("First parameter method must use string and keyword is 'set' or 'remove'."); return; }; method === 'set' ? targetThis.style.setProperty(cssType, cssParameter) : targetThis.style.removeProperty(cssType); } // 更新方法 2021/10/26
-        targetThis.getDomStyles = (conditionProps) => { let cssProperty = {}; if(typeof conditionProps !== "object"){ console.error('Parameter must use array.'); return; } else { if(conditionProps['length'] === 0){ console.error('Parameter must use array,and css property must in array with string.'); return; } else { conditionProps.map(item => cssProperty[item] = getComputedStyle($(targetThis)).getPropertyValue(item)); return cssProperty; } }; } // 更新方法 2021/10/26
+        targetThis.styles = (method,cssType, cssParameter) => { const checkStr = ['set','remove']; if(!checkStr.includes(method)){ console.error("First parameter method must use string and keyword is 'set' or 'remove'."); return; }; method === 'set' ? targetThis.style.setProperty(cssType, cssParameter) : targetThis.style.removeProperty(cssType); }; // 更新方法 2021/10/26
+        targetThis.getDomStyles = (conditionProps) => { let cssProperty = {}; if(typeof conditionProps !== "object"){ console.error('Parameter must use array.'); return; } else { if(conditionProps['length'] === 0){ console.error('Parameter must use array,and css property must in array with string.'); return; } else { conditionProps.map(item => cssProperty[item] = getComputedStyle($(targetThis)).getPropertyValue(item)); return cssProperty; } }; }; // 更新方法 2021/10/26
         targetThis.props = (props, val) => val === undefined ? targetThis[props] : targetThis[props] = val;        // 更新方法 2021/8/31
         targetThis.sibling = (num) => $(targetThis[num]);                                                          // 更新方法 2021/8/31
         targetThis.child = (num) => $(targetThis.children[num]);                                                   // 更新方法 2021/8/31
         targetThis.childFirst = () => $(targetThis.firstElementChild);                                             // 更新方法 2021/8/31
         targetThis.childLast = () => $(targetThis.lastElementChild);                                               // 更新方法 2021/8/31
         targetThis.parent = () => $(targetThis.parentNode);                                                        // 更新方法 2021/8/31
-        targetThis.appendDom = (el) => $(targetThis).append(el)                                                    // 更新方法 2021/9/12
-        targetThis.removeDom = () => $(targetThis).remove()                                                        // 更新方法 2021/9/12
-        targetThis.removeChildDom = () => $(targetThis).replaceChildren()                                          // 更新方法 2021/10/25
-        targetThis.appendDomText = (el) => $(targetThis).appendChild(el)                                           // 更新方法 2021/9/12
-        targetThis.easyAppendDom = (orderBy,domStr) => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr)                // 更新方法 2021/11/25
+        targetThis.appendDom = (el) => $(targetThis).append(el);                                                   // 更新方法 2021/9/12
+        targetThis.removeDom = () => $(targetThis).remove();                                                       // 更新方法 2021/9/12
+        targetThis.removeChildDom = () => $(targetThis).replaceChildren();                                         // 更新方法 2021/10/25
+        targetThis.appendDomText = (el) => $(targetThis).appendChild(el);                                          // 更新方法 2021/9/12
+        targetThis.easyAppendDom = (orderBy,domStr) => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);                // 更新方法 2021/11/25
         targetThis.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
-            let animateScroll = undefined
-            const [keyI,keyII] = Object.keys(scrollSetting)
+            let animateScroll = undefined;
+            const [keyI,keyII] = Object.keys(scrollSetting);
             const startPos = targetThis[keyI];
             const changePos = scrollSetting[keyI] - startPos;
             const startTimeStamp = +new Date();
@@ -115,42 +64,37 @@ const $ = (function (el) {
     $.includes = (item, x) => item.includes(x);
     $.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
     $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
-    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType // 更新方法 2021/10/26
-    $.console = (type,...item) => console[type](...item) // 更新方法 2021/10/26
+    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
+    $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
+    $.localData = (action,keyName,item) => action === 'get' ? (JSON.parse(localStorage.getItem(keyName)) || []) : localStorage.setItem(keyName,JSON.stringify(item)); // 更新方法 2021/11/29
     $.convert = (val,type) => { // 更新方法 2021/10/22
         if(val === undefined || type === undefined || !['string','number','float','boolean','json','stringify'].includes(type)){
-            $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
+            $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
             return
         } else if(typeof val === 'object' && ['string','number','float','boolean'].includes(type)){
-            $.console('error',`Convert value can't be object when use convert type ${type}.`)
+            $.console('error',`Convert value can't be object when use convert type ${type}.`);
             return
         }
-        switch(type){
-            case 'string':
-                return String(val)
-            case 'number':
-                return parseInt(val)
-            case 'float':
-                return parseFloat(val)
-            case 'boolean':
-                return Boolean(val)
-            case 'json':
-                return JSON.parse(val)
-            case 'stringify':
-                return JSON.stringify(val)
-        }
+        return {
+            string: String(val),
+            number: parseInt(val),
+            float: parseFloat(val),
+            boolean: Boolean(val),
+            json: type === 'json' && JSON.parse(val),
+            stringify: type === 'stringify' && JSON.stringify(val),
+        }[type];
     }
     $.createDom = (tag,props) => { // 更新方法 2021/9/12
-        let el = document.createElement(tag)
-        let propsArr = Object.entries(props)
+        let el = document.createElement(tag);
+        let propsArr = Object.entries(props);
         propsArr.forEach(getProps => {
-            getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1]
-            el[getProps[0]] = getProps[1]
+            getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1];
+            el[getProps[0]] = getProps[1];
         })
-        return el
+        return el;
     }
-    $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/9/12
-    $.objDetails = (obj,method) => method === undefined || !['keys','values','entries'].includes(method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/9/12
+    $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/9/12
+    $.objDetails = (obj,method) => method === undefined || !['keys','values','entries'].includes(method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/9/12
     $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
 
         //#region 參數設定
@@ -165,37 +109,37 @@ const $ = (function (el) {
 
         const check = () => {
             if(obj === undefined){
-                return "Please put want to manage's object at first parameters"
-            }
+                return "Please put want to manage's object at first parameters";
+            };
         
             if(action === undefined || !['get','set','add','delete'].includes(action)){
                 return 'Please enter want to use methods "get、set、add、delete" at seconde parameters'
             } else if(typeof action !== 'string'){
-                return 'Seconde parameters must use type string.'
-            }
+                return 'Seconde parameters must use type string.';
+            };
         
             if(key === undefined){
-                return 'Please enter want to use key name at third parameters'
+                return 'Please enter want to use key name at third parameters';
             } else if(typeof key !== 'string'){
-                return 'Third parameters must use type string.'
-            }
+                return 'Third parameters must use type string.';
+            };
         
             if(value === undefined){
-                return `Please enter want to set value at forth parameters.`
-            }
+                return `Please enter want to set value at forth parameters.`;
+            };
         }
 
         switch(action){
             case 'get':
                 return obj;
             case 'set':
-                check() !== undefined ? $.console('error',check()) : key in obj ? obj[key] = value : $.console('error',`Key name ${key} not in this object.`)
+                check() !== undefined ? $.console('error',check()) : key in obj ? obj[key] = value : $.console('error',`Key name ${key} not in this object.`);
                 break;
             case 'add':
-                check() !== undefined ? $.console('error',check()) : key in obj ? $.console('error',`Key name ${key} already in this object`) : obj[key] = value
+                check() !== undefined ? $.console('error',check()) : key in obj ? $.console('error',`Key name ${key} already in this object`) : obj[key] = value;
                 break;
             case 'delete':
-                check() !== undefined ? $.console('error',check()) : key in obj ? delete obj[key] : $.console('error',`Key name ${key} not in this object.`)
+                check() !== undefined ? $.console('error',check()) : key in obj ? delete obj[key] : $.console('error',`Key name ${key} not in this object.`);
                 break;
         }
     }
@@ -225,50 +169,50 @@ const $ = (function (el) {
          */
         //#endregion
 
-        let resError = undefined
-        let settings = {}
-        let { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams
+        let resError = undefined;
+        let settings = {};
+        let { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams;
 
-        settings.method = method
-        settings.url = url
+        settings.method = method;
+        settings.url = url;
 
         if(headers !== undefined){
-            settings.headers = headers
+            settings.headers = headers;
         } else if (data !== undefined) {
-            settings.headers = {"Content-Type": contentType}
-            settings.body = JSON.stringify(data)
+            settings.headers = {"Content-Type": contentType};
+            settings.body = JSON.stringify(data);
         } else if(headers !== undefined && data !== undefined){
-            settings.headers = {...headers,"Content-Type": contentType}
-            settings.body = JSON.stringify(data)
-        }
+            settings.headers = {...headers,"Content-Type": contentType};
+            settings.body = JSON.stringify(data);
+        };
 
         if(beforePost !== undefined){
-            beforePost.call(beforePost)
-        }
+            beforePost.call(beforePost);
+        };
         
         if(successFn === undefined){
-            $.console('error','Function Name successFn is required in obejct parameters.')
+            $.console('error','Function Name successFn is required in obejct parameters.');
             return
-        }
+        };
 
         if(errorFn === undefined){
-            $.console('error','Function Name errorFn is required in obejct parameters.')
+            $.console('error','Function Name errorFn is required in obejct parameters.');
             return
-        } 
+        };
 
         try {
             let res = await fetch(url, settings);
             if (res.status === 200) {
-                res.json().then(resItem => successFn.call(successFn,resItem))
+                res.json().then(resItem => successFn.call(successFn,resItem));
             }
             else {
                 resError = res
                 throw new Error();
-            }
+            };
         }
         catch (err) {
-            errorFn.call(errorFn,resError)
-        }
+            errorFn.call(errorFn,resError);
+        };
     };
 
     return $;
@@ -283,23 +227,23 @@ Date.prototype.getFullDateTime = function(format) {
      */
     //#endregion
 
-    const checkStr = ['date','time','full']
-    const { formatType } = format
+    const checkStr = ['date','time','full'];
+    const { formatType } = format;
 
     if(!('formatType' in format) || format === undefined){
-        $.console('error','Please enter an object and use formatType property in the object.')
+        $.console('error','Please enter an object and use formatType property in the object.');
         return
     } else if(format !== undefined && !checkStr.includes(formatType)){
-        $.console('error',"Please enter format type 'date' or 'time' or 'full'.")
+        $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
         return
-    }
+    };
     
-    const dateStr = new Date(+new Date() + (8 * 60 * 60 * 1000)).toJSON()
-    const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-")
-    const [year,month,date,hour,minute,second] = dateSplit
+    const dateStr = new Date(+new Date() + (8 * 60 * 60 * 1000)).toJSON();
+    const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-");
+    const [year,month,date,hour,minute,second] = dateSplit;
     return {...{
         date:`${year}-${month}-${date}`,
         time:`${hour}：${minute}：${second}`,
         full:`${year}-${month}-${date} ${hour}：${minute}：${second}`
     }}[formatType]
-}
+};
