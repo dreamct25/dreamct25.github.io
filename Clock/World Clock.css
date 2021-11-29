@@ -12,9 +12,15 @@ html .wrap {
 }
 
 html .wrap .header {
-    margin-top: 10px;
+    margin: 40px;
     font-style: italic;
-    font-size: 22px;
+    font-size: 40px;
+}
+
+@media screen and (max-width:415px) {
+    html .wrap .header {
+        margin: 30px 0 15px 0px;
+    }
 }
 
 html .wrap .header .title {
