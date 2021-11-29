@@ -33,15 +33,15 @@ const countCenter = ({ target:{ className,value } }) => {
     vals.check = rulePos === -1
 
     if(rulePos === 0 || rulePos === 1){
-        $(".height-check").text(ruleItem[rulePos].ruleTxtH)
-        $(".weight-check").text(ruleItem[rulePos].ruleTxtW)
+        $(".height-check").texts(ruleItem[rulePos].ruleTxtH)
+        $(".weight-check").texts(ruleItem[rulePos].ruleTxtW)
     }else if(rulePos === 2){
-        $(".height-check").text(ruleItem[rulePos].ruleTxt)
+        $(".height-check").texts(ruleItem[rulePos].ruleTxt)
     }else if(rulePos === 3){
-        $(".weight-check").text(ruleItem[rulePos].ruleTxt)
+        $(".weight-check").texts(ruleItem[rulePos].ruleTxt)
     }else{
-        $(".height-check").text("格式正確")
-        $(".weight-check").text("格式正確")
+        $(".height-check").texts("格式正確")
+        $(".weight-check").texts("格式正確")
     }
 
     let heightCount = (height / 100) * (height / 100);
@@ -86,7 +86,7 @@ const addItem = () => {
 
     if(!check) return
 
-    let { refTxt,colorClassTag } = makeSideText(bmi)
+    let { refTxt,colorClassTag } = makeSideTexts(bmi)
 
     let collectObj = {
         refTxt:refTxt,
@@ -105,8 +105,8 @@ const addItem = () => {
 
     $(".height").val("")
     $(".weight").val("")
-    $(".height-check").text("請輸入身高")
-    $(".weight-check").text("請輸入體重")
+    $(".height-check").texts("請輸入身高")
+    $(".weight-check").texts("請輸入體重")
 
     $(".render-data-outer").addClass("active")
 
@@ -140,20 +140,20 @@ const renderItem = dataCath => {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}>BMI ＜ 18.5 過輕呦</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "理想型" ? "class='math-val'":""}>18.5 ≦ BMI ＜ 24 理想型</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}>BMI ＜ 18.5 過輕呦</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "理想型" ? "class='math-val'":""}>18.5 ≦ BMI ＜ 24 理想型</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}>24 ≦ BMI ＜ 27 開始胖</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}>27 ≦ BMI ＜ 30 輕度胖</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}>24 ≦ BMI ＜ 27 開始胖</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}>27 ≦ BMI ＜ 30 輕度胖</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideText(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}>30 ≦ BMI ＜ 35 中度胖</span>
-                                        <span ${makeSideText(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}>BMI ≧ 35 幸福胖</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}>30 ≦ BMI ＜ 35 中度胖</span>
+                                        <span ${makeSideTexts(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}>BMI ≧ 35 幸福胖</span>
                                     </div>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@ const toggleDisplay = ({ className },index) => {
     let classNameTemp = $($All(currentClassName)[index]).attr("class")
     let haveOtherClass = $.indexOf(classNameTemp,"active")
     haveOtherClass === -1 ? $($All(currentClassName)[index]).addClass("active"):$($All(currentClassName)[index]).removeClass("active")
-    haveOtherClass === -1 ? $($All(`.${className}`)[index]).text("關閉"):$($All(`.${className}`)[index]).text(className === "ref-btn" ? "參考指標":"刪除")
+    haveOtherClass === -1 ? $($All(`.${className}`)[index]).texts("關閉"):$($All(`.${className}`)[index]).texts(className === "ref-btn" ? "參考指標":"刪除")
 }
 
 const toggleData = () => {
