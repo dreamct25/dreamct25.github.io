@@ -8,9 +8,9 @@ obj.renderCount = 0
 const loadingAnimate = state => {
     if (state == true) {
         $(".loading-outer").addClass("loading-outer-toggle")
-        $(".loading-text").text("Loading")
+        $(".loading-text").texts("Loading")
     } else {
-        $(".loading-text").text("Completed")
+        $(".loading-text").texts("Completed")
         setTimeout(() => $(".loading-outer").removeClass("loading-outer-toggle"), 1000)
         setTimeout(() => {
             $(".select-group").removeClass("select-toggle")
@@ -68,7 +68,7 @@ getData()
 const cityType = arry => {
     let arrySort = []
     let cityTagTemp = []
-    $(".current-select").text("-- 請選擇欲查詢縣市氣象 --")
+    $(".current-select").texts("-- 請選擇欲查詢縣市氣象 --")
     arrySort = $.sort(arry,(a, b) => b.lon - a.lon)
     $.each(arrySort,(key, index) => {
         obj.jsonData.push(key)
@@ -85,7 +85,7 @@ const cityType = arry => {
 const scrolls = () => $('html').scrollToTop({ scrollTop:0,duration:3000 })
 
 const changeMoring = () => {
-    $(".background-text").text('Moring')
+    $(".background-text").texts('Moring')
     $(".header").addClass("header-moring")
     $(".header").removeClass("header-night")
     $('html').removeClass('night')
@@ -95,7 +95,7 @@ const changeMoring = () => {
 }
 
 const changeNight = () => {
-    $(".background-text").text('Night')
+    $(".background-text").texts('Night')
     $(".header").addClass("header-night")
     $(".header").removeClass("header-moring")
     $('html').addClass('night')
@@ -125,12 +125,12 @@ const switchTopBar = () => {
 
 // 畫面時間內容設定
 const time = () => {
-    $(".date").text(new Date().getFullDateTime({ formatType:'date' }))
-    $(".time").text(new Date().getFullDateTime({ formatType:'time' }))
+    $(".date").texts(new Date().getFullDateTime({ formatType:'date' }))
+    $(".time").texts(new Date().getFullDateTime({ formatType:'time' }))
 }
 
 const selectCityPart = element => {
-    $(".current-select").text(element.textContent)
+    $(".current-select").texts(element.textContent)
     
     $.each($(".city-name"),item => $(item).attr("data-num") === $(element).attr("data-num") ? $(item).addClass("selected") : $(item).removeClass("selected"))
     
@@ -493,15 +493,15 @@ const renderCountCenter = (element, lengthCount) => {
 const currentBlockChoose = (element, ...items) => {
     const [array, order, cityName, equalTemp, uivLevel, uivDesc] = items
     if (cityName != undefined && equalTemp != undefined && uivLevel != undefined && uivDesc != undefined) {
-        let blockFilterArray = $.filter(array,item => item.blockName == $(element).text())
+        let blockFilterArray = $.filter(array,item => item.blockName == $(element).texts())
         let blockArray = order == 0 ? todayBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc) : tomorrowBlock(blockFilterArray, array, cityName, equalTemp, uivLevel, uivDesc)
-        setTimeout(() => renderView(blockArray, order, $(element).text()), 700)
+        setTimeout(() => renderView(blockArray, order, $(element).texts()), 700)
     } else {
-        setTimeout(() => renderView(array, order, $(element).text()), 700)
+        setTimeout(() => renderView(array, order, $(element).texts()), 700)
     }
     setTimeout(() => $.each($(".block-select span"),item => item.dataset.num == element.dataset.num ? $(item).addClass("block-selected") : $(item).removeClass("block-selected")), 702)
 
-    $(".block-has-select-title span").text($(element).text())
+    $(".block-has-select-title span").texts($(element).texts())
 }
 
 const currentTimeMatch = (datas, hasMax) => {
@@ -808,7 +808,7 @@ const renderBlockView = (renderWeather,text) => {
 const returnOptions = ({ target }) => {
     $(target).removeClass("go-back-options-toggle")
     weatherOuterAnimate(false)
-    setTimeout(()=>$(".weathers").text(""),1200) 
+    setTimeout(()=>$(".weathers").texts(""),1200) 
     setTimeout(() => $(".option-group").toggleClass("option-group-toggle"), 1210)
     setTimeout(()=>{
         $(".select-group").toggleClass("select-toggle")
