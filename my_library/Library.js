@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/11 Library language - javascript ver 1.2.9
+// CopyRight by Chen 2021/11 Library language - javascript ver 1.3.0
 const $ = (function (el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
@@ -7,24 +7,24 @@ const $ = (function (el) {
         targetThis.html = (dom) => dom === undefined ? targetThis.innerHTML : targetThis.innerHTML = dom;
         targetThis.addClass = (classText) => targetThis.classList.add(classText);
         targetThis.removeClass = (classTxt) => targetThis.classList.remove(classTxt);
-        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText);
-        targetThis.on = (eventType, fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); }; // 更新方法 2021/9/20
+        targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText); // 更新方法 2021/09/20
+        targetThis.on = (eventType, fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); }; // 更新方法 2021/09/20
         targetThis.listener = (eventType, fn) => targetThis.addEventListener(eventType, fn);
         targetThis.val = (valTemp) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props, val) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
-        targetThis.styles = (method,cssType, cssParameter) => { const checkStr = ['set','remove']; if(!checkStr.includes(method)){ console.error("First parameter method must use string and keyword is 'set' or 'remove'."); return; }; method === 'set' ? targetThis.style.setProperty(cssType, cssParameter) : targetThis.style.removeProperty(cssType); }; // 更新方法 2021/10/26
-        targetThis.getDomStyles = (conditionProps) => { let cssProperty = {}; if(typeof conditionProps !== "object"){ console.error('Parameter must use array.'); return; } else { if(conditionProps['length'] === 0){ console.error('Parameter must use array,and css property must in array with string.'); return; } else { conditionProps.map(item => cssProperty[item] = getComputedStyle($(targetThis)).getPropertyValue(item)); return cssProperty; } }; }; // 更新方法 2021/10/26
-        targetThis.props = (props, val) => val === undefined ? targetThis[props] : targetThis[props] = val;        // 更新方法 2021/8/31
-        targetThis.sibling = (num) => $(targetThis[num]);                                                          // 更新方法 2021/8/31
-        targetThis.child = (num) => $(targetThis.children[num]);                                                   // 更新方法 2021/8/31
-        targetThis.childFirst = () => $(targetThis.firstElementChild);                                             // 更新方法 2021/8/31
-        targetThis.childLast = () => $(targetThis.lastElementChild);                                               // 更新方法 2021/8/31
-        targetThis.parent = () => $(targetThis.parentNode);                                                        // 更新方法 2021/8/31
-        targetThis.appendDom = (el) => $(targetThis).append(el);                                                   // 更新方法 2021/9/12
-        targetThis.removeDom = () => $(targetThis).remove();                                                       // 更新方法 2021/9/12
+        targetThis.styles = (method,cssType, cssParameter) => { if(!$.includes(['set','remove'],method)){ $.console('error',"First parameter method must use string and keyword is 'set' or 'remove'."); return; }; method === 'set' ? targetThis.style.setProperty(cssType, cssParameter) : targetThis.style.removeProperty(cssType); }; // 更新方法 2021/10/26
+        targetThis.getDomStyles = (conditionProps) => { let cssProperty = {}; if(typeof conditionProps !== "object"){ $.console('error','Parameter must use array.'); return; } else { if(conditionProps['length'] === 0){ $.console('error','Parameter must use array,and css property must in array with string.'); return; } else { $.each(conditionProps,item => cssProperty[item] = getComputedStyle($(targetThis)).getPropertyValue(item)); return cssProperty; } }; }; // 更新方法 2021/10/26
+        targetThis.props = (props, val) => val === undefined ? targetThis[props] : targetThis[props] = val;        // 更新方法 2021/08/31
+        targetThis.sibling = (num) => $(targetThis[num]);                                                          // 更新方法 2021/08/31
+        targetThis.child = (num) => $(targetThis.children[num]);                                                   // 更新方法 2021/08/31
+        targetThis.childFirst = () => $(targetThis.firstElementChild);                                             // 更新方法 2021/08/31
+        targetThis.childLast = () => $(targetThis.lastElementChild);                                               // 更新方法 2021/08/31
+        targetThis.parent = () => $(targetThis.parentNode);                                                        // 更新方法 2021/08/31
+        targetThis.appendDom = (el) => $(targetThis).append(el);                                                   // 更新方法 2021/09/12
+        targetThis.removeDom = () => $(targetThis).remove();                                                       // 更新方法 2021/09/12
         targetThis.removeChildDom = () => $(targetThis).replaceChildren();                                         // 更新方法 2021/10/25
-        targetThis.appendDomText = (el) => $(targetThis).appendChild(el);                                          // 更新方法 2021/9/12
-        targetThis.easyAppendDom = (orderBy,domStr) => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);                // 更新方法 2021/11/25
+        targetThis.appendDomText = (el) => $(targetThis).appendChild(el);                                          // 更新方法 2021/09/12
+        targetThis.easyAppendDom = (orderBy,domStr) => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);    // 更新方法 2021/11/25
         targetThis.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
             let animateScroll = undefined;
             const [keyI,keyII] = Object.keys(scrollSetting);
@@ -66,12 +66,12 @@ const $ = (function (el) {
     $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
     $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
-    $.localData = (action,keyName,item) => action === 'get' ? (JSON.parse(localStorage.getItem(keyName)) || []) : localStorage.setItem(keyName,JSON.stringify(item)); // 更新方法 2021/11/29
+    $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
     $.convert = (val,type) => { // 更新方法 2021/10/22
-        if(val === undefined || type === undefined || !['string','number','float','boolean','json','stringify'].includes(type)){
+        if(val === undefined || type === undefined || !$.includes(['string','number','float','boolean','json','stringify'],type)){
             $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
             return
-        } else if(typeof val === 'object' && ['string','number','float','boolean'].includes(type)){
+        } else if(typeof val === 'object' && $.includes(['string','number','float','boolean'],type)){
             $.console('error',`Convert value can't be object when use convert type ${type}.`);
             return
         }
@@ -84,17 +84,17 @@ const $ = (function (el) {
             stringify: type === 'stringify' && JSON.stringify(val),
         }[type];
     }
-    $.createDom = (tag,props) => { // 更新方法 2021/9/12
-        let el = document.createElement(tag);
-        let propsArr = Object.entries(props);
-        propsArr.forEach(getProps => {
+    $.createDom = (tag,props) => { // 更新方法 2021/09/12
+        const el = document.createElement(tag);
+        const propsArr = Object.entries(props);
+        $.each(propsArr,getProps => {
             getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1];
             el[getProps[0]] = getProps[1];
         })
         return el;
     }
-    $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/9/12
-    $.objDetails = (obj,method) => method === undefined || !['keys','values','entries'].includes(method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/9/12
+    $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
+    $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
     $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
 
         //#region 參數設定
@@ -112,7 +112,7 @@ const $ = (function (el) {
                 return "Please put want to manage's object at first parameters";
             };
         
-            if(action === undefined || !['get','set','add','delete'].includes(action)){
+            if(action === undefined || !$.includes(['get','set','add','delete'],action)){
                 return 'Please enter want to use methods "get、set、add、delete" at seconde parameters'
             } else if(typeof action !== 'string'){
                 return 'Seconde parameters must use type string.';
@@ -144,6 +144,33 @@ const $ = (function (el) {
         }
     }
 
+    $.formatDateTime = (format) => { // 更新方法 2021/12/01
+        //#region 參數設定
+        /**
+         * @param {object} { formatDate: Date,formatType:string } <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
+         * @returns {string}
+         */
+        //#endregion
+    
+        if(!('formatType' in format) || format === undefined){
+            $.console('error','Please enter an object and use formatType property in the object.');
+            return
+        } else if(format !== undefined && !$.includes(['date','time','full'],format.formatType)){
+            $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
+            return
+        };
+        
+        const dateStr = new Date(+new Date(format.formatDate) + (8 * 60 * 60 * 1000)).toJSON();
+        const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-");
+        const [year,month,date,hour,minute,second] = dateSplit;
+
+        return {...{
+            date:`${year}-${month}-${date}`,
+            time:`${hour}：${minute}：${second}`,
+            full:`${year}-${month}-${date} ${hour}：${minute}：${second}`
+        }}[format.formatType]
+    }
+
     $.fetch = async (settingParams = {
         method:'',
         url:'',
@@ -154,7 +181,7 @@ const $ = (function (el) {
         successFn:undefined,
         errorFn:undefined
     }) => { 
-        // 更新類 ajax 方法 2021/9/11
+        // 更新類 ajax 方法 2021/09/11
         // 更新類 ajax 方法內容 2021/10/21
 
         //#region 參數設定
@@ -180,10 +207,10 @@ const $ = (function (el) {
             settings.headers = headers;
         } else if (data !== undefined) {
             settings.headers = {"Content-Type": contentType};
-            settings.body = JSON.stringify(data);
+            settings.body = $.convert(data,'stringify');
         } else if(headers !== undefined && data !== undefined){
             settings.headers = {...headers,"Content-Type": contentType};
-            settings.body = JSON.stringify(data);
+            settings.body = $.convert(data,'stringify');
         };
 
         if(beforePost !== undefined){
@@ -216,34 +243,31 @@ const $ = (function (el) {
     };
 
     return $;
-}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/8/31
+}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/08/31
 
-Date.prototype.getFullDateTime = function(format) {
+Date.prototype.calculateDay = (format) => { 
+    // 更新方法內容與回傳內容 2021/09/22
+    // 更新方法 2021/12/01
 
     //#region 參數設定
     /**
-     * @param {string} formatType <= typeTime 取時間、typeDate 取日期、typeFull 取日期與時間
+     * @param {object} { day: number,method:string }
      * @returns {string}
      */
     //#endregion
 
-    const checkStr = ['date','time','full'];
-    const { formatType } = format;
-
-    if(!('formatType' in format) || format === undefined){
-        $.console('error','Please enter an object and use formatType property in the object.');
+    if(format === undefined || !('day' in format && 'method' in format)){
+        $.console('error','Please enter an object and use day and method property in the object.');
         return
-    } else if(format !== undefined && !checkStr.includes(formatType)){
-        $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
+    } else if(typeof format.day !== 'number'){
+        $.console('error',"day property must use type number.");
+    } else if(!$.includes(['add','reduce'],format.method)){
+        $.console('error',"Please enter method type 'add' or 'reduce'.");
         return
     };
+
+    const addDay = new Date(+new Date() + (format.day * 24 * 60 * 60 * 1000))
+    const reduceDay = new Date(+new Date() - (format.day * 24 * 60 * 60 * 1000))
     
-    const dateStr = new Date(+new Date() + (8 * 60 * 60 * 1000)).toJSON();
-    const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-");
-    const [year,month,date,hour,minute,second] = dateSplit;
-    return {...{
-        date:`${year}-${month}-${date}`,
-        time:`${hour}：${minute}：${second}`,
-        full:`${year}-${month}-${date} ${hour}：${minute}：${second}`
-    }}[formatType]
+    return format.method === 'add' ? addDay : reduceDay ;
 };
