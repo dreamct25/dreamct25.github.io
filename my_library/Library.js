@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/11 Library language - javascript ver 1.3.0
+// CopyRight by Chen 2021/11 Library language - javascript ver 1.3.1
 const $ = (function (el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
@@ -144,23 +144,29 @@ const $ = (function (el) {
         }
     }
 
-    $.formatDateTime = (format) => { // 更新方法 2021/12/01
+    $.formatDateTime = (format = { formatDate:'',formatType:'' }) => { // 更新方法 2021/12/01
         //#region 參數設定
         /**
-         * @param {object} { formatDate: Date,formatType:string } <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
+         * @param {object} 
+         * { 
+         *   formatDate: Date || string,
+         *   formatType:string, <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
+         *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數 // 更新方法 2021/12/06 可選時區
+         * }
          * @returns {string}
          */
         //#endregion
     
-        if(!('formatType' in format) || format === undefined){
+        if(!('formatDate' in format || 'formatType' in format)){
             $.console('error','Please enter an object and use formatType property in the object.');
             return
-        } else if(format !== undefined && !$.includes(['date','time','full'],format.formatType)){
+        } else if(format.formatDate !== '' && !$.includes(['date','time','full'],format.formatType)){
             $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
             return
         };
         
-        const dateStr = new Date(+new Date(format.formatDate) + (8 * 60 * 60 * 1000)).toJSON();
+        const localCountryTime = ('localCountryTime' in format ? format.localCountryTime : 8)* 60 * 60 * 1000
+        const dateStr = new Date(+new Date(format.formatDate) + localCountryTime).toJSON();
         const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-");
         const [year,month,date,hour,minute,second] = dateSplit;
 
