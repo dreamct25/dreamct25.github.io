@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/11 Library language - javascript ver 1.3.1
+// CopyRight by Chen 2021/08 - 2021/12 Library language - javascript ver 1.3.2
 const $ = (function (el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
@@ -84,15 +84,21 @@ const $ = (function (el) {
             stringify: type === 'stringify' && JSON.stringify(val),
         }[type];
     }
-    $.createDom = (tag,props) => { // 更新方法 2021/09/12
+    $.createDom = (tag, props) => { // 更新方法 2021/09/12
         const el = document.createElement(tag);
         const propsArr = Object.entries(props);
-        $.each(propsArr,getProps => {
-            getProps[1] = typeof getProps[1] === "string" ? getProps[1].trim() : getProps[1];
-            el[getProps[0]] = getProps[1];
+        $.each(propsArr,(getProps) => {
+            const [propertyI,valueI] = getProps
+            if($.typeOf(valueI,'Object')){ // 更新方法 2021/12/07，解析 data-* 建構屬性內容
+                const [propertyII,obj] = getProps
+                const [[key,valueII]] = Object.entries(obj)
+                el[propertyII][key] = valueII
+            } else {
+                el[propertyI] = $.typeOf(valueI,'String') ? valueI.trim() : valueI
+            }
         })
         return el;
-    }
+    };
     $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
     $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
@@ -158,7 +164,7 @@ const $ = (function (el) {
         //#endregion
     
         if(!('formatDate' in format || 'formatType' in format)){
-            $.console('error','Please enter an object and use formatType property in the object.');
+            $.console('error','Please enter an object and use formatDate、formatType property in the object,just localCountryTime property is optional with type number.');
             return
         } else if(format.formatDate !== '' && !$.includes(['date','time','full'],format.formatType)){
             $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
