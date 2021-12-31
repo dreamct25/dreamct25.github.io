@@ -152,8 +152,7 @@
         $('.modal-outer').removeClass('active')
     }
     const openModal = () => {
-        $('.modal-text').removeChildDom()
-        $('.modal-text').easyAppendDom('beforeDom',currentLanguage === 'EN' ? '<span>Happy<br>New<br>Year !</span>' : '<span>新年快樂 !</span>')
+        $('.modal-text').html(currentLanguage === 'EN' ? '<span>Happy<br>New<br>Year !</span>' : '<span>新年快樂 !</span>')
         $('.modal-outer').addClass('active')
     }
 
@@ -161,17 +160,16 @@
         const [day,hour,minute,secode] = time
 
         if(el !== undefined){
-            $('.remain-title').removeChildDom()
             const currentText = $('.remain-text').texts()
             const currentTarget = $.convert(el.target.dataset.num,'number')
             $.each($('.options'),item => $.convert(item.dataset.num,'number') === currentTarget ? $(item).addClass('active') : $(item).removeClass('active'))
             if(currentTarget == true){
                 currentLanguage = 'EN'
-                $('.remain-title').easyAppendDom('beforDom',"<span>New Year's Eve<br>Count Down</span>")
+                $('.remain-title').html("<span>New Year's Eve<br>Count Down</span>")
                 $('.remain-text').texts(currentText.replace('天',day).replace('小時',hour).replace('分',minute).replace('秒',secode))
             } else {
                 currentLanguage = 'ZH'
-                $('.remain-title').easyAppendDom('beforeDom',"<span>跨年倒數</span>")
+                $('.remain-title').html("<span>跨年倒數</span>")
                 $('.remain-text').texts(currentText.replace('day',day).replace('h',hour).replace('m',minute).replace('s',secode))
             }
         }
