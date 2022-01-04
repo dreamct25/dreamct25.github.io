@@ -1,4 +1,8 @@
-// CopyRight by Chen 2021/08 - 2021/12 Library language - typescript ver 1.3.2
+// CopyRight by Chen 2021/08 - 2022/01 Library language - typescript ver 1.3.3
+// work environment typescript v4.5.4
+//
+// Use in node js
+// export default $
 const $: any = (function (el) {
     const $ = (targets: any): any => {
         let targetThis: any = el.call(el, targets) || targets;
@@ -10,6 +14,7 @@ const $: any = (function (el) {
         targetThis.toggleClass = (classText: string): void => targetThis.classList.toggle(classText); // 更新方法 2021/09/20
         targetThis.on = (eventType: string, fn: Function): void => { targetThis[["on", eventType].join("")] = (t: Event) => fn.call(targetThis, t); }; // 更新方法 2021/09/20
         targetThis.listener = (eventType: string, fn: Function): void => targetThis.addEventListener(eventType, fn);
+        targetThis.removeListener = (eventType: string, fn: Function): void => targetThis.removeEventListener(eventType, fn); // 更新方法 2022/01/04
         targetThis.val = (valTemp: string | undefined): string | void => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props: string, val: any): string | number | void => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
         targetThis.props = (props: string, val: any): any => val === undefined ? targetThis[props] : targetThis[props] = val;
@@ -17,15 +22,15 @@ const $: any = (function (el) {
         targetThis.getDomStyles = (conditionProps: string[]): { [key: string]: any } => { let cssProperty: { [key: string]: any } = {}; if (typeof conditionProps !== "object") { $.console('error', 'Parameter must use array.'); return; } else { if (conditionProps.length === 0) { $.console('error', 'Parameter must use array,and css property must in array with string.'); return; } else { $.each(conditionProps, item => cssProperty[item] = getComputedStyle($(targetThis)).getPropertyValue(item)); return cssProperty; } }; }; // 更新方法 2021/10/26
         targetThis.sibling = (num: number): HTMLElement => $(targetThis[num]);         // 更新方法 2021/08/31
         targetThis.child = (num: number): HTMLElement => $(targetThis.children[num]);  // 更新方法 2021/08/31
-        targetThis.firstChild = (): HTMLElement => $(targetThis.firstElementChild);    // 更新方法 2021/08/31
-        targetThis.lastChild = (): HTMLElement => $(targetThis.lastElementChild);      // 更新方法 2021/08/31
+        targetThis.childFirst = (): HTMLElement => $(targetThis.firstElementChild);    // 更新方法 2021/08/31
+        targetThis.childLast = (): HTMLElement => $(targetThis.lastElementChild);      // 更新方法 2021/08/31
         targetThis.parent = (): HTMLElement => $(targetThis.parentNode);               // 更新方法 2021/08/31
         targetThis.appendDom = (el: HTMLElement): void => $(targetThis).append(el);    // 更新方法 2021/09/12
         targetThis.removeDom = (): void => $(targetThis).remove();                     // 更新方法 2021/09/12
         targetThis.removeChildDom = (): void => $(targetThis).replaceChildren();       // 更新方法 2021/10/25
         targetThis.appendDomText = (el: Text): void => $(targetThis).appendChild(el);  // 更新方法 2021/09/12
         targetThis.easyAppendDom = (orderBy: string, domStr: string): void => $(targetThis).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr);  // 更新方法 2021/11/25
-        targetThis.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
+        targetThis.scrollToTop = (scrollSetting: { [key: string]: number, scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
             let animateScroll: any = undefined;
             const [keyI, keyII]: string[] = Object.keys(scrollSetting);
             const startPos: number = targetThis[keyI];
@@ -69,7 +74,7 @@ const $: any = (function (el) {
     $.findIndexOfObj = (item: any, fn: (...parameters: any[]) => void): number => item.findIndex((where: object) => fn.call(item, where));
     $.sum = (item: any, fn: (...parameters: any[]) => void) => item.reduce((a: any, b: any) => fn.call(item, a, b));
     $.typeOf = (item: any, classType: any): string | Boolean => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
-    $.console = (type: string, ...item: any): void => console[type](...item) // 更新方法 2021/10/26
+    $.console = (type: string, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert(item, 'stringify')); // 更新方法 2021/11/29
     $.convert = (val: any, type: string): any => { // 更新方法 2021/10/22
         if (val === undefined || type === undefined) {
@@ -88,8 +93,9 @@ const $: any = (function (el) {
             stringify: type === 'stringify' && JSON.stringify(val),
         }[type];
     }
+
     $.createDom = (tag: string, props: { [key: string]: any }): HTMLElement => { // 更新方法 2021/09/12
-        const el: HTMLElement = document.createElement(tag);
+        const el: HTMLElement & { [key: string]: any } = document.createElement(tag);
         const propsArr: [string, any][] = Object.entries(props);
         $.each(propsArr, (getProps: [string, any]) => {
             const [propertyI, valueI]: [string, any] = getProps
@@ -104,7 +110,7 @@ const $: any = (function (el) {
         return el;
     };
     $.createDomText = (text: string): Text => document.createTextNode(text); // 更新方法 2021/09/12
-    $.objDetails = (obj: { [key: string]: any }, method: string): any[] | void => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
+    $.objDetails = (obj: { [key: string]: any }, method: string): any[] | void => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
     $.objManager = (obj: { [key: string]: any }, action: string | undefined, key: string | undefined, value: any): { [key: string]: any } | void => { // 更新方法 2021/10/21
 
         //#region 參數設定
@@ -154,24 +160,24 @@ const $: any = (function (el) {
         }
     }
 
-    $.formatDateTime = (format: { formatDate: string | Date, formatType: string, localCountryTime?: number } = { formatDate: '', formatType: '' }): string => { // 更新方法 2021/12/01
+    $.formatDateTime = (format: { formatDate: string | Date, formatType: string, localCountryTime?: number }): string | number => { // 更新方法 2021/12/01
         //#region 參數設定
         /**
          * @param {object}
          * { 
          *   formatDate: Date || string,
          *   formatType:string, <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
-         *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數 // 更新方法 2021/12/06 可選時區
+         *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          * }
          * @returns {string}
          */
         //#endregion
 
         if (!('formatDate' in format || 'formatType' in format)) {
-            $.console('error', 'Please enter an object and use formatDate、formatType property in the object,just localCountryTime property is optional with type number.');
+            $.console('error', 'Please enter an object and use formatType property in the object.');
             return
-        } else if (format.formatDate !== '' && !$.includes(['date', 'time', 'full'], format.formatType)) {
-            $.console('error', "Please enter format type 'date' or 'time' or 'full'.");
+        } else if (format.formatDate !== '' && !$.includes(['date', 'time', 'full', 'toDateFullNumber'], format.formatType)) {
+            $.console('error', "Please enter format type 'date' or 'time' or 'full' or 'toDateFullNumber'.");
             return
         };
 
@@ -181,11 +187,10 @@ const $: any = (function (el) {
         const [year, month, date, hour, minute, second] = dateSplit;
 
         return {
-            ...{
-                date: `${year}-${month}-${date}`,
-                time: `${hour}：${minute}：${second}`,
-                full: `${year}-${month}-${date} ${hour}：${minute}：${second}`
-            }
+            date: `${year}-${month}-${date}`,
+            time: `${hour}：${minute}：${second}`,
+            full: `${year}-${month}-${date} ${hour}：${minute}：${second}`,
+            toDateFullNumber: Number(dateSplit.join(""))
         }[format.formatType]
     }
 
@@ -263,8 +268,13 @@ const $: any = (function (el) {
     return $;
 }((el: object | string): any => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/8/31
 
+// use in node js
+// declare global {
+//     interface Date { calculateDay: (format: { day:number,method: string }) => Date }
+// }
+
 interface Date { calculateDay: (format: { day: number, method: string }) => Date }
-Date.prototype.calculateDay = (format: { day: number, method: string }): Date => {
+Date.prototype.calculateDay = (format: { day: number, method: string }) => {
     // 更新方法內容與回傳內容 2021/09/22
     // 更新方法 2021/12/01
 
