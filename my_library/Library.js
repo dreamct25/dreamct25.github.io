@@ -1,5 +1,5 @@
-// CopyRight by Chen 2021/08 - 2021/12 Library language - javascript ver 1.3.2
-const $ = (function (el) {
+// CopyRight by Chen 2021/08 - 2022/01 Library language - javascript ver 1.3.3
+const $ = (function(el) {
     const $ = (targets) => {
         let targetThis = el.call(el, targets) || targets;
         targetThis.targets = targets;
@@ -10,6 +10,7 @@ const $ = (function (el) {
         targetThis.toggleClass = (classText) => targetThis.classList.toggle(classText); // 更新方法 2021/09/20
         targetThis.on = (eventType, fn) => { targetThis[["on",eventType].join("")] = t => fn.call(targetThis,t); }; // 更新方法 2021/09/20
         targetThis.listener = (eventType, fn) => targetThis.addEventListener(eventType, fn);
+        targetThis.removeListener = (eventType,fn) => targetThis.removeEventListener(eventType, fn); // 更新方法 2022/01/04
         targetThis.val = (valTemp) => valTemp === undefined ? targetThis.value : targetThis.value = valTemp;
         targetThis.attr = (props, val) => val === undefined ? targetThis.getAttribute(props) : targetThis.setAttribute(props, val);
         targetThis.styles = (method,cssType, cssParameter) => { if(!$.includes(['set','remove'],method)){ $.console('error',"First parameter method must use string and keyword is 'set' or 'remove'."); return; }; method === 'set' ? targetThis.style.setProperty(cssType, cssParameter) : targetThis.style.removeProperty(cssType); }; // 更新方法 2021/10/26
@@ -54,7 +55,6 @@ const $ = (function (el) {
         }
         return targetThis;
     };
-
     // public function
     $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
     $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
@@ -64,7 +64,7 @@ const $ = (function (el) {
     $.includes = (item, x) => item.includes(x);
     $.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
     $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
-    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
+    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
     $.convert = (val,type) => { // 更新方法 2021/10/22
@@ -84,10 +84,10 @@ const $ = (function (el) {
             stringify: type === 'stringify' && JSON.stringify(val),
         }[type];
     }
-    $.createDom = (tag, props) => { // 更新方法 2021/09/12
+    $.createDom = (tag,props) => { // 更新方法 2021/09/12
         const el = document.createElement(tag);
         const propsArr = Object.entries(props);
-        $.each(propsArr,(getProps) => {
+        $.each(propsArr,getProps => {
             const [propertyI,valueI] = getProps
             if($.typeOf(valueI,'Object')){ // 更新方法 2021/12/07，解析 data-* 建構屬性內容
                 const [propertyII,obj] = getProps
@@ -98,7 +98,7 @@ const $ = (function (el) {
             }
         })
         return el;
-    };
+    }
     $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
     $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
@@ -157,17 +157,17 @@ const $ = (function (el) {
          * { 
          *   formatDate: Date || string,
          *   formatType:string, <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
-         *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數 // 更新方法 2021/12/06 可選時區
+         *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          * }
          * @returns {string}
          */
         //#endregion
     
         if(!('formatDate' in format || 'formatType' in format)){
-            $.console('error','Please enter an object and use formatDate、formatType property in the object,just localCountryTime property is optional with type number.');
+            $.console('error','Please enter an object and use formatType property in the object.');
             return
-        } else if(format.formatDate !== '' && !$.includes(['date','time','full'],format.formatType)){
-            $.console('error',"Please enter format type 'date' or 'time' or 'full'.");
+        } else if(format.formatDate !== '' && !$.includes(['date','time','full','toDateFullNumber'],format.formatType)){
+            $.console('error',"Please enter format type 'date' or 'time' or 'full' or 'toDateFullNumber'.");
             return
         };
         
@@ -176,11 +176,12 @@ const $ = (function (el) {
         const dateSplit = dateStr.replace(/T/g,"-").replace(/:/g,"-").split(".")[0].split("-");
         const [year,month,date,hour,minute,second] = dateSplit;
 
-        return {...{
+        return {
             date:`${year}-${month}-${date}`,
             time:`${hour}：${minute}：${second}`,
-            full:`${year}-${month}-${date} ${hour}：${minute}：${second}`
-        }}[format.formatType]
+            full:`${year}-${month}-${date} ${hour}：${minute}：${second}`,
+            toDateFullNumber:Number(dateSplit.join(""))
+        }[format.formatType]
     }
 
     $.fetch = async (settingParams = {
