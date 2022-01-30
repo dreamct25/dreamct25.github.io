@@ -6,15 +6,15 @@
 const $: any = (function (el) {
     const $ = (target: any): any => {
         let self: any = el.call(el, target) || target;
-        self.texts = (txt: string | undefined): string | void => txt === undefined ? self.textContent : self.textContent = txt;
-        self.html = (dom: string | undefined): string | void => dom === undefined ? self.innerHTML : self.innerHTML = dom;
+        self.texts = (txt?: string): string | void => txt === undefined ? self.textContent : self.textContent = txt;
+        self.html = (dom?: string): string | void => dom === undefined ? self.innerHTML : self.innerHTML = dom;
         self.addClass = (classText: string): void => self.classList.add(classText);
         self.removeClass = (classText: string): void => self.classList.remove(classText);
         self.toggleClass = (classText: string): void => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType: string, fn: Function): void => { self[["on", eventType].join("")] = (t: Event) => fn.call(self, t); }; // 更新方法 2021/09/20
         self.listener = (eventType: string, fn: Function): void => self.addEventListener(eventType, fn);
         self.removeListener = (eventType: string, fn: Function): void => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
-        self.val = (valTemp: string | undefined): string | void => valTemp === undefined ? self.value : self.value = valTemp;
+        self.val = (valTemp?: string): string | void => valTemp === undefined ? self.value : self.value = valTemp;
         self.attr = (props: string, val: any): string | number | void => val === undefined ? self.getAttribute(props) : self.setAttribute(props, val);
         self.props = (props: string, val: any): any => val === undefined ? self[props] : self[props] = val;
         self.sibling = (num: number): HTMLElement => $(self[num]);         // 更新方法 2021/08/31
@@ -131,7 +131,7 @@ const $: any = (function (el) {
     };
     $.createDomText = (text: string): Text => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj: { [key: string]: any }, method: string): any[] | void => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
-    $.objManager = (obj: { [key: string]: any }, action: string | undefined, key: string | undefined, value: any): { [key: string]: any } | void => { // 更新方法 2021/10/21
+    $.objManager = (obj: { [key: string]: any }, action: string, key: string, value: any): { [key: string]: any } | void => { // 更新方法 2021/10/21
 
         //#region 參數設定
         /**
@@ -190,17 +190,14 @@ const $: any = (function (el) {
          *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          *   toDateFullNumber <= toDateFullNumber 將當前格式化時間改為數字，可以用於排序上，可選參數
          * }
-         * @returns {string}
+         * @returns {string | number}
          */
         //#endregion
 
         if (!('formatDate' in format || 'formatType' in format)) {
             $.console('error', 'Please enter an object and use formatType property in the object.');
             return
-        } else if (format.formatDate !== '' && !$.includes(['date', 'time', 'full', 'toDateFullNumber'], format.formatType)) {
-            $.console('error', "Please enter format type 'date' or 'time' or 'full' or 'toDateFullNumber'.");
-            return
-        };
+        }
 
         const localCountryTime: number = ('localCountryTime' in format ? format.localCountryTime : 8) * 60 * 60 * 1000
         const dateStr: string = new Date(+new Date(format.formatDate) + localCountryTime).toJSON();
