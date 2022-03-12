@@ -1,12 +1,12 @@
-// CopyRight by Chen 2021/08 - 2022/01 Library language - javascript ver 1.3.4
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.5
 // Work Environment Javascript ES6 or latest
-const $ = (function(el) {
+const $ = ((el) => {
     const $ = target => {
         let self = el.call(el, target) || target;
         self.texts = (txt) => txt === undefined ? self.textContent : self.textContent = txt;
         self.html = (dom) => dom === undefined ? self.innerHTML : self.innerHTML = dom;
-        self.addClass = (classText) => self.classList.add(classText);
-        self.removeClass = (classTxt) => self.classList.remove(classTxt);
+        self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12
+        self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self;} // 更新方法 2022/03/12
         self.toggleClass = (classText) => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType, fn) => { self[["on",eventType].join("")] = t => fn.call(self,t); }; // 更新方法 2021/09/20
         self.listener = (eventType, fn) => self.addEventListener(eventType, fn);
@@ -80,6 +80,8 @@ const $ = (function(el) {
     $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
     $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
     $.filter = (item, fn) => item.filter((items) => fn.call(item, items));
+    $.find = (item,fn) => item.find(item => fn.call(item,items)) // 更新方法 2022/03/12
+    $.reduce = (item,fn) => item.reduce((a,b) => fn.call(item,a,b)) // 更新方法 2022/03/12
     $.sort = (item,fn) => item.sort((a,b) => fn.call(item,a,b))
     $.indexOf = (item, x) => item.indexOf(x);
     $.includes = (item, x) => item.includes(x);
@@ -96,14 +98,17 @@ const $ = (function(el) {
             $.console('error',`Convert value can't be object when use convert type ${type}.`);
             return
         }
-        return {
+
+        const returnItem = {
             string: String(val),
             number: parseInt(val),
             float: parseFloat(val),
             boolean: Boolean(val),
             json: type === 'json' && JSON.parse(val),
             stringify: type === 'stringify' && JSON.stringify(val),
-        }[type];
+        }
+
+        return returnItem[type];
     }
     $.createDom = (tag,props) => { // 更新方法 2021/09/12
         const el = document.createElement(tag);
@@ -228,8 +233,8 @@ const $ = (function(el) {
         //#endregion
 
         let resError = undefined;
-        let settings = {};
-        let { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams;
+        const settings = {};
+        const { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams;
 
         settings.method = method;
         settings.url = url;
@@ -248,7 +253,7 @@ const $ = (function(el) {
             settings.body = $.convert(data, 'stringify');
         };
 
-        if(beforePost !== undefined){
+        if (beforePost !== undefined){
             beforePost.call(beforePost);
         };
         
@@ -263,7 +268,7 @@ const $ = (function(el) {
         };
 
         try {
-            let res = await fetch(url, settings);
+            const res = await fetch(url, settings);
             if (res.status === 200) {
                 res.json().then(resItem => successFn.call(successFn,resItem));
             }
@@ -278,7 +283,7 @@ const $ = (function(el) {
     };
 
     return $;
-}((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el))); // 更新元素指向 2021/08/31
+})((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/08/31
 
 Date.prototype.calculateDay = (format) => { 
     // 更新方法內容與回傳內容 2021/09/22
