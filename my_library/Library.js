@@ -1,12 +1,12 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.5
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.6
 // Work Environment Javascript ES6 or latest
 const $ = ((el) => {
     const $ = target => {
         let self = el.call(el, target) || target;
         self.texts = (txt) => txt === undefined ? self.textContent : self.textContent = txt;
         self.html = (dom) => dom === undefined ? self.innerHTML : self.innerHTML = dom;
-        self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12
-        self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self;} // 更新方法 2022/03/12
+        self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
+        self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText) => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType, fn) => { self[["on",eventType].join("")] = t => fn.call(self,t); }; // 更新方法 2021/09/20
         self.listener = (eventType, fn) => self.addEventListener(eventType, fn);
@@ -24,7 +24,9 @@ const $ = ((el) => {
         self.removeChildDom = () => $(self).replaceChildren();                                         // 更新方法 2021/10/25
         self.appendDomText = (el) => $(self).appendChild(el);                                          // 更新方法 2021/09/12
         self.easyAppendDom = (orderBy,domStr) => $(self).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);    // 更新方法 2021/11/25
-        self.styles = (method,cssType, cssParameter) => { // 更新方法 2021/10/26
+        self.styles = (method,cssType, cssParameter) => { 
+            // 更新方法 2021/10/26
+            // 更新方法 2022/03/12 變形為可鏈式寫法
             if(!$.includes(['set','remove'],method)){ 
                 $.console('error',"First parameter method must use string and keyword is 'set' or 'remove'."); 
                 return; 
@@ -90,6 +92,17 @@ const $ = ((el) => {
     $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
+    $.createArray = ({ type,item },repack) => {
+        if(type === 'fake'){
+            if('random' in item && $.typeOf(item.random,'Number') && repack !== undefined && $.typeOf(repack,'Function')){
+                return Array.from({ length:item.random },(_,items) => repack.call(repack,items))
+            } else {
+                $.console('error','item property must have random in object and radom type must be number,with call back function in secode parameters.')
+            }
+        } else if (type === 'new' && !('random' in item)){
+            return Array.from(item)
+        }
+    }
     $.convert = (val,type) => { // 更新方法 2021/10/22
         if(val === undefined || type === undefined || !$.includes(['string','number','float','boolean','json','stringify'],type)){
             $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
@@ -215,6 +228,7 @@ const $ = ((el) => {
         data:{},
         beforePost:undefined,
         successFn:undefined,
+        excuteDone:undefined,
         errorFn:undefined
     }) => { 
         // 更新類 ajax 方法 2021/09/11
@@ -228,13 +242,13 @@ const $ = ((el) => {
          * @param {string} contentType
          * @param {Function} beforePost <= 回呼函式
          * @param {Function} successFn <= 回呼函式
+         * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
          * @param {Function} errorFn <= 回呼函式
          */
         //#endregion
 
-        let resError = undefined;
         const settings = {};
-        const { method, url,headers, contentType, data,beforePost,successFn,errorFn } = settingParams;
+        const { method, url,headers, contentType, data,beforePost,successFn,excuteDone,errorFn } = settingParams;
 
         settings.method = method;
         settings.url = url;
@@ -267,18 +281,38 @@ const $ = ((el) => {
             return
         };
 
+        // 更新 Request 成功與錯誤回傳內容 2022/03/14
         try {
-            const res = await fetch(url, settings);
-            if (res.status === 200) {
-                res.json().then(resItem => successFn.call(successFn,resItem));
+            const res = await fetch(url, settings).then(res => res);
+
+            if (res.status >= 200 && res.status < 300) {
+                res.json().then(resItem => successFn.call(successFn,{
+                    bodyUsed: res.bodyUsed,
+                    headers: res.headers,
+                    ok: res.ok,
+                    redirected: res.redirected,
+                    status: res.status,
+                    statusText: res.status,
+                    type: res.type,
+                    url:res.url,
+                    data:resItem
+                })).then(() => excuteDone && excuteDone.call(excuteDone));
             }
             else {
-                resError = res
-                throw new Error();
+                throw new Error(JSON.stringify({
+                    bodyUsed: res.bodyUsed,
+                    headers: res.headers,
+                    ok: res.ok,
+                    redirected: res.redirected,
+                    status: res.status,
+                    statusText: res.status,
+                    type: res.type,
+                    url:res.url,
+                }));
             };
         }
         catch (err) {
-            errorFn.call(errorFn,resError);
+            errorFn.call(errorFn,JSON.parse(err.message));
         };
     };
 

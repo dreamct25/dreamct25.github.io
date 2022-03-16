@@ -1,22 +1,22 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.5
-// Work Environment Typescript v4.5.5、eslint v6.7.2
+// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.6
+// Work Environment Typescript v4.5.5、ESlint v6.7.2
 //
 // Use in node js
 // export default $
 const $: any = ((el) => {
     const $ = (target: any): any => {
         const self: any = el.call(el, target) || target;
-        self.texts = (txt?: string): string | void => txt === undefined ? self.textContent : self.textContent = txt;
-        self.html = (dom?: string): string | void => dom === undefined ? self.innerHTML : self.innerHTML = dom;
-        self.addClass = (classText: string): any => { self.classList.add(classText); return self } // 更新方法 2022/03/12
-        self.removeClass = (classText: string): any => { self.classList.remove(classText); return self } // 更新方法 2022/03/12
+        self.texts = (txt?: string): string | void => txt ? self.textContent : self.textContent = txt;
+        self.html = (dom?: string): string | void => dom ? self.innerHTML : self.innerHTML = dom;
+        self.addClass = (classText: string): any => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
+        self.removeClass = (classText: string): any => { self.classList.remove(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText: string): void => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType: string, fn: (self: any, t: Event) => void): void => { self[["on", eventType].join("")] = (t: Event) => fn.call(fn, self, t); }; // 更新方法 2021/09/20
         self.listener = (eventType: string, fn: () => void): void => self.addEventListener(eventType, fn);
         self.removeListener = (eventType: string, fn: () => void): void => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
-        self.val = (valTemp?: string): string | void => valTemp === undefined ? self.value : self.value = valTemp;
-        self.attr = (props: string, val?: any): (string | number | void) => val === undefined ? self.getAttribute(props) : self.setAttribute(props, val);
-        self.props = (props: string, val?: any): any => val === undefined ? self[props] : self[props] = val;
+        self.val = (valTemp?: string): string | void => valTemp ? self.value : self.value = valTemp;
+        self.attr = (props: string, val?: any): (string | number | void) => val ? self.getAttribute(props) : self.setAttribute(props, val);
+        self.props = (props: string, val?: any): any => val ? self[props] : self[props] = val;
         self.sibling = (num: number): HTMLElement => $(self[num]);         // 更新方法 2021/08/31
         self.child = (num: number): HTMLElement => $(self.children[num]);  // 更新方法 2021/08/31
         self.childFirst = (): HTMLElement => $(self.firstElementChild);    // 更新方法 2021/08/31
@@ -27,7 +27,9 @@ const $: any = ((el) => {
         self.removeChildDom = (): void => $(self).replaceChildren();       // 更新方法 2021/10/25
         self.appendDomText = (el: Text): void => $(self).appendChild(el);  // 更新方法 2021/09/12
         self.easyAppendDom = (orderBy: string, domStr: string): void => $(self).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr);  // 更新方法 2021/11/25
-        self.styles = (method: string, cssType: string, cssParameter: string): typeof self | undefined => { // 更新方法 2021/10/26
+        self.styles = (method: string, cssType: string, cssParameter: string): typeof self | undefined => {
+            // 更新方法 2021/10/26
+            // 更新方法 2022/03/12 變形為可鏈式寫法
             if (!$.includes(['set', 'remove'], method)) {
                 $.console('error', "First parameter method must use string and keyword is 'set' or 'remove'.");
                 return;
@@ -87,8 +89,8 @@ const $: any = ((el) => {
     $.each = (item: any[], fn: (...parameters: any[]) => void): void => item.forEach((items: any, index: number) => fn.call(item, items, index));
     $.maps = (item: any[], fn: (...parameters: any[]) => void): any[] => item.map((items: any, index: number) => fn.call(item, items, index));
     $.filter = (item: any[], fn: (...parameters: any[]) => void): { [key: string]: any }[] => item.filter((items: any) => fn.call(item, items));
-    $.find = (item:any[],fn:(...parameters:any[]) => void):any => item.find((items:any) => fn.call(item,items))  // 更新方法 2022/03/12
-    $.reduce = (item:any[],fn:(...parameters:any[]) => void): any => item.reduce((a:any,b:any) => fn.call(item,a,b)) // 更新方法 2022/03/12
+    $.find = (item: any[], fn: (...parameters: any[]) => void): any => item.find((items: any) => fn.call(item, items))  // 更新方法 2022/03/12
+    $.reduce = (item: any[], fn: (...parameters: any[]) => void): any => item.reduce((a: any, b: any) => fn.call(item, a, b)) // 更新方法 2022/03/12
     $.sort = (item: any[], fn: (...parameters: any[]) => number): any => item.sort((a: any, b: any) => fn.call(item, a, b));
     $.indexOf = (item: any, x: any): number => item.indexOf(x);
     $.includes = (item: any[], x: any): boolean => item.includes(x);
@@ -97,6 +99,17 @@ const $: any = ((el) => {
     $.typeOf = (item: any, classType: any): string | boolean => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type: string, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert(item, 'stringify')); // 更新方法 2021/11/29
+    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): any[] => {
+        if (type === 'fake') {
+            if ('random' in item && $.typeOf(item.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
+                return Array.from({ length: item.random }, (_, items) => repack.call(repack, items))
+            } else {
+                $.console('error', 'item property must have random in object and radom type must be number,with call back function in secode parameters.')
+            }
+        } else if (type === 'new' && !('random' in item)) {
+            return Array.from(item)
+        }
+    }
     $.convert = (val: any, type: string): any => { // 更新方法 2021/10/22
         if (val === undefined || type === undefined) {
             $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
@@ -230,6 +243,7 @@ const $: any = ((el) => {
         data?: { [key: string]: any },
         beforePost?: () => void,
         successFn: (data: any) => void,
+        excuteDone?: () => void,
         errorFn: (err: any) => void
     }): Promise<void> => {
         // 更新類 ajax 方法 2021/09/11
@@ -243,13 +257,13 @@ const $: any = ((el) => {
          * @param {string} contentType
          * @param {Function} beforePost <= 回調函式
          * @param {Function} successFn <= 回調函式
+         * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
          * @param {Function} errorFn <= 回調函式
          */
         //#endregion
 
-        let resError: { [key: string]: any } | undefined;
         const settings: { [key: string]: any } = {};
-        const { method, url, headers, contentType, data, beforePost, successFn, errorFn } = settingParams;
+        const { method, url, headers, contentType, data, beforePost, successFn, excuteDone, errorFn } = settingParams;
 
         settings.method = method;
         settings.url = url;
@@ -282,18 +296,38 @@ const $: any = ((el) => {
             return
         }
 
+        // 更新 Request 成功與錯誤回傳內容 2022/03/14
         try {
             const res: Response = await fetch(url, settings);
-            if (res.status === 200) {
-                res.json().then((resItem: { [key: string]: any }) => successFn.call(successFn, resItem));
+
+            if (res.status >= 200 && res.status < 300) {
+                res.json().then((resItem: { [key: string]: any }) => successFn.call(successFn, {
+                    bodyUsed: res.bodyUsed,
+                    headers: res.headers,
+                    ok: res.ok,
+                    redirected: res.redirected,
+                    status: res.status,
+                    statusText: res.status,
+                    type: res.type,
+                    url: res.url,
+                    data: resItem
+                })).then(() => excuteDone && excuteDone.call(excuteDone));
             }
             else {
-                resError = res;
-                throw new Error();
-            }
+                throw new Error(JSON.stringify({
+                    bodyUsed: res.bodyUsed,
+                    headers: res.headers,
+                    ok: res.ok,
+                    redirected: res.redirected,
+                    status: res.status,
+                    statusText: res.status,
+                    type: res.type,
+                    url: res.url,
+                }));
+            };
         }
-        catch (err: any) {
-            errorFn.call(errorFn, resError)
+        catch (err: { message: string } | any) {
+            errorFn.call(errorFn, JSON.parse(err.message))
         }
     };
 
