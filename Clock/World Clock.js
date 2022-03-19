@@ -1,22 +1,12 @@
 let selectTemp = []
 let timer = undefined
-let weekendTextItems = []
-
-$.fetch({
-    method:'get',
-    url:'https://worldtimeapi.org/api/timezone',
-    successFn:(data) => initalRightBarItem(data),
-    errorFn:(err) => $.console('log',err)
-})
 
 const initalRightBarItem = data => {
     let areaBlock = []
     const filterColumnCondition = ['CET','CST6CDT','EET','EST','EST5EDT','Etc','HST','MET','MST','MST7MDT','PST8PDT','WET']
     
     $.each(data,item => 
-        $.findIndexOfObj(areaBlock,items => items.area === item.split('/')[0]) === -1 && 
-        !$.includes(filterColumnCondition,item.split('/')[0]) && 
-        areaBlock.push({ area:item.split('/')[0],city:[] })
+        $.findIndexOfObj(areaBlock,items => items.area === item.split('/')[0]) === -1 && !$.includes(filterColumnCondition,item.split('/')[0]) && areaBlock.push({ area:item.split('/')[0],city:[] })
     )
 
     $.each(areaBlock,itemI => $.each(data,itemII => itemI.area === itemII.split('/')[0] && itemI.city.push(itemII)))
@@ -88,31 +78,51 @@ const selectCity = (listIndex,optionIndex,path) => {
         method:'get',
         url:`https://worldtimeapi.org/api/timezone/${path}`,
         beforePost:()=> $('.loading-outer').addClass('active'),
-        successFn:(data) => {
-            timeSet(data.raw_offset,path.split('/')[path.split('/').length - 1].replace(/_/g,' '))
-            setTimeout(() => $('.loading-outer').removeClass('active'),1500)
-        },
-        errorFn:(err) => $.console('log',err)
+        successFn:({ data }) => timeSet(data.raw_offset,path.split('/')[path.split('/').length - 1].replace(/_/g,' ')),
+        excuteDone:() => setTimeout(() => $('.loading-outer').removeClass('active'),1500),
+        errorFn:(err) => $.console('log',err.statusText)
     })
 }
 
 // 設定 timeSet 函式
-const timeSet = (areaTime = 8 * 60 * 60,city = 'Taipei') => {
+function timeSet(areaTime = 8 * 60 * 60,city = 'Taipei') {
+    const weekendTextItems = [{
+        weekNum: 1,
+        weekName: 'Monday'
+    }, {
+        weekNum: 2,
+        weekName: 'Tuesday'
+    }, {
+        weekNum: 3,
+        weekName: 'Wednesday'
+    }, {
+        weekNum: 4,
+        weekName: 'Thursday'
+    }, {
+        weekNum: 5,
+        weekName: 'Friday'
+    }, {
+        weekNum: 6,
+        weekName: 'Saturday'
+    }, {
+        weekNum: 0,
+        weekName: 'Sunday'
+    }]
 
     clearInterval(timer)
 
     timer = setInterval(() => {
         // 設定時間物件
-        const [year,month,date,hour,minute,seconds] = new Date(+new Date() + (areaTime * 1000)).toJSON().replace(/T/g,'-').replace(/:/g,'-').split('.')[0].split('-')
+        const [year,month,date,hour,minute,seconds] = $.formatDateTime({ formatDate:+new Date(),formatType:'yyyy-MM-dd-HH-mm-ss',localCountryTime:areaTime / 60 / 60 }).split('-')
 
         // 圓 360 度每分鐘 60 秒，每秒為 6 度 
-        let secondsDeg = seconds * 6
+        const secondsDeg = seconds * 6
 
         // 圓 360 度每分鐘 60 秒，每分鐘為 6 度 + 每分鐘 60 秒/每秒 6 度 = 12 度
-        let minuteDeg = minute * 6 + seconds * 6 / 60
+        const minuteDeg = minute * 6 + seconds * 6 / 60
 
         // 圓 360 度每小時鐘 60 分鐘，每小時為 12 度 + 每小時 60 分鐘每分鐘 2 度 = 14 度
-        let hourDeg = hour * 30 + minute * 30 / 60
+        const hourDeg = hour * 30 + minute * 30 / 60
 
         // 設定旋轉角度與軸心 icon 隨指針旋轉的每秒度數
         $('.seconds').styles('set','transform',`rotate(${secondsDeg}deg)`)
@@ -130,13 +140,20 @@ const timeSet = (areaTime = 8 * 60 * 60,city = 'Taipei') => {
 
     },1000)
 }
-// 啟用 timeSet 函式
-timeSet();
+
+$(document).useWillMount(() => {
+    $.fetch({
+        method:'get',
+        url:'https://worldtimeapi.org/api/timezone',
+        beforePost:()=> $('.loading-outer').addClass('active'),
+        successFn:({ data }) => initalRightBarItem(data),
+        excuteDone:() => setTimeout(() => $('.loading-outer').removeClass('active'),1500),
+        errorFn:(err) => $.console('log',err.statusText)
+    })
+})
 
 // 視窗載入時啟用載入動畫
-(()=>{
-    const weekendText = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
-    weekendTextItems = $.maps(weekendText,(text,index) => ({ weekNum: index,weekName: text }))
+$(document).useMounted(() => {
     $('.title').addClass('title-in')
     setTimeout(() => $('.clock-outer').addClass('clock-outer-in'), 1000);
     setTimeout(() => {
@@ -144,4 +161,7 @@ timeSet();
         $('.time-show-day').addClass('time-show-day-in')
         $('.time-show').addClass('time-show-in')
     }, 1500);
-})()
+
+    // 啟用 timeSet 函式
+    timeSet();
+})

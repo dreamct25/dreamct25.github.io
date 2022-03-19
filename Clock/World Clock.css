@@ -12,15 +12,9 @@ html .wrap {
 }
 
 html .wrap .header {
-    margin: 40px;
+    margin-top: 10px;
     font-style: italic;
-    font-size: 40px;
-}
-
-@media screen and (max-width:415px) {
-    html .wrap .header {
-        margin: 30px 0 15px 0px;
-    }
+    font-size: 22px;
 }
 
 html .wrap .header .title {
@@ -274,9 +268,9 @@ html .wrap .main .show-text-group .time-show.time-show-in {
 }
 
 html .wrap .main .select-group{
-    width: 110px;
+    width: 100px;
     position: fixed;
-    bottom:-333px;
+    bottom:-353px;
     right:0;
     color:white;
     text-align: center;
@@ -285,7 +279,7 @@ html .wrap .main .select-group{
 
 @media screen and (max-width: 768px) {
     html .wrap .main .select-group{
-        bottom:-352px;
+        bottom:-353px;
     }
 }
 
@@ -298,17 +292,16 @@ html .wrap .main .select-group .select-outer{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 5px;
     box-shadow: 0 0 3px 0 rgba(255, 255, 255, .7);
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    background-color: rgba(0, 0, 0, .2);
 }
 html .wrap .main .select-group .toggle-bar-btn{
     margin:0 5px;
     border-radius: 5px;
-    padding: 5px 3px 8px 10px;
+    padding: 5px 0 8px 0;
     cursor: pointer;
     user-select: none;
     backdrop-filter: blur(10px);
@@ -317,7 +310,6 @@ html .wrap .main .select-group .toggle-bar-btn{
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, .2);
 }
 html .wrap .main .select-group .toggle-bar-btn .arrow-icon{
     font-size: 20px;
@@ -339,8 +331,7 @@ html .wrap .main .select-group .select-outer .select-list{
     border-radius: 0 0 5px 5px;
     overflow-x:hidden;
     overflow-y: scroll;
-    height: 200px;
-    margin-bottom: -200px;
+    height: 0px;
     transition: .7s ease;
 }
 html .wrap .main .select-group .select-outer .select-list::-webkit-scrollbar {
@@ -351,7 +342,7 @@ html .wrap .main .select-group .select-outer .select-list::-webkit-scrollbar-thu
   background-color: rgba(255, 255, 255, 0.7);
 }
 html .wrap .main .select-group .select-outer .select-list.list-toggle{
-    margin-bottom: 0px;
+    height: 200px;
 }
 html .wrap .main .select-group .select-outer .select-list .options{
     cursor: pointer;
