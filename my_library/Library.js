@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.6
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.7
 // Work Environment Javascript ES6 or latest
 const $ = ((el) => {
     const $ = target => {
@@ -8,7 +8,7 @@ const $ = ((el) => {
         self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
         self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText) => self.classList.toggle(classText); // 更新方法 2021/09/20
-        self.on = (eventType, fn) => { self[["on",eventType].join("")] = t => fn.call(self,t); }; // 更新方法 2021/09/20
+        self.on = (eventType, fn) => { self[["on",eventType].join("")] = () => fn.call(fn,self); }; // 更新方法 2021/09/20
         self.listener = (eventType, fn) => self.addEventListener(eventType, fn);
         self.removeListener = (eventType,fn) => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
         self.val = (valTemp) => valTemp === undefined ? self.value : self.value = valTemp;
@@ -76,8 +76,34 @@ const $ = ((el) => {
                 currentTimeStamp < scrollSetting[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = scrollSetting[keyI];
             })();
         }
+
+        self.useWillMount = willMountCallBack => {
+            if(typeof self === 'object'){
+                if($.typeOf(self,'HTMLDocument')){
+                    $(self).listener('readystatechange',({ target }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
+                } else {
+                    $.console('error','UseWillMount hook just use when selector document.')
+                }
+            } else {
+                $.console('error','UseWillMount hook just use when selector document.')
+            }
+        } 
+
+        self.useMounted = useMountedCallBack => {
+            if(typeof self === 'object'){
+                if($.typeOf(self,'HTMLDocument')){
+                    $(self).listener('readystatechange',({ target }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
+                } else {
+                    $.console('error','UseMounted Hook just use when selector document.')
+                }
+            } else {
+                $.console('error','UseMounted Hook just use when selector document.')
+            }
+        }
+
         return self;
     };
+    
     // public function
     $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
     $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
@@ -214,10 +240,16 @@ const $ = ((el) => {
         const [year,month,date,hour,minute,second] = dateSplit;
 
         if('toDateFullNumber' in format){
-            return format.toDateFullNumber ? Number(dateSplit.join("")) : format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
+            return Number(dateSplit.join(""))
         }
 
-        return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
+        if(format.formatType.match('tt')){
+            const currentAMorPM = $.convert(hour,'number') > 11 ? 'PM' : 'AM'
+            const transHour = ($.convert(hour,'number') - 12) < 10 ? `0${$.convert(hour,'number') - 12}` : $.convert($.convert(hour,'number') - 12,'string')
+            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,transHour).replace(/mm/g,minute).replace(/ss/g,second).replace(/tt/g,currentAMorPM)
+        } else {
+            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
+        }
     }
 
     $.fetch = async (settingParams = {

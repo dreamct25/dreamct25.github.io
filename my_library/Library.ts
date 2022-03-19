@@ -1,5 +1,5 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.6
-// Work Environment Typescript v4.5.5、ESlint v6.7.2
+// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.7
+// Work Environment Typescript v4.5.5、eslint v6.7.2
 //
 // Use in node js
 // export default $
@@ -83,6 +83,31 @@ const $: any = ((el) => {
                 currentTimeStamp < (scrollSetting as { [key: string]: any })[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as { [key: string]: any })[keyI];
             })();
         }
+
+        self.useWillMount = (willMountCallBack:(target:HTMLDocument) => void):void => { // 更新方法 2022/03/19
+            if(typeof self === 'object'){
+                if($.typeOf(self,'HTMLDocument')){
+                    $(self).listener('readystatechange',({ target }:{ target:HTMLDocument}) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
+                } else {
+                    $.console('error','UseWillMount hook just use when selector document.')
+                }
+            } else {
+                $.console('error','UseWillMount hook just use when selector document.')
+            }
+        } 
+
+        self.useMounted = (useMountedCallBack:(target:HTMLDocument) => void):void => { // 更新方法 2022/03/19
+            if(typeof self === 'object'){
+                if($.typeOf(self,'HTMLDocument')){
+                    $(self).listener('readystatechange',({ target }:{ target:HTMLDocument}) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
+                } else {
+                    $.console('error','UseMounted Hook just use when selector document.')
+                }
+            } else {
+                $.console('error','UseMounted Hook just use when selector document.')
+            }
+        }
+
         return self;
     };
 
@@ -98,8 +123,8 @@ const $: any = ((el) => {
     $.sum = (item: any, fn: (...parameters: any[]) => void) => item.reduce((a: any, b: any) => fn.call(item, a, b));
     $.typeOf = (item: any, classType: any): string | boolean => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type: string, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
-    $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert(item, 'stringify')); // 更新方法 2021/11/29
-    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): any[] => {
+    $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
+    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => {
         if (type === 'fake') {
             if ('random' in item && $.typeOf(item.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
                 return Array.from({ length: item.random }, (_, items) => repack.call(repack, items))
@@ -110,7 +135,9 @@ const $: any = ((el) => {
             return Array.from(item)
         }
     }
-    $.convert = (val: any, type: string): any => { // 更新方法 2021/10/22
+    $.convert = <T>(val: any, type: string): (T | undefined) => { 
+        // 更新方法 2021/10/22
+        // 更新泛型回傳值 2022/03/19
         if (val === undefined || type === undefined) {
             $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
             return
@@ -204,7 +231,7 @@ const $: any = ((el) => {
         }
     }
 
-    $.formatDateTime = (format: { formatDate: string | Date, formatType: string, localCountryTime?: number, toDateFullNumber?: boolean }): string | number | undefined => { // 更新方法 2021/12/01
+    $.formatDateTime = (format: { formatDate: string | Date, formatType: string, localCountryTime?: number, toDateFullNumber?: boolean }): (string | number | undefined) => { // 更新方法 2021/12/01
         //#region 參數設定
         /**
          * @param {object}
@@ -229,10 +256,18 @@ const $: any = ((el) => {
         const [year, month, date, hour, minute, second] = dateSplit;
 
         if ('toDateFullNumber' in format) {
-            return format.toDateFullNumber ? Number(dateSplit.join("")) : format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
+            return $.convert<number>(dateSplit.join(""),'number')
         }
 
-        return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
+        // 更新是否格式化 AM 或 PM 2022/03/19
+
+        if(format.formatType.match('tt')){
+            const currentAMorPM:string = $.convert<number>(hour,'number')! > 11 ? 'PM' : 'AM'
+            const transHour:string = ($.convert<number>(hour,'number')! - 12) < 10 ? `0${$.convert<number>(hour,'number')! - 12}` : $.convert<string>($.convert<number>(hour,'number')! - 12,'string')!
+            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,transHour).replace(/mm/g,minute).replace(/ss/g,second).replace(/tt/g,currentAMorPM)
+        } else {
+            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
+        }
     }
 
     $.fetch = async (settingParams: {
@@ -274,12 +309,12 @@ const $: any = ((el) => {
 
         if (data !== undefined) {
             settings.headers = { "Content-Type": contentType };
-            settings.body = $.convert(data, 'stringify');
+            settings.body = $.convert<string>(data, 'stringify');
         }
 
         if (headers !== undefined && data !== undefined) {
             settings.headers = { ...headers };
-            settings.body = $.convert(data, 'stringify');
+            settings.body = $.convert<string>(data, 'stringify');
         }
 
         if (beforePost !== undefined) {
