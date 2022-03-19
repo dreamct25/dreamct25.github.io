@@ -1,4 +1,4 @@
-let obj = {}
+const obj = {}
 obj.jsonData = [];
 obj.jsonBlockData = [];
 obj.filterWeatherState = []
@@ -26,44 +26,37 @@ const getData = async () => {
         await $.fetch({
             method:"get",
             url:`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-093/?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B&locationId=F-D0047-${orders}${x}`,
-            beforePost:() => {},
-            successFn:(item) => {
-                $.each(item.records.locations,items => {
-                    let arrayTemp = []
-                    $.each(items.location,itemL => arrayTemp.push({
+            successFn:({ data }) => {
+                $.each(data.records.locations,items => {
+                    const arrayTemp = $.maps(items.location,itemL => ({
                         blockGeoCode: itemL.geocode,
                         blockName: itemL.locationName,
                         blockLat: itemL.lat,
                         blockLon: itemL.lon,
                         blockElement: itemL.weatherElement
                     }))
-                    arrayTemp = arrayTemp.sort((a, b) => a.blockGeoCode - b.blockGeoCode)
+
                     obj.jsonBlockData.push({
                         locationsName: items.locationsName,
-                        block: arrayTemp
+                        block: $.sort(arrayTemp,(a, b) => a.blockGeoCode - b.blockGeoCode)
                     })
                 })
             },
-            errorFn:err => alert(err)
+            errorFn:err => alert(err.statusText)
         })
     }
 
     await $.fetch({
         method:"get",
         url:"https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWB-6BEED9AA-24B5-4569-BB51-FC0BCFA7595B",
-        beforePost:() => {},
-        successFn: (item) => {
-            let jsonDataTemp = []
-            $.each(item.records.locations[0].location,items => jsonDataTemp = [...jsonDataTemp,items])
+        successFn: ({ data }) => {
+            const jsonDataTemp = $.maps(data.records.locations[0].location,items => items)
             cityType(jsonDataTemp)
         },
-        errorFn:err => alert(err)
+        excuteDone:() => loadingAnimate(false),
+        errorFn:err => alert(err.statusText)
     })
-
-    loadingAnimate(false)
 }
-
-getData()
 
 const cityType = arry => {
     let arrySort = []
@@ -86,20 +79,16 @@ const scrolls = () => $('html').scrollToTop({ scrollTop:0,duration:3000 })
 
 const changeMoring = () => {
     $(".background-text").texts('Moring')
-    $(".header").addClass("header-moring")
-    $(".header").removeClass("header-night")
-    $('html').removeClass('night')
-    $('html').addClass('moring')
+    $(".header").addClass("header-moring").removeClass("header-night")
+    $('html').removeClass('night').addClass('moring')
     $(".background-controller").removeClass('background-controller-toggle')
     $('.circle').removeClass('circle-toggle')
 }
 
 const changeNight = () => {
     $(".background-text").texts('Night')
-    $(".header").addClass("header-night")
-    $(".header").removeClass("header-moring")
-    $('html').addClass('night')
-    $('html').removeClass('moring')
+    $(".header").addClass("header-night").removeClass("header-moring")
+    $('html').addClass('night').removeClass('moring')
     $(".background-controller").addClass('background-controller-toggle')
     $('.circle').addClass('circle-toggle')
 }
@@ -110,7 +99,7 @@ const backgroundChange = currentVal => {
          new Date().getHours() >= 6 &&  new Date().getHours() <= 17 ? changeMoring() : changeNight()
         return
     } else {
-        let haveMoringClass = $.indexOf($('html').attr('class').split(" "),"moring")
+        const haveMoringClass = $.indexOf($('html').attr('class').split(" "),"moring")
         haveMoringClass != -1 ? changeNight() : changeMoring()
     }
 }
@@ -125,8 +114,8 @@ const switchTopBar = () => {
 
 // 畫面時間內容設定
 const time = () => {
-    $(".date").texts(new Date().getFullDateTime({ formatType:'date' }))
-    $(".time").texts(new Date().getFullDateTime({ formatType:'time' }))
+    $(".date").texts($.formatDateTime({ formatDate:+new Date(),formatType:'yyyy-MM-dd' }))
+    $(".time").texts($.formatDateTime({ formatDate:+new Date(),formatType:'HH:mm:ss' }))
 }
 
 const selectCityPart = element => {
@@ -409,8 +398,8 @@ const chooseAnimate = (array, element) => {
 }
 
 const selectAnimate = element => {
-    let currentElement = element.target == undefined ? ".current-select" : element.target
-    let haveClass = $.indexOf($(currentElement).attr('class'),"current-select-toggle")
+    const currentElement = element.target == undefined ? ".current-select" : element.target
+    const haveClass = $.indexOf($(currentElement).attr('class'),"current-select-toggle")
     if (haveClass == -1) {
         $(currentElement).addClass("current-select-toggle")
         $(".select-group").addClass("select-group-action")
@@ -816,20 +805,24 @@ const returnOptions = ({ target }) => {
     },2010)
 }
 
-setInterval(time, 1000)
+$(document).useWillMount(() => getData())
 
-backgroundChange('global')
+$(document).useMounted(() => {
+    setInterval(time, 1000)
 
-$(".background-controller").listener("click",backgroundChange.bind(this,'controller'))
-
-$(".weathers-outer").styles("set","margin-top",`-${window.innerHeight}px`)
-
-$(".current-select").listener("click",selectAnimate)
-
-$(".other-block").listener("click",selectCity)
-
-$(".go-back-options").listener("click",returnOptions)
-
-$('.go-top').listener('click', scrolls)
-
-$(window).listener('scroll', switchTopBar)
+    backgroundChange('global')
+    
+    $(".background-controller").listener("click",backgroundChange.bind(this,'controller'))
+    
+    $(".weathers-outer").styles("set","margin-top",`-${window.innerHeight}px`)
+    
+    $(".current-select").listener("click",selectAnimate)
+    
+    $(".other-block").listener("click",selectCity)
+    
+    $(".go-back-options").listener("click",returnOptions)
+    
+    $('.go-top').listener('click', scrolls)
+    
+    $(window).listener('scroll', switchTopBar)
+})
