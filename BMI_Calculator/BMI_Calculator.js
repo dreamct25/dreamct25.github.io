@@ -1,16 +1,14 @@
 'use-strick'
 
 let vals = {}
-const $All = el => document.querySelectorAll(el)
-const dataSet = (action,item,obj) => action === "get" ? (JSON.parse(localStorage.getItem(item)) || []) : localStorage.setItem(item,JSON.stringify(obj))
-let data = dataSet("get","data")
+let data = $.localData("get","data")
 
 const countCenter = ({ target:{ className,value } }) => {
     vals[className] = Number(value)
 
     vals.check = false
 
-    let { height,weight } = vals
+    const { height,weight } = vals
 
     const ruleItem = [{
         rule:(vals.height === undefined || vals.weight === undefined) && 0,
@@ -28,7 +26,7 @@ const countCenter = ({ target:{ className,value } }) => {
         ruleTxt:"體重區間錯誤"
     }]
 
-    let rulePos = $.findIndexOfObj(ruleItem,({ rule }) => typeof(rule) !== "boolean")
+    const rulePos = $.findIndexOfObj(ruleItem,({ rule }) => typeof(rule) !== "boolean")
     
     vals.check = rulePos === -1
 
@@ -44,7 +42,7 @@ const countCenter = ({ target:{ className,value } }) => {
         $(".weight-check").texts("格式正確")
     }
 
-    let heightCount = (height / 100) * (height / 100);
+    const heightCount = (height / 100) * (height / 100);
 
     vals.bmi = Math.floor(weight / heightCount);
 }
@@ -76,31 +74,31 @@ const makeSideText = bmiParmas => {
         rule:bmiParmas >= 35 && 5
     }]
 
-    let rulePos = $.findIndexOfObj(textGroupItem,({ rule }) => typeof(rule) !== "boolean")
+    const rulePos = $.findIndexOfObj(textGroupItem,({ rule }) => typeof(rule) !== "boolean")
 
     return textGroupItem[rulePos]
 }
 
 const addItem = () => {
-    let { height,weight,bmi,check } = vals
+    const { height,weight,bmi,check } = vals
 
     if(!check) return
 
-    let { refTxt,colorClassTag } = makeSideTexts(bmi)
+    const { refTxt,colorClassTag } = makeSideText(bmi)
 
-    let collectObj = {
+    const collectObj = {
         refTxt:refTxt,
         colorClassTag:colorClassTag,
         height:height,
         weight:weight,
         bmi:bmi,
-        timesTemp:new Date().getFullDateTime("full")
+        timesTemp:$.formatDateTime({ formatDate:+new Date(),formatType:'yyyy-MM-dd HH:mm:ss' })
     }
 
     data = [collectObj,...data]
 
-    dataSet("set","data",data)
-    data = dataSet("get","data")
+    $.localData("set","data",data)
+
     renderItem(data)
 
     $(".height").val("")
@@ -140,20 +138,20 @@ const renderItem = dataCath => {
                             <div class="row">
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}>BMI ＜ 18.5 過輕呦</span>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "理想型" ? "class='math-val'":""}>18.5 ≦ BMI ＜ 24 理想型</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "過輕呦" ? "class='math-val'":""}>BMI ＜ 18.5 過輕呦</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "理想型" ? "class='math-val'":""}>18.5 ≦ BMI ＜ 24 理想型</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}>24 ≦ BMI ＜ 27 開始胖</span>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}>27 ≦ BMI ＜ 30 輕度胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "開始胖" ? "class='math-val'":""}>24 ≦ BMI ＜ 27 開始胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "輕度胖" ? "class='math-val'":""}>27 ≦ BMI ＜ 30 輕度胖</span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}>30 ≦ BMI ＜ 35 中度胖</span>
-                                        <span ${makeSideTexts(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}>BMI ≧ 35 幸福胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "中度胖" ? "class='math-val'":""}>30 ≦ BMI ＜ 35 中度胖</span>
+                                        <span ${makeSideText(item.bmi).refTxt === "幸福胖" ? "class='math-val'":""}>BMI ≧ 35 幸福胖</span>
                                     </div>
                                 </div>
                             </div>
@@ -191,39 +189,49 @@ const renderItem = dataCath => {
 }
 
 const deleteItem = (time,currentIndex) => {
-    let index = $.findIndexOfObj(data,({timesTemp}) => timesTemp === time)
-    $($All(".list-item")[currentIndex]).addClass("delete-active")
-    setTimeout(()=>$($All(".list-item")[currentIndex]).styles("margin",`-${$All(".list-item")[currentIndex].offsetHeight / 2}px 0`),650)
+    const index = $.findIndexOfObj(data,({timesTemp}) => timesTemp === time)
+    if(data.length > 1){
+        $($(".list-item")[currentIndex]).addClass("delete-active")
+        setTimeout(()=>$($(".list-item")[currentIndex]).styles("set","margin",`-${$($(".list-item")[currentIndex]).props("offsetHeight") / 2}px 0`),650)
+    } else {
+        $(".list-item").addClass("delete-active")
+        setTimeout(()=>$(".list-item").styles("set","margin",`-${$(".list-item").props("offsetHeight") / 2}px 0`),650)
+    }
+    
     setTimeout(()=>{
         data.splice(index,1)
-        dataSet("set","data",data)
-        data = dataSet("get","data")
-        renderItem(data)
+        $.localData("set","data",data)
+        renderItem($.localData("get","data"))
     },1650)
 }
 
 const toggleDisplay = ({ className },index) => {
-    let currentClassName = className === "ref-btn" ? ".ref-content" : ".delete-content"
-    let classNameTemp = $($All(currentClassName)[index]).attr("class")
-    let haveOtherClass = $.indexOf(classNameTemp,"active")
-    haveOtherClass === -1 ? $($All(currentClassName)[index]).addClass("active"):$($All(currentClassName)[index]).removeClass("active")
-    haveOtherClass === -1 ? $($All(`.${className}`)[index]).texts("關閉"):$($All(`.${className}`)[index]).texts(className === "ref-btn" ? "參考指標":"刪除")
+    const currentClassName = className === "ref-btn" ? ".ref-content" : ".delete-content"
+    const classNameTemp =  data.length > 1 ? $($(currentClassName)[index]).attr("class") : $(currentClassName).attr("class")
+    const haveOtherClass = $.indexOf(classNameTemp,"active")
+    if(data.length > 1){
+        haveOtherClass === -1 ? $($(currentClassName)[index]).addClass("active"):$($(currentClassName)[index]).removeClass("active")
+        haveOtherClass === -1 ? $($(`.${className}`)[index]).texts("關閉"):$($(`.${className}`)[index]).texts(className === "ref-btn" ? "參考指標":"刪除")
+    } else {
+        haveOtherClass === -1 ? $(currentClassName).addClass("active"):$(currentClassName).removeClass("active")
+        haveOtherClass === -1 ? $(`.${className}`).texts("關閉"):$(`.${className}`).texts(className === "ref-btn" ? "參考指標":"刪除")
+    }
 }
 
 const toggleData = () => {
-    let classNameTemp = $(".render-data-outer").attr("class")
-    let haveOtherClass = $.indexOf(classNameTemp,"active")
-    haveOtherClass === -1 ? $(".render-data-outer").addClass("active"):$(".render-data-outer").removeClass("active")
+    const classNameTemp = $(".render-data-outer").attr("class")
+    const haveOtherClass = $.indexOf(classNameTemp,"active")
+    $(".render-data-outer")[haveOtherClass === -1 ? 'addClass':'removeClass']("active")
 }
 
-$(".height").listener("input",countCenter);
-$(".weight").listener("input",countCenter);
-$(".add-btn").listener("click",addItem);
-$(".toggle-data-btn").listener("click",toggleData);
+$(document).useMounted(() => {
+    $(".height").listener("input",countCenter);
+    $(".weight").listener("input",countCenter);
+    $(".add-btn").listener("click",addItem);
+    $(".toggle-data-btn").listener("click",toggleData);
 
-(function start(){
     $(".title").addClass("title-active")
     setTimeout(()=>$(".input-group").addClass("input-group-active"),700)
     setTimeout(()=>$(".add-btn").addClass("add-btn-active"),1400)
     renderItem(data)
-}())
+})
