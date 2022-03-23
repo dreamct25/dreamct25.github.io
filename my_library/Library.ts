@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.7
+// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.8
 // Work Environment Typescript v4.5.5、eslint v6.7.2
 //
 // Use in node js
@@ -51,60 +51,79 @@ const $: any = ((el) => {
             }
             return cssProperty;
         };
-        self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
-            let animateScroll: any = undefined;
-            const [keyI, keyII]: string[] = Object.keys(scrollSetting);
-            const startPos: number = self[keyI];
-            const changePos: number = (scrollSetting as { [key: string]: any })[keyI] - startPos;
-            const startTimeStamp: number = +new Date();
+        self.getDomPos = (): { // 更新方法 2022/03/23
+            x: number,
+            y: number,
+            top: number,
+            left: number,
+            right: number,
+            bottom: number,
+            width: number,
+            height: number
+        } => ({
+            x: $(self).props('offsetLeft'),
+            y: $(self).props('offsetTop') - window.scrollY,
+            top: $(self).props('offsetTop') - window.scrollY,
+            left: $(self).props('offsetLeft'),
+            right: $(self).props('offsetLeft') + $(self).props('offsetWidth'),
+            bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
+            width: $(self).props('offsetWidth'),
+            height: $(self).props('offsetHeight')
+        }),
+            self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
+                let animateScroll: any = undefined;
+                const [keyI, keyII]: string[] = Object.keys(scrollSetting);
+                const startPos: number = self[keyI];
+                const changePos: number = (scrollSetting as { [key: string]: any })[keyI] - startPos;
+                const startTimeStamp: number = +new Date();
 
-            const animationSettings: (animationSetting: {
-                currentTime: number,
-                startVal: number,
-                changeVal: number,
-                animateDuration: number
-            }) => number = animationSetting => {
-                const { currentTime, startVal, changeVal, animateDuration }: typeof animationSetting = animationSetting;
-                let currentTimeTemp: number = currentTime;
-                currentTimeTemp /= animateDuration / 2;
-                if (currentTimeTemp < 1) return (changeVal / 2) * currentTimeTemp * currentTimeTemp + startVal;
-                currentTimeTemp -= 1;
-                return (-changeVal / 2) * (currentTimeTemp * (currentTimeTemp - 2) - 1) + startVal;
-            };
+                const animationSettings: (animationSetting: {
+                    currentTime: number,
+                    startVal: number,
+                    changeVal: number,
+                    animateDuration: number
+                }) => number = animationSetting => {
+                    const { currentTime, startVal, changeVal, animateDuration }: typeof animationSetting = animationSetting;
+                    let currentTimeTemp: number = currentTime;
+                    currentTimeTemp /= animateDuration / 2;
+                    if (currentTimeTemp < 1) return (changeVal / 2) * currentTimeTemp * currentTimeTemp + startVal;
+                    currentTimeTemp -= 1;
+                    return (-changeVal / 2) * (currentTimeTemp * (currentTimeTemp - 2) - 1) + startVal;
+                };
 
-            (animateScroll = () => {
-                const currentTimeStamp: number = +new Date() - startTimeStamp;
-                self.scrollTop = Number(animationSettings({
-                    currentTime: currentTimeStamp,
-                    startVal: startPos,
-                    changeVal: changePos,
-                    animateDuration: (scrollSetting as { [key: string]: any })[keyII]
-                }));
-                currentTimeStamp < (scrollSetting as { [key: string]: any })[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as { [key: string]: any })[keyI];
-            })();
+                (animateScroll = () => {
+                    const currentTimeStamp: number = +new Date() - startTimeStamp;
+                    self.scrollTop = Number(animationSettings({
+                        currentTime: currentTimeStamp,
+                        startVal: startPos,
+                        changeVal: changePos,
+                        animateDuration: (scrollSetting as { [key: string]: any })[keyII]
+                    }));
+                    currentTimeStamp < (scrollSetting as { [key: string]: any })[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as { [key: string]: any })[keyI];
+                })();
+            }
+
+        self.useWillMount = (willMountCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
+            if (typeof self === 'object') {
+                if ($.typeOf(self, 'HTMLDocument')) {
+                    $(self).listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target))
+                } else {
+                    $.console('error', 'UseWillMount hook just use when selector document.')
+                }
+            } else {
+                $.console('error', 'UseWillMount hook just use when selector document.')
+            }
         }
 
-        self.useWillMount = (willMountCallBack:(target:HTMLDocument) => void):void => { // 更新方法 2022/03/19
-            if(typeof self === 'object'){
-                if($.typeOf(self,'HTMLDocument')){
-                    $(self).listener('readystatechange',({ target }:{ target:HTMLDocument}) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
+        self.useMounted = (useMountedCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
+            if (typeof self === 'object') {
+                if ($.typeOf(self, 'HTMLDocument')) {
+                    $(self).listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target))
                 } else {
-                    $.console('error','UseWillMount hook just use when selector document.')
+                    $.console('error', 'UseMounted Hook just use when selector document.')
                 }
             } else {
-                $.console('error','UseWillMount hook just use when selector document.')
-            }
-        } 
-
-        self.useMounted = (useMountedCallBack:(target:HTMLDocument) => void):void => { // 更新方法 2022/03/19
-            if(typeof self === 'object'){
-                if($.typeOf(self,'HTMLDocument')){
-                    $(self).listener('readystatechange',({ target }:{ target:HTMLDocument}) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
-                } else {
-                    $.console('error','UseMounted Hook just use when selector document.')
-                }
-            } else {
-                $.console('error','UseMounted Hook just use when selector document.')
+                $.console('error', 'UseMounted Hook just use when selector document.')
             }
         }
 
@@ -120,11 +139,21 @@ const $: any = ((el) => {
     $.indexOf = (item: any, x: any): number => item.indexOf(x);
     $.includes = (item: any[], x: any): boolean => item.includes(x);
     $.findIndexOfObj = (item: any, fn: (...parameters: any[]) => void): number => item.findIndex((where: { [key: string]: any }) => fn.call(item, where));
+    $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => propertyName in obj // 更新方法 2022/03/23
     $.sum = (item: any, fn: (...parameters: any[]) => void) => item.reduce((a: any, b: any) => fn.call(item, a, b));
+    $.mergeArray = (item: any[], mergeItem: any[], fn?: (...parameters: any[]) => any[]): any[] => fn === undefined ? item.concat(mergeItem) : fn.call(fn, item.concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item: any, classType: any): string | boolean => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type: string, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
-    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => {
+    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => { // 更新方法 2022/03/14
+        //#region 參數設定
+        /**
+         * @param {string} type <= 型別字串 要創建種類，fake 為創建假陣列、new 為創建新陣列
+         * @param {object}} item <= 型別物件，建假陣列時需使用為 { random:100 或其他數字 }
+         * @param {function | undefined} repack <= 型別函式，為 call back function 為處理假陣列時使用的後續操作
+         * @returns {Array}
+         */
+        //#endregion
         if (type === 'fake') {
             if ('random' in item && $.typeOf(item.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
                 return Array.from({ length: item.random }, (_, items) => repack.call(repack, items))
@@ -135,7 +164,7 @@ const $: any = ((el) => {
             return Array.from(item)
         }
     }
-    $.convert = <T>(val: any, type: string): (T | undefined) => { 
+    $.convert = <T>(val: any, type: string): (T | undefined) => {
         // 更新方法 2021/10/22
         // 更新泛型回傳值 2022/03/19
         if (val === undefined || type === undefined) {
@@ -256,17 +285,17 @@ const $: any = ((el) => {
         const [year, month, date, hour, minute, second] = dateSplit;
 
         if ('toDateFullNumber' in format) {
-            return $.convert<number>(dateSplit.join(""),'number')
+            return $.convert<number>(dateSplit.join(""), 'number')
         }
 
         // 更新是否格式化 AM 或 PM 2022/03/19
 
-        if(format.formatType.match('tt')){
-            const currentAMorPM:string = $.convert<number>(hour,'number')! > 11 ? 'PM' : 'AM'
-            const transHour:string = ($.convert<number>(hour,'number')! - 12) < 10 ? `0${$.convert<number>(hour,'number')! - 12}` : $.convert<string>($.convert<number>(hour,'number')! - 12,'string')!
-            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,transHour).replace(/mm/g,minute).replace(/ss/g,second).replace(/tt/g,currentAMorPM)
+        if (format.formatType.match('tt')) {
+            const currentAMorPM: string = $.convert<number>(hour, 'number')! > 11 ? 'PM' : 'AM'
+            const transHour: string = ($.convert<number>(hour, 'number')! - 12) < 10 ? `0${$.convert<number>(hour, 'number')! - 12}` : $.convert<string>($.convert<number>(hour, 'number')! - 12, 'string')!
+            return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
         } else {
-            return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
+            return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
         }
     }
 
@@ -371,14 +400,21 @@ const $: any = ((el) => {
 
 // Use in node js
 // declare global {
-//     interface Date { calculateDay: (format: { day: number, method: string }) => Date | undefined }
+//     interface Date { 
+//         calculateDay: (format: { day: number, method: string }) => (Date | undefined)
+//         toOptionTimeZoneForISO:(zoneTime:number) => string
+//     }
 // }
 
-interface Date { calculateDay: (format: { day: number, method: string }) => Date }
+interface Date {
+    calculateDay: ({ day: number, method: string }) => (Date | undefined)
+    toOptionTimeZoneForISO: (zoneTime: number) => string
+}
 
-Date.prototype.calculateDay = (format: { day: number, method: string }): Date | undefined => {
+Date.prototype.calculateDay = function (format: { day: number, method: string }): (Date | undefined) {
     // 更新方法內容與回傳內容 2021/09/22
     // 更新方法 2021/12/01
+    // 改變回傳物件 2022/03/23
 
     //#region 參數設定
     /**
@@ -392,13 +428,56 @@ Date.prototype.calculateDay = (format: { day: number, method: string }): Date | 
         return
     } else if (typeof format.day !== 'number') {
         $.console('error', "day property must use type number.");
-    } else if (!$.includes(['add', 'reduce'], format.method)) {
-        $.console('error', "Please enter method type 'add' or 'reduce'.");
+        return
+    } else if (!$.includes(['addDay', 'reduceDay'], format.method)) {
+        $.console('error', "Please enter method type 'addDay' or 'reduceDay'.");
         return
     }
 
-    const addDay = new Date(+new Date() + (format.day * 24 * 60 * 60 * 1000))
-    const reduceDay = new Date(+new Date() - (format.day * 24 * 60 * 60 * 1000))
+    const obj: {
+        addDay: Date,
+        reduceDay: Date
+    } = {
+        addDay: new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
+        reduceDay: new Date(+this - (format.day * 24 * 60 * 60 * 1000))
+    }
 
-    return format.method === 'add' ? addDay : reduceDay;
+    return (obj as { [key: string]: any })[format.method]
 };
+
+Date.prototype.toOptionTimeZoneForISO = function (zoneTime: number): string {
+    return new Date(+this + ((zoneTime === undefined ? 8 : zoneTime) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
+}
+
+// Use in node js
+// declare global {
+//     interface Array<T> { 
+//         append: (item:any) => void
+//         appendFirst:(...item:any[]) => any[]
+//         remove:(pos:number) => any[]
+//         range:(startPos:number,endPos:number) => any[]
+//         removeFirst:() => any[]
+//         removeLast:() => any[]
+//     }
+// }
+
+interface Array<T> { // 更新方法 2022/03/23
+    append: (item: any) => void
+    appendFirst: (...item: any[]) => any[]
+    remove: (pos: number) => any[]
+    range: (startPos: number, endPos: number) => any[]
+    removeFirst: () => any[]
+    removeLast: () => any[]
+}
+
+Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
+
+Array.prototype.appendFirst = function (...item) { return this.unshift(...item) } // 更新方法 2021/03/23
+
+Array.prototype.remove = function (pos) { this.splice(pos, 1); return this } // 更新方法 2021/03/23
+
+Array.prototype.range = function (startPos, endPos) { return this.slice(startPos, endPos) } // 更新方法 2021/03/23
+
+Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
+
+Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23

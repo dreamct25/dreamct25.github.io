@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.7
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.8
 // Work Environment Javascript ES6 or latest
 const $ = ((el) => {
     const $ = target => {
@@ -49,6 +49,16 @@ const $ = ((el) => {
                 } 
             }; 
         };
+        self.getDomPos = () => ({ // 更新方法 2022/03/23
+            x: $(self).props('offsetLeft'),
+            y: $(self).props('offsetTop') - window.scrollY,
+            top: $(self).props('offsetTop') - window.scrollY,
+            left: $(self).props('offsetLeft'),
+            right: $(self).props('offsetLeft') + $(self).props('offsetWidth'),
+            bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
+            width: $(self).props('offsetWidth'),
+            height: $(self).props('offsetHeight')
+        }),
         self.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
             let animateScroll = undefined;
             const [keyI,keyII] = Object.keys(scrollSetting);
@@ -114,11 +124,21 @@ const $ = ((el) => {
     $.indexOf = (item, x) => item.indexOf(x);
     $.includes = (item, x) => item.includes(x);
     $.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
+    $.findObjProperty = (obj,propertyName) => propertyName in obj // 更新方法 2022/03/23
     $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
+    $.mergeArray = (item,mergeItem,fn) => fn === undefined ? item.concat(mergeItem) : fn.call(fn,item.concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
-    $.createArray = ({ type,item },repack) => {
+    $.createArray = ({ type,item },repack) => { // 更新方法 2022/03/14
+        //#region 參數設定
+        /**
+         * @param {string} type <= 型別字串 要創建種類，fake 為創建假陣列、new 為創建新陣列
+         * @param {object}} item <= 型別物件，建假陣列時需使用為 { random:100 或其他數字 }
+         * @param {function | undefined} repack <= 型別函式，為 call back function 為處理假陣列時使用的後續操作
+         * @returns {Array}
+         */
+        //#endregion
         if(type === 'fake'){
             if('random' in item && $.typeOf(item.random,'Number') && repack !== undefined && $.typeOf(repack,'Function')){
                 return Array.from({ length:item.random },(_,items) => repack.call(repack,items))
@@ -351,9 +371,10 @@ const $ = ((el) => {
     return $;
 })((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/08/31
 
-Date.prototype.calculateDay = (format) => { 
+Date.prototype.calculateDay = function(format){ 
     // 更新方法內容與回傳內容 2021/09/22
     // 更新方法 2021/12/01
+    // 改變回傳物件 2022/03/23
 
     //#region 參數設定
     /**
@@ -367,13 +388,32 @@ Date.prototype.calculateDay = (format) => {
         return
     } else if(typeof format.day !== 'number'){
         $.console('error',"day property must use type number.");
-    } else if(!$.includes(['add','reduce'],format.method)){
-        $.console('error',"Please enter method type 'add' or 'reduce'.");
+        return
+    } else if(!$.includes(['addDay','reduceDay'],format.method)){
+        $.console('error',"Please enter method type 'addDay' or 'reduceDay'.");
         return
     };
 
-    const addDay = new Date(+new Date() + (format.day * 24 * 60 * 60 * 1000))
-    const reduceDay = new Date(+new Date() - (format.day * 24 * 60 * 60 * 1000))
+    const obj = {
+        addDay:new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
+        reduceDay:new Date(+this - (format.day * 24 * 60 * 60 * 1000))
+    }
     
-    return format.method === 'add' ? addDay : reduceDay ;
+    return obj[format.method] ;
 };
+
+Date.prototype.toOptionTimeZoneForISO = function(zoneTime){
+    return new Date(+this + ((zoneTime === undefined ? 8 : zoneTime) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
+}
+
+Array.prototype.append = function(item){ this.push(item) } // 更新方法 2021/03/23
+
+Array.prototype.appendFirst = function(...item){ return this.unshift(...item) } // 更新方法 2021/03/23
+
+Array.prototype.range = function(startPos,endPos){ return this.slice(startPos,endPos) }
+
+Array.prototype.remove = function(pos){ this.splice(pos,1); return this } // 更新方法 2021/03/23
+
+Array.prototype.removeFirst = function(){ this.shift(); return this } // 更新方法 2021/03/23
+
+Array.prototype.removeLast = function(){ this.pop(); return this } // 更新方法 2021/03/23
