@@ -1,8 +1,9 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.8
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.9
 // Work Environment Javascript ES6 or latest
+"use strict";
 const $ = ((el) => {
     const $ = target => {
-        let self = el.call(el, target) || target;
+        const self = el.call(el, target) || target;
         self.texts = (txt) => txt === undefined ? self.textContent : self.textContent = txt;
         self.html = (dom) => dom === undefined ? self.innerHTML : self.innerHTML = dom;
         self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -49,6 +50,7 @@ const $ = ((el) => {
                 } 
             }; 
         };
+
         self.getDomPos = () => ({ // 更新方法 2022/03/23
             x: $(self).props('offsetLeft'),
             y: $(self).props('offsetTop') - window.scrollY,
@@ -58,7 +60,8 @@ const $ = ((el) => {
             bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
             width: $(self).props('offsetWidth'),
             height: $(self).props('offsetHeight')
-        }),
+        });
+
         self.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
             let animateScroll = undefined;
             const [keyI,keyII] = Object.keys(scrollSetting);
@@ -85,7 +88,7 @@ const $ = ((el) => {
                 }));
                 currentTimeStamp < scrollSetting[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = scrollSetting[keyI];
             })();
-        }
+        };
 
         self.useWillMount = willMountCallBack => {
             if(typeof self === 'object'){
@@ -97,7 +100,7 @@ const $ = ((el) => {
             } else {
                 $.console('error','UseWillMount hook just use when selector document.')
             }
-        } 
+        };
 
         self.useMounted = useMountedCallBack => {
             if(typeof self === 'object'){
@@ -109,7 +112,7 @@ const $ = ((el) => {
             } else {
                 $.console('error','UseMounted Hook just use when selector document.')
             }
-        }
+        };
 
         return self;
     };
@@ -272,7 +275,111 @@ const $ = ((el) => {
         }
     }
 
-    $.fetch = async (settingParams = {
+    class fetchClass {
+        constructor(){
+            this.baseUrl = ''
+            this.baseHeaders = {}
+        }
+
+        static async fetch(settingParams) { 
+            // 更新類 ajax 方法 2021/09/11
+            // 更新類 ajax 方法內容 2021/10/21
+            //#region 參數設定
+            /**
+             * @param {string} method
+             * @param {string} url
+             * @param {object} header 追加 hearder 物件 2021/10/21
+             * @param {string} contentType
+             * @param {Function} beforePost <= 回呼函式
+             * @param {Function} successFn <= 回呼函式
+             * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
+             * @param {Function} errorFn <= 回呼函式
+             */
+            //#endregion
+    
+            const settings = {};
+            const { method, headers, contentType, data,beforePost,successFn,excuteDone,errorFn } = settingParams;
+    
+            settings.method = method;
+            settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+    
+            if (this.baseHeaders || headers) {
+                settings.headers = this.baseHeaders || headers;
+            }
+    
+            if (data) {
+                settings.headers = this.baseHeaders || { "Content-Type": contentType };
+                settings.body = $.convert(data, 'stringify');
+            }
+    
+            if ((this.baseHeaders || headers) && data) {
+                settings.headers = this.baseHeaders || { ...headers };
+                settings.body = $.convert(data, 'stringify');
+            };
+    
+            if (!beforePost){
+                beforePost.call(beforePost);
+            };
+    
+            if(!successFn){
+                $.console('error','Function Name successFn is required in obejct parameters.');
+                return
+            };
+    
+            if(!errorFn){
+                $.console('error','Function Name errorFn is required in obejct parameters.');
+                return
+            };
+    
+            // 更新 Request 成功與錯誤回傳內容 2022/03/14
+            try {
+                const res = await fetch(settingParams.url, settings).then(res => res);
+    
+                if (res.status >= 200 && res.status < 300) {
+                    res.json().then(resItem => successFn.call(successFn,{
+                        bodyUsed: res.bodyUsed,
+                        headers: res.headers,
+                        ok: res.ok,
+                        redirected: res.redirected,
+                        status: res.status,
+                        statusText: res.status,
+                        type: res.type,
+                        url:res.url,
+                        data:resItem
+                    })).then(() => excuteDone && excuteDone.call(excuteDone));
+                }
+                else {
+                    throw new Error(JSON.stringify({
+                        bodyUsed: res.bodyUsed,
+                        headers: res.headers,
+                        ok: res.ok,
+                        redirected: res.redirected,
+                        status: res.status,
+                        statusText: res.status,
+                        type: res.type,
+                        url:res.url,
+                    }));
+                };
+            }
+            catch (err) {
+                errorFn.call(errorFn,JSON.parse(err.message));
+            };
+        };
+
+        static createBase({ baseUrl,baseHeaders }){ // 更新 fetch 物件組態設定方法 2022/03/24
+            //#region
+            /** 參數設定
+             * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
+             * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
+             */
+            //#endregion
+            this.baseUrl = baseUrl
+            this.baseHeaders = baseHeaders
+        }
+        
+    }
+
+    $.fetch = (settingParams = { // 更新 FetchClass 類方法導出 2022/03/24
         method:'',
         url:'',
         headers:{},
@@ -282,91 +389,12 @@ const $ = ((el) => {
         successFn:undefined,
         excuteDone:undefined,
         errorFn:undefined
-    }) => { 
-        // 更新類 ajax 方法 2021/09/11
-        // 更新類 ajax 方法內容 2021/10/21
+    }) => fetchClass.fetch(settingParams)
 
-        //#region 參數設定
-        /**
-         * @param {string} method
-         * @param {string} url
-         * @param {object} header 追加 hearder 物件 2021/10/21
-         * @param {string} contentType
-         * @param {Function} beforePost <= 回呼函式
-         * @param {Function} successFn <= 回呼函式
-         * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
-         * @param {Function} errorFn <= 回呼函式
-         */
-        //#endregion
-
-        const settings = {};
-        const { method, url,headers, contentType, data,beforePost,successFn,excuteDone,errorFn } = settingParams;
-
-        settings.method = method;
-        settings.url = url;
-
-        if (headers !== undefined) {
-            settings.headers = headers;
-        }
-
-        if (data !== undefined) {
-            settings.headers = { "Content-Type": contentType };
-            settings.body = $.convert(data, 'stringify');
-        }
-
-        if (headers !== undefined && data !== undefined) {
-            settings.headers = { ...headers };
-            settings.body = $.convert(data, 'stringify');
-        };
-
-        if (beforePost !== undefined){
-            beforePost.call(beforePost);
-        };
-        
-        if(successFn === undefined){
-            $.console('error','Function Name successFn is required in obejct parameters.');
-            return
-        };
-
-        if(errorFn === undefined){
-            $.console('error','Function Name errorFn is required in obejct parameters.');
-            return
-        };
-
-        // 更新 Request 成功與錯誤回傳內容 2022/03/14
-        try {
-            const res = await fetch(url, settings).then(res => res);
-
-            if (res.status >= 200 && res.status < 300) {
-                res.json().then(resItem => successFn.call(successFn,{
-                    bodyUsed: res.bodyUsed,
-                    headers: res.headers,
-                    ok: res.ok,
-                    redirected: res.redirected,
-                    status: res.status,
-                    statusText: res.status,
-                    type: res.type,
-                    url:res.url,
-                    data:resItem
-                })).then(() => excuteDone && excuteDone.call(excuteDone));
-            }
-            else {
-                throw new Error(JSON.stringify({
-                    bodyUsed: res.bodyUsed,
-                    headers: res.headers,
-                    ok: res.ok,
-                    redirected: res.redirected,
-                    status: res.status,
-                    statusText: res.status,
-                    type: res.type,
-                    url:res.url,
-                }));
-            };
-        }
-        catch (err) {
-            errorFn.call(errorFn,JSON.parse(err.message));
-        };
-    };
+    $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+        baseUrl:'',
+        baseHeaders:{}
+    }) => fetchClass.createBase(paramters)
 
     return $;
 })((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/08/31
@@ -408,7 +436,7 @@ Date.prototype.toOptionTimeZoneForISO = function(zoneTime){
 
 Array.prototype.append = function(item){ this.push(item) } // 更新方法 2021/03/23
 
-Array.prototype.appendFirst = function(...item){ return this.unshift(...item) } // 更新方法 2021/03/23
+Array.prototype.appendFirst = function(...item){ this.unshift(...item); return this } // 更新方法 2021/03/23
 
 Array.prototype.range = function(startPos,endPos){ return this.slice(startPos,endPos) }
 

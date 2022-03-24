@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.8
+// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.9
 // Work Environment Typescript v4.5.5、eslint v6.7.2
 //
 // Use in node js
@@ -69,39 +69,39 @@ const $: any = ((el) => {
             bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
             width: $(self).props('offsetWidth'),
             height: $(self).props('offsetHeight')
-        }),
-            self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
-                let animateScroll: any = undefined;
-                const [keyI, keyII]: string[] = Object.keys(scrollSetting);
-                const startPos: number = self[keyI];
-                const changePos: number = (scrollSetting as { [key: string]: any })[keyI] - startPos;
-                const startTimeStamp: number = +new Date();
+        });
+        self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
+            let animateScroll: any = undefined;
+            const [keyI, keyII]: string[] = Object.keys(scrollSetting);
+            const startPos: number = self[keyI];
+            const changePos: number = (scrollSetting as { [key: string]: any })[keyI] - startPos;
+            const startTimeStamp: number = +new Date();
 
-                const animationSettings: (animationSetting: {
-                    currentTime: number,
-                    startVal: number,
-                    changeVal: number,
-                    animateDuration: number
-                }) => number = animationSetting => {
-                    const { currentTime, startVal, changeVal, animateDuration }: typeof animationSetting = animationSetting;
-                    let currentTimeTemp: number = currentTime;
-                    currentTimeTemp /= animateDuration / 2;
-                    if (currentTimeTemp < 1) return (changeVal / 2) * currentTimeTemp * currentTimeTemp + startVal;
-                    currentTimeTemp -= 1;
-                    return (-changeVal / 2) * (currentTimeTemp * (currentTimeTemp - 2) - 1) + startVal;
-                };
+            const animationSettings: (animationSetting: {
+                currentTime: number,
+                startVal: number,
+                changeVal: number,
+                animateDuration: number
+            }) => number = animationSetting => {
+                const { currentTime, startVal, changeVal, animateDuration }: typeof animationSetting = animationSetting;
+                let currentTimeTemp: number = currentTime;
+                currentTimeTemp /= animateDuration / 2;
+                if (currentTimeTemp < 1) return (changeVal / 2) * currentTimeTemp * currentTimeTemp + startVal;
+                currentTimeTemp -= 1;
+                return (-changeVal / 2) * (currentTimeTemp * (currentTimeTemp - 2) - 1) + startVal;
+            };
 
-                (animateScroll = () => {
-                    const currentTimeStamp: number = +new Date() - startTimeStamp;
-                    self.scrollTop = Number(animationSettings({
-                        currentTime: currentTimeStamp,
-                        startVal: startPos,
-                        changeVal: changePos,
-                        animateDuration: (scrollSetting as { [key: string]: any })[keyII]
-                    }));
-                    currentTimeStamp < (scrollSetting as { [key: string]: any })[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as { [key: string]: any })[keyI];
-                })();
-            }
+            (animateScroll = () => {
+                const currentTimeStamp: number = +new Date() - startTimeStamp;
+                self.scrollTop = Number(animationSettings({
+                    currentTime: currentTimeStamp,
+                    startVal: startPos,
+                    changeVal: changePos,
+                    animateDuration: (scrollSetting as { [key: string]: any })[keyII]
+                }));
+                currentTimeStamp < (scrollSetting as { [key: string]: any })[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as { [key: string]: any })[keyI];
+            })();
+        };
 
         self.useWillMount = (willMountCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
             if (typeof self === 'object') {
@@ -113,7 +113,7 @@ const $: any = ((el) => {
             } else {
                 $.console('error', 'UseWillMount hook just use when selector document.')
             }
-        }
+        };
 
         self.useMounted = (useMountedCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
             if (typeof self === 'object') {
@@ -125,7 +125,7 @@ const $: any = ((el) => {
             } else {
                 $.console('error', 'UseMounted Hook just use when selector document.')
             }
-        }
+        };
 
         return self;
     };
@@ -299,7 +299,119 @@ const $: any = ((el) => {
         }
     }
 
-    $.fetch = async (settingParams: {
+    class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
+        public static baseUrl:string = ''
+        public static baseHeaders:{[key:string]:any} = {}
+
+        public static async fetch(settingParams:{
+            method: string,
+            url: string,
+            headers?: { [key: string]: any },
+            contentType?: string,
+            data?: { [key: string]: any },
+            beforePost?: () => void,
+            successFn: (data: any) => void,
+            excuteDone?: () => void,
+            errorFn: (err: any) => void
+        }):Promise<void> { 
+            // 更新類 ajax 方法 2021/09/11
+            // 更新類 ajax 方法內容 2021/10/21
+            //#region 參數設定
+            /**
+             * @param {string} method
+             * @param {string} url
+             * @param {object} header 追加 hearder 物件 2021/10/21
+             * @param {string} contentType
+             * @param {Function} beforePost <= 回呼函式
+             * @param {Function} successFn <= 回呼函式
+             * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
+             * @param {Function} errorFn <= 回呼函式
+             */
+            //#endregion
+    
+            const settings:{ [key: string]: any } = {};
+            const { method, headers, contentType, data,beforePost,successFn,excuteDone,errorFn } = settingParams;
+    
+            settings.method = method;
+            settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+    
+            if (this.baseHeaders || headers) {
+                settings.headers = this.baseHeaders || headers;
+            }
+    
+            if (data) {
+                settings.headers = this.baseHeaders || { "Content-Type": contentType };
+                settings.body = $.convert(data, 'stringify');
+            }
+    
+            if ((this.baseHeaders || headers) && data) {
+                settings.headers = this.baseHeaders || { ...headers };
+                settings.body = $.convert(data, 'stringify');
+            };
+    
+            if (!beforePost){
+                beforePost!.call(beforePost);
+            };
+    
+            if(!successFn){
+                $.console('error','Function Name successFn is required in obejct parameters.');
+                return
+            };
+    
+            if(!errorFn){
+                $.console('error','Function Name errorFn is required in obejct parameters.');
+                return
+            };
+    
+            // 更新 Request 成功與錯誤回傳內容 2022/03/14
+            try {
+                const res = await fetch(settingParams.url, settings).then(res => res);
+    
+                if (res.status >= 200 && res.status < 300) {
+                    res.json().then(resItem => successFn.call(successFn,{
+                        bodyUsed: res.bodyUsed,
+                        headers: res.headers,
+                        ok: res.ok,
+                        redirected: res.redirected,
+                        status: res.status,
+                        statusText: res.status,
+                        type: res.type,
+                        url:res.url,
+                        data:resItem
+                    })).then(() => excuteDone && excuteDone.call(excuteDone));
+                }
+                else {
+                    throw new Error(JSON.stringify({
+                        bodyUsed: res.bodyUsed,
+                        headers: res.headers,
+                        ok: res.ok,
+                        redirected: res.redirected,
+                        status: res.status,
+                        statusText: res.status,
+                        type: res.type,
+                        url:res.url,
+                    }));
+                };
+            }
+            catch (err:any) {
+                errorFn.call(errorFn,JSON.parse(err.message));
+            };
+        };
+
+        public static createBase({ baseUrl,baseHeaders }:{ baseUrl:string,baseHeaders:{[key:string]:any} }){ // 更新 fetch 物件組態設定方法 2022/03/24
+            //#region
+            /** 參數設定
+             * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
+             * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
+             */
+            //#endregion
+            this.baseUrl = baseUrl
+            this.baseHeaders = baseHeaders
+        }
+        
+    }
+
+    $.fetch = (settingParams:{ // 更新 FetchClass 類方法導出 2022/03/24
         method: string,
         url: string,
         headers?: { [key: string]: any },
@@ -309,91 +421,12 @@ const $: any = ((el) => {
         successFn: (data: any) => void,
         excuteDone?: () => void,
         errorFn: (err: any) => void
-    }): Promise<void> => {
-        // 更新類 ajax 方法 2021/09/11
-        // 更新類 ajax 方法內容 2021/10/21
+    }):Promise<void> => FetchClass.fetch(settingParams);
 
-        //#region 參數設定
-        /**
-         * @param {string} method
-         * @param {string} url
-         * @param {object} header 追加 hearder 物件 2021/10/21
-         * @param {string} contentType
-         * @param {Function} beforePost <= 回調函式
-         * @param {Function} successFn <= 回調函式
-         * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
-         * @param {Function} errorFn <= 回調函式
-         */
-        //#endregion
-
-        const settings: { [key: string]: any } = {};
-        const { method, url, headers, contentType, data, beforePost, successFn, excuteDone, errorFn } = settingParams;
-
-        settings.method = method;
-        settings.url = url;
-
-        if (headers !== undefined) {
-            settings.headers = headers;
-        }
-
-        if (data !== undefined) {
-            settings.headers = { "Content-Type": contentType };
-            settings.body = $.convert<string>(data, 'stringify');
-        }
-
-        if (headers !== undefined && data !== undefined) {
-            settings.headers = { ...headers };
-            settings.body = $.convert<string>(data, 'stringify');
-        }
-
-        if (beforePost !== undefined) {
-            beforePost.call(beforePost);
-        }
-
-        if (successFn === undefined) {
-            $.console('error', 'Function Name successFn is required in obejct parameters.');
-            return
-        }
-
-        if (errorFn === undefined) {
-            $.console('error', 'Function Name errorFn is required in obejct parameters.');
-            return
-        }
-
-        // 更新 Request 成功與錯誤回傳內容 2022/03/14
-        try {
-            const res: Response = await fetch(url, settings);
-
-            if (res.status >= 200 && res.status < 300) {
-                res.json().then((resItem: { [key: string]: any }) => successFn.call(successFn, {
-                    bodyUsed: res.bodyUsed,
-                    headers: res.headers,
-                    ok: res.ok,
-                    redirected: res.redirected,
-                    status: res.status,
-                    statusText: res.status,
-                    type: res.type,
-                    url: res.url,
-                    data: resItem
-                })).then(() => excuteDone && excuteDone.call(excuteDone));
-            }
-            else {
-                throw new Error(JSON.stringify({
-                    bodyUsed: res.bodyUsed,
-                    headers: res.headers,
-                    ok: res.ok,
-                    redirected: res.redirected,
-                    status: res.status,
-                    statusText: res.status,
-                    type: res.type,
-                    url: res.url,
-                }));
-            };
-        }
-        catch (err: { message: string } | any) {
-            errorFn.call(errorFn, JSON.parse(err.message))
-        }
-    };
+    ($.fetch as {[key:string]:any}).createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+        baseUrl:string,
+        baseHeaders:{[key:string]:any}
+    }):void => FetchClass.createBase(paramters)
 
     return $;
 })((el: any): any => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/8/31
@@ -472,7 +505,7 @@ interface Array<T> { // 更新方法 2022/03/23
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
 
-Array.prototype.appendFirst = function (...item) { return this.unshift(...item) } // 更新方法 2021/03/23
+Array.prototype.appendFirst = function (...item) { this.unshift(...item); return this } // 更新方法 2021/03/23
 
 Array.prototype.remove = function (pos) { this.splice(pos, 1); return this } // 更新方法 2021/03/23
 
