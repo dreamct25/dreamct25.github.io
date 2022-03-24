@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.3.9
+// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.4.0
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -90,7 +90,7 @@ const $ = ((el) => {
             })();
         };
 
-        self.useWillMount = willMountCallBack => {
+        self.useWillMount = willMountCallBack => { // 更新方法 2022/03/19
             if(typeof self === 'object'){
                 if($.typeOf(self,'HTMLDocument')){
                     $(self).listener('readystatechange',({ target }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
@@ -102,7 +102,7 @@ const $ = ((el) => {
             }
         };
 
-        self.useMounted = useMountedCallBack => {
+        self.useMounted = useMountedCallBack => { // 更新方法 2022/03/19
             if(typeof self === 'object'){
                 if($.typeOf(self,'HTMLDocument')){
                     $(self).listener('readystatechange',({ target }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
@@ -275,7 +275,7 @@ const $ = ((el) => {
         }
     }
 
-    class fetchClass {
+    class FetchClass {
         constructor(){
             this.baseUrl = ''
             this.baseHeaders = {}
@@ -317,7 +317,7 @@ const $ = ((el) => {
                 settings.body = $.convert(data, 'stringify');
             };
     
-            if (!beforePost){
+            if (beforePost){
                 beforePost.call(beforePost);
             };
     
@@ -379,7 +379,7 @@ const $ = ((el) => {
         
     }
 
-    $.fetch = (settingParams = { // 更新 FetchClass 類方法導出 2022/03/24
+    $.fetch = (settingParams = { // 更新 F 類方法導出 2022/03/24
         method:'',
         url:'',
         headers:{},
@@ -389,12 +389,12 @@ const $ = ((el) => {
         successFn:undefined,
         excuteDone:undefined,
         errorFn:undefined
-    }) => fetchClass.fetch(settingParams)
+    }) => FetchClass.fetch(settingParams)
 
     $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:'',
         baseHeaders:{}
-    }) => fetchClass.createBase(paramters)
+    }) => FetchClass.createBase(paramters)
 
     return $;
 })((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/08/31

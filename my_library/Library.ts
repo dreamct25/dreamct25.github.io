@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.3.9
+// CopyRight by Chen 2021/08 - 2022/03 Library language - typescript ver 1.4.0
 // Work Environment Typescript v4.5.5、eslint v6.7.2
 //
 // Use in node js
@@ -349,7 +349,7 @@ const $: any = ((el) => {
                 settings.body = $.convert(data, 'stringify');
             };
     
-            if (!beforePost){
+            if (beforePost){
                 beforePost!.call(beforePost);
             };
     
