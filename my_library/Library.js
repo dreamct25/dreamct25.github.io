@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/03 Library language - javascript ver 1.4.0
+// CopyRight by Chen 2021/08 - 2022/05 Library language - javascript ver 1.4.5
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -275,13 +275,13 @@ const $ = ((el) => {
         }
     }
 
-    class FetchClass {
+    class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
         constructor(){
             this.baseUrl = ''
             this.baseHeaders = {}
         }
 
-        static async fetch(settingParams) { 
+        static async fetchSetting(settingParams,usePromise) { 
             // 更新類 ajax 方法 2021/09/11
             // 更新類 ajax 方法內容 2021/10/21
             //#region 參數設定
@@ -289,6 +289,8 @@ const $ = ((el) => {
              * @param {string} method
              * @param {string} url
              * @param {object} header 追加 hearder 物件 2021/10/21
+             * @param {object} data
+             * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
              * @param {string} contentType
              * @param {Function} beforePost <= 回呼函式
              * @param {Function} successFn <= 回呼函式
@@ -298,11 +300,16 @@ const $ = ((el) => {
             //#endregion
     
             const settings = {};
-            const { method, headers, contentType, data,beforePost,successFn,excuteDone,errorFn } = settingParams;
+            const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
     
             settings.method = method;
             settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
-    
+
+            if(routeParams){
+                const [keyName] = Object.keys(routeParams)
+                settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+            }
+
             if (this.baseHeaders || headers) {
                 settings.headers = this.baseHeaders || headers;
             }
@@ -316,54 +323,87 @@ const $ = ((el) => {
                 settings.headers = this.baseHeaders || { ...headers };
                 settings.body = $.convert(data, 'stringify');
             };
-    
-            if (beforePost){
-                beforePost.call(beforePost);
-            };
-    
-            if(!successFn){
-                $.console('error','Function Name successFn is required in obejct parameters.');
-                return
-            };
-    
-            if(!errorFn){
-                $.console('error','Function Name errorFn is required in obejct parameters.');
-                return
-            };
-    
-            // 更新 Request 成功與錯誤回傳內容 2022/03/14
-            try {
-                const res = await fetch(settingParams.url, settings).then(res => res);
-    
-                if (res.status >= 200 && res.status < 300) {
-                    res.json().then(resItem => successFn.call(successFn,{
-                        bodyUsed: res.bodyUsed,
-                        headers: res.headers,
-                        ok: res.ok,
-                        redirected: res.redirected,
-                        status: res.status,
-                        statusText: res.status,
-                        type: res.type,
-                        url:res.url,
-                        data:resItem
-                    })).then(() => excuteDone && excuteDone.call(excuteDone));
-                }
-                else {
-                    throw new Error(JSON.stringify({
-                        bodyUsed: res.bodyUsed,
-                        headers: res.headers,
-                        ok: res.ok,
-                        redirected: res.redirected,
-                        status: res.status,
-                        statusText: res.status,
-                        type: res.type,
-                        url:res.url,
-                    }));
+            
+            if(!usePromise) {
+                if (beforePost){
+                    beforePost.call(beforePost);
+                };
+        
+                if(!successFn){
+                    $.console('error','Function Name successFn is required in obejct parameters.');
+                    return
+                };
+        
+                if(!errorFn){
+                    $.console('error','Function Name errorFn is required in obejct parameters.');
+                    return
                 };
             }
-            catch (err) {
-                errorFn.call(errorFn,JSON.parse(err.message));
-            };
+
+            const res = await fetch(settingParams.url, settings).then(res => res);
+            
+            if(usePromise){
+                // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
+                return new Promise((resolve,reject) => {
+                    if (res.status >= 200 && res.status < 300) {
+                        res.json().then(resItem => resolve({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                            data:resItem
+                        }));
+                    }
+                    else {
+                        reject({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                        });
+                    };
+                })
+            } else {
+                // 更新 Request 成功與錯誤回傳內容 2022/03/14
+                try {
+                    if (res.status >= 200 && res.status < 300) {
+                        res.json().then(resItem => successFn.call(successFn,{
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                            data:resItem
+                        })).then(() => excuteDone && excuteDone.call(excuteDone));
+                    }
+                    else {
+                        throw new Error(JSON.stringify({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                        }));
+                    };
+                }
+                catch (err) {
+                    errorFn.call(errorFn,JSON.parse(err.message));
+                };
+            }
         };
 
         static createBase({ baseUrl,baseHeaders }){ // 更新 fetch 物件組態設定方法 2022/03/24
@@ -376,10 +416,31 @@ const $ = ((el) => {
             this.baseUrl = baseUrl
             this.baseHeaders = baseHeaders
         }
-        
     }
 
-    $.fetch = (settingParams = { // 更新 F 類方法導出 2022/03/24
+    class FetchPromisClass extends FetchClass {
+        static get(url,setting){ // 更新 Promise 導出 get 方法 2022/05/01
+            return this.fetchSetting({ method: 'get',url ,...setting },true)
+        }
+
+        static post(url,setting){ // 更新 Promise 導出 post 方法 2022/05/01
+            return this.fetchSetting({ method: 'post',url ,...setting },true)
+        }
+
+        static patch(url,setting){ // 更新 Promise 導出 patch 方法 2022/05/01
+            return this.fetchSetting({ method: 'patch',url ,...setting },true)
+        }
+
+        static put(url,setting){ // 更新 Promise 導出 put 方法 2022/05/01
+            return this.fetchSetting({ method: 'put',url ,...setting },true)
+        }
+
+        static delete(url,setting){ // 更新 Promise 導出 delete 方法 2022/05/01
+            return this.fetchSetting({ method: 'delete',url ,...setting },true)
+        }
+    }
+
+    $.fetch = (settingParams = { // 更新 FetchClass 類方法導出 2022/03/24
         method:'',
         url:'',
         headers:{},
@@ -389,7 +450,17 @@ const $ = ((el) => {
         successFn:undefined,
         excuteDone:undefined,
         errorFn:undefined
-    }) => FetchClass.fetch(settingParams)
+    }) => FetchClass.fetchSetting(settingParams,false)
+
+    $.fetch.get = (url,settingParams = { headers:{} }) => FetchPromisClass.get(url,settingParams)
+
+    $.fetch.post = (url,settingParams = { headers:{},data:{} }) => FetchPromisClass.post(url,settingParams)
+
+    $.fetch.patch = (url,settingParams = { headers:{},data:{} }) => FetchPromisClass.patch(url,settingParams)
+
+    $.fetch.put = (url,settingParams = { headers:{},data:{} }) => FetchPromisClass.put(url,settingParams)
+
+    $.fetch.delete = (url,settingParams = { headers:{},data:{} }) => FetchPromisClass.delete(url,settingParams)
 
     $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:'',
