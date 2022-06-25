@@ -5,7 +5,6 @@
 // export default $
 
 const $: any = ((el) => {
-
     // String tips when use method
     type createArrayType = 'fake' | 'new'
     type localDataActionType = 'get' | 'set'
@@ -149,7 +148,7 @@ const $: any = ((el) => {
     $.includes = (item: any[], x: any): boolean => item.includes(x);
     $.findIndexOfObj = (item: any, callBack: (items: any) => void): number => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
     $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.sum = (item: any, callBack: (a: any,b:any) => any,initialVal:any):any => initialVal ? item.reduce((a:any, b:any) => callBack.call(item, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(item, a, b));
+    $.sum = (item: any, callBack: (a: any,b:any) => any,initialVal:any):any => initialVal ? item.reduce((a:any, b:any) => callBack.call(callBack, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(callBack, a, b));
     $.mergeArray = (item: any[], mergeItem: any[], callBack?: (items: any) => any[]): any[] => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item: any, classType: any): string | boolean => classType ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type: consoleMethod, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
@@ -601,7 +600,7 @@ Date.prototype.toOptionTimeZoneForISO = function (zoneTime: number): string {
 // declare global {
 //     interface Array<T> { 
 //         append: (item:any) => void
-//         appendFirst:(...item:[]) => any[]
+//         appendFirst:(...item:any[]) => any[]
 //         remove:(pos:number) => any[]
 //         range:(startPos:number,endPos:number) => any[]
 //         removeFirst:() => any[]

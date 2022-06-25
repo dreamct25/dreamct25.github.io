@@ -127,7 +127,7 @@ const $ = ((el) => {
     $.includes = (item, x) => item.includes(x);
     $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items));
     $.findObjProperty = (obj,propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(item, a, b),initialVal) : item.reduce((a, b) => callBack.call(item, a, b))
+    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b),initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b))
     $.mergeArray = (item,mergeItem,callBack) => callBack ? item.concat(mergeItem) : callBack.call(callBack,item.concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item,classType) => classType ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
