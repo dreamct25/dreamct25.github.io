@@ -4,15 +4,16 @@
 // Use in node js
 // export default $
 
-// String tips when use method
-type createArrayType = 'fake' | 'new'
-type localDataActionType = 'get' | 'set'
-type stylesMethod = 'set' | 'remove'
-type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
-type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
-type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
-
 const $: any = ((el) => {
+
+    // String tips when use method
+    type createArrayType = 'fake' | 'new'
+    type localDataActionType = 'get' | 'set'
+    type stylesMethod = 'set' | 'remove'
+    type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
+    type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
+    type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
+
     const $ = (target: any): any => {
         const self: any = el.call(el, target) || target;
         self.texts = (txt?: string): string | void => txt ? self.textContent : self.textContent = txt;
@@ -143,13 +144,12 @@ const $: any = ((el) => {
     $.maps = (item: any[], callBack: (items: any,index:number) => any[]): any[] => item.map((items: any, index: number) => callBack.call(callBack, items, index));
     $.filter = (item: any[], callBack: (items: any) => any[]):any[] => item.filter((items: any) => callBack.call(callBack, items));
     $.find = (item: any[], callBack: (items: any) => void): any => item.find((items: any) => callBack.call(callBack, items))  // 更新方法 2022/03/12
-    $.reduce = (item: any[], callBack: (a: any,b: any) => void): any => item.reduce((a: any, b: any) => callBack.call(callBack, a, b)) // 更新方法 2022/03/12
     $.sort = (item: any[], callBack: (a: any,b:any) => number): any => item.sort((a: any, b: any) => callBack.call(callBack, a, b));
     $.indexOf = (item: any, x: any): number => item.indexOf(x);
     $.includes = (item: any[], x: any): boolean => item.includes(x);
     $.findIndexOfObj = (item: any, callBack: (items: any) => void): number => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
     $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.sum = (item: any, callBack: (a: any,b:any) => any[]):any[] => item.reduce((a: any, b: any) => callBack.call(callBack, a, b));
+    $.sum = (item: any, callBack: (a: any,b:any) => any,initialVal:any):any => initialVal ? item.reduce((a:any, b:any) => callBack.call(item, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(item, a, b));
     $.mergeArray = (item: any[], mergeItem: any[], callBack?: (items: any) => any[]): any[] => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item: any, classType: any): string | boolean => classType ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
     $.console = (type: consoleMethod, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26

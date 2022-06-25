@@ -122,7 +122,6 @@ const $ = ((el) => {
     $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, items, index));
     $.filter = (item, callBack) => item.filter((items) => callBack.call(callBack, items));
     $.find = (item,callBack) => item.find(items => callBack.call(callBack,items)) // 更新方法 2022/03/12
-    $.reduce = (item,callBack) => item.reduce((a,b) => callBack.call(callBack,a,b)) // 更新方法 2022/03/12
     $.sort = (item,callBack) => item.sort((a,b) => callBack.call(callBack,a,b))
     $.indexOf = (item, x) => item.indexOf(x);
     $.includes = (item, x) => item.includes(x);
