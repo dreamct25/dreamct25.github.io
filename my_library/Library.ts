@@ -1,8 +1,17 @@
-// CopyRight by Chen 2021/08 - 2022/05 Library language - typescript ver 1.4.5
-// Work Environment Typescript v4.5.5、eslint v8.12.0
+// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.6
+// Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
 // export default $
+
+// String tips when use method
+type createArrayType = 'fake' | 'new'
+type localDataActionType = 'get' | 'set'
+type stylesMethod = 'set' | 'remove'
+type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
+type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
+type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
+
 const $: any = ((el) => {
     const $ = (target: any): any => {
         const self: any = el.call(el, target) || target;
@@ -27,7 +36,7 @@ const $: any = ((el) => {
         self.removeChildDom = (): void => $(self).replaceChildren();       // 更新方法 2021/10/25
         self.appendDomText = (el: Text): void => $(self).appendChild(el);  // 更新方法 2021/09/12
         self.easyAppendDom = (orderBy: string, domStr: string): void => $(self).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr);  // 更新方法 2021/11/25
-        self.styles = (method: string, cssType: string, cssParameter: string): typeof self | undefined => {
+        self.styles = (method: stylesMethod, cssType: string, cssParameter: string): typeof self | undefined => {
             // 更新方法 2021/10/26
             // 更新方法 2022/03/12 變形為可鏈式寫法
             if (!$.includes(['set', 'remove'], method)) {
@@ -130,22 +139,22 @@ const $: any = ((el) => {
         return self;
     };
 
-    $.each = (item: any[], fn: (...parameters: any[]) => void): void => item.forEach((items: any, index: number) => fn.call(item, items, index));
-    $.maps = (item: any[], fn: (...parameters: any[]) => void): any[] => item.map((items: any, index: number) => fn.call(item, items, index));
-    $.filter = (item: any[], fn: (...parameters: any[]) => void): { [key: string]: any }[] => item.filter((items: any) => fn.call(item, items));
-    $.find = (item: any[], fn: (...parameters: any[]) => void): any => item.find((items: any) => fn.call(item, items))  // 更新方法 2022/03/12
-    $.reduce = (item: any[], fn: (...parameters: any[]) => void): any => item.reduce((a: any, b: any) => fn.call(item, a, b)) // 更新方法 2022/03/12
-    $.sort = (item: any[], fn: (...parameters: any[]) => number): any => item.sort((a: any, b: any) => fn.call(item, a, b));
+    $.each = (item: any[], callBack: (items: any,index:number) => void): void => item.forEach((items: any, index: number) => callBack.call(callBack, items, index));
+    $.maps = (item: any[], callBack: (items: any,index:number) => any[]): any[] => item.map((items: any, index: number) => callBack.call(callBack, items, index));
+    $.filter = (item: any[], callBack: (items: any) => any[]):any[] => item.filter((items: any) => callBack.call(callBack, items));
+    $.find = (item: any[], callBack: (items: any) => void): any => item.find((items: any) => callBack.call(callBack, items))  // 更新方法 2022/03/12
+    $.reduce = (item: any[], callBack: (a: any,b: any) => void): any => item.reduce((a: any, b: any) => callBack.call(callBack, a, b)) // 更新方法 2022/03/12
+    $.sort = (item: any[], callBack: (a: any,b:any) => number): any => item.sort((a: any, b: any) => callBack.call(callBack, a, b));
     $.indexOf = (item: any, x: any): number => item.indexOf(x);
     $.includes = (item: any[], x: any): boolean => item.includes(x);
-    $.findIndexOfObj = (item: any, fn: (...parameters: any[]) => void): number => item.findIndex((where: { [key: string]: any }) => fn.call(item, where));
-    $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => propertyName in obj // 更新方法 2022/03/23
-    $.sum = (item: any, fn: (...parameters: any[]) => void) => item.reduce((a: any, b: any) => fn.call(item, a, b));
-    $.mergeArray = (item: any[], mergeItem: any[], fn?: (...parameters: any[]) => any[]): any[] => fn === undefined ? item.concat(mergeItem) : fn.call(fn, item.concat(mergeItem)) // 更新方法 2022/03/23
-    $.typeOf = (item: any, classType: any): string | boolean => classType === undefined ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
-    $.console = (type: string, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
-    $.localData = (action: string, keyName: string, item: { [key: string]: any } | any[]): { [key: string]: any } | any[] => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
-    $.createArray = ({ type, item }: { type: string, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => { // 更新方法 2022/03/14
+    $.findIndexOfObj = (item: any, callBack: (items: any) => void): number => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
+    $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
+    $.sum = (item: any, callBack: (a: any,b:any) => any[]):any[] => item.reduce((a: any, b: any) => callBack.call(callBack, a, b));
+    $.mergeArray = (item: any[], mergeItem: any[], callBack?: (items: any) => any[]): any[] => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
+    $.typeOf = (item: any, classType: any): string | boolean => classType ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
+    $.console = (type: consoleMethod, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
+    $.localData = (action: localDataActionType, keyName: string, item: any): any => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
+    $.createArray = ({ type, item }: { type: createArrayType, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
          * @param {string} type <= 型別字串 要創建種類，fake 為創建假陣列、new 為創建新陣列
@@ -164,7 +173,7 @@ const $: any = ((el) => {
             return Array.from(item)
         }
     }
-    $.convert = <T>(val: any, type: string): (T | undefined) => {
+    $.convert = <T>(val: any, type: convertType): (T | undefined) => {
         // 更新方法 2021/10/22
         // 更新泛型回傳值 2022/03/19
         if (val === undefined || type === undefined) {
@@ -211,52 +220,14 @@ const $: any = ((el) => {
     };
     $.createDomText = (text: string): Text => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj: { [key: string]: any }, method: string): any[] | void => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
-    $.objManager = (obj: { [key: string]: any }, action: string, key: string, value: any): { [key: string]: any } | void => { // 更新方法 2021/10/21
 
-        //#region 參數設定
-        /**
-         * @param {object} obj <= 型別物件 要管理的物件
-         * @param {string} action <= 型別字串，要執行的動作，有分為 get ( 取得管理物件內容 )、set ( 設定管理物件指定鍵與值 )、add ( 新增管理物件鍵與值 )、delete ( 刪除管理物件指定鍵與值 )
-         * @param {string} key <= 型別字串，為鍵值的鍵
-         * @param {any} value <= 型別任意，為鍵值的值
-         * @returns {object | void}
-         */
-        //#endregion
-
-        const check: () => string | undefined = () => {
-            if (obj === undefined) {
-                return "Please put want to manage's object at first parameters";
-            }
-
-            if (action === undefined || !$.includes(['get', 'set', 'add', 'delete'], action)) {
-                return 'Please enter want to use methods "get、set、add、delete" at seconde parameters';
-            } else if (typeof action !== 'string') {
-                return 'Seconde parameters must use type string.';
-            }
-
-            if (key === undefined) {
-                return 'Please enter want to use key name at third parameters';
-            } else if (typeof key !== 'string') {
-                return 'Third parameters must use type string.';
-            }
-
-            if (value === undefined) {
-                return `Please enter want to set value at forth parameters.`;
-            }
-        }
-
-        switch (action) {
-            case 'get':
-                return obj;
-            case 'set':
-                check() !== undefined ? $.console('error', check()) : key in obj ? obj[key] = value : $.console('error', `Key name ${key} not in this object.`);
-                break;
-            case 'add':
-                check() !== undefined ? $.console('error', check()) : key in obj ? $.console('error', `Key name ${key} already in this object`) : obj[key] = value;
-                break;
-            case 'delete':
-                check() !== undefined ? $.console('error', check()) : key in obj ? delete obj[key] : $.console('error', `Key name ${key} not in this object.`);
-                break;
+    
+    $.currencyTranser = (currencyType:string,formatNumber:number):(string | undefined) => { // 更新方法 2022/06/24
+        if(currencyType !== undefined){
+            const currencyOptionalObj = currencyType === '' ? {} : { style: 'currency', currency: currencyType }
+            return new Intl.NumberFormat(currencyType === '' ? 'TWN' : currencyType,currencyOptionalObj).format(formatNumber)
+        } else {
+            $.console('error','First argument currency type is must.')
         }
     }
 
@@ -266,7 +237,7 @@ const $: any = ((el) => {
          * @param {object}
          * { 
          *   formatDate: Date || string,
-         *   formatType:string, <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
+         *   formatType:string, <= 取日期時間格式 yyyy-MM-dd HH:mm:ss 等方式
          *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          *   toDateFullNumber <= toDateFullNumber 將當前格式化時間改為數字，可以用於排序上，可選參數
          * }
@@ -312,181 +283,202 @@ const $: any = ((el) => {
     }
 
     class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
-        public static baseUrl:string = ''
-        public static baseHeaders:{[key:string]:any} = {}
+        private static baseUrl:string = ''
+        private static baseHeaders:{[key:string]:any} = {}
 
-        public static async fetchSetting<T>(settingParams:{
-            method: string,
-            url: string,
-            headers?: { [key: string]: any },
-            contentType?: string,
-            data?: { [key: string]: any },
-            routeParams?:{[key:string]:any}
-            beforePost?: () => void,
-            successFn?: (data: any) => void,
-            excuteDone?: () => void,
-            errorFn?: (err: any) => void
-        },usePromise:boolean):Promise<void | fetchClassReturnType<T>> { 
-            // 更新類 ajax 方法 2021/09/11
-            // 更新類 ajax 方法內容 2021/10/21
-            //#region 參數設定
-            /**
-             * @param {string} method
-             * @param {string} url
-             * @param {object} header 追加 hearder 物件 2021/10/21
-             * @param {object} data
-             * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
-             * @param {string} contentType
-             * @param {Function} beforePost <= 回呼函式
-             * @param {Function} successFn <= 回呼函式
-             * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
-             * @param {Function} errorFn <= 回呼函式
-             */
-            //#endregion
-    
-            const settings:{ [key: string]: any } = {};
-            const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
-    
-            settings.method = method;
-            settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
-    
-            if(routeParams){
-                const [keyName] = Object.keys(routeParams)
-                settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
-            }
+        static fetchSetting: <T>(settingParams: { method: requestMethod; url: string; headers?: { [key: string]: any; } | undefined; contentType?: string | undefined; data?: { [key: string]: any; } | undefined; routeParams?: { [key: string]: any; } | undefined; beforePost?: (() => void) | undefined; successFn?: ((data: any) => void) | undefined; excuteDone?: (() => void) | undefined; errorFn?: ((err: any) => void) | undefined; }, usePromise: boolean) => Promise<void | fetchClassReturnType<T>>;
+        static createBase: ({ baseUrl, baseHeaders }: { baseUrl: string; baseHeaders: { [key: string]: any; }; }) => void;
 
-            if (this.baseHeaders || headers) {
-                settings.headers = this.baseHeaders || headers;
-            }
-    
-            if (data) {
-                settings.headers = this.baseHeaders || { "Content-Type": contentType };
-                settings.body = $.convert(data, 'stringify');
-            }
-    
-            if ((this.baseHeaders || headers) && data) {
-                settings.headers = this.baseHeaders || { ...headers };
-                settings.body = $.convert(data, 'stringify');
-            };
-
-            if(!usePromise){
-                if (beforePost){
-                    beforePost!.call(beforePost);
-                };
+        static {
+            this.fetchSetting = async <T>(settingParams:{ 
+                method: requestMethod; 
+                url: string; 
+                headers?: { [key: string]: any; }; 
+                contentType?: string; data?: { [key: string]: any; }; 
+                routeParams?: { [key: string]: any; }; 
+                beforePost?: () => void; 
+                successFn?: (data: any) => void; 
+                excuteDone?: () => void; 
+                errorFn?: (err: any) => void; 
+            },usePromise:boolean):Promise<void | fetchClassReturnType<T>> => { 
+                // 更新類 ajax 方法 2021/09/11
+                // 更新類 ajax 方法內容 2021/10/21
+                //#region 參數設定
+                /**
+                 * @param {string} method
+                 * @param {string} url
+                 * @param {object} header 追加 hearder 物件 2021/10/21
+                 * @param {object} data
+                 * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
+                 * @param {string} contentType
+                 * @param {Function} beforePost <= 回呼函式
+                 * @param {Function} successFn <= 回呼函式
+                 * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
+                 * @param {Function} errorFn <= 回呼函式
+                 */
+                //#endregion
         
-                if(!successFn){
-                    $.console('error','Function Name successFn is required in obejct parameters.');
-                    return
-                };
+                const settings:{ [key: string]: any } = {};
+                const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
         
-                if(!errorFn){
-                    $.console('error','Function Name errorFn is required in obejct parameters.');
-                    return
-                };
-            }
-
-            const res = await fetch(settingParams.url, settings).then(res => res);
-
-            if(usePromise){
-                return new Promise<fetchClassReturnType<T>>((resolve,reject) => {
-                    if (res.status >= 200 && res.status < 300) {
-                        res.json().then((resItem:T) => resolve({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                            data:resItem
-                        }));
+                settings.method = method;
+                settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+    
+                if(method){
+                    if(!$.includes(["get","post","patch","put","delete"],method.toLocaleLowerCase())){
+                        $.console('error','Method value must use valid request method,like get、post ...');
+                        return
                     }
-                    else {
-                        reject({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                        });
+                } else {
+                    $.console('error','Property name method is required in obejct parameters.');
+                    return
+                }
+        
+                if(routeParams){
+                    const [keyName] = Object.keys(routeParams)
+                    settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+                }
+    
+                if (Object.keys(this.baseHeaders).length > 0 || headers) {
+                    settings.headers = Object.keys(this.baseHeaders).length > 0 ? this.baseHeaders : { "Content-Type": 'application/json',...headers };
+                } 
+                
+                if (!headers){
+                    settings.headers = { "Content-Type": contentType ? contentType : 'application/json' };
+                }
+        
+                if (data) {
+                    settings.headers = this.baseHeaders || { "Content-Type": contentType || 'application/json' };
+                    settings.body = $.convert(data, 'stringify');
+                }
+        
+                if ((this.baseHeaders || headers) && data) {
+                    settings.headers = this.baseHeaders || { ...headers };
+                    settings.body = $.convert(data, 'stringify');
+                };
+    
+                if(!usePromise){
+                    if (beforePost){
+                        beforePost!.call(beforePost);
                     };
-                })
-            } else {
-                // 更新 Request 成功與錯誤回傳內容 2022/03/14
-                try {
-                    if (res.status >= 200 && res.status < 300) {
-                        res.json().then((resItem:T) => successFn.call(successFn,{
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                            data:resItem
-                        })).then(() => excuteDone && excuteDone.call(excuteDone));
-                    }
-                    else {
-                        throw new Error(JSON.stringify({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                        }));
+            
+                    if(!successFn){
+                        $.console('error','Function Name successFn is required in obejct parameters.');
+                        return
+                    };
+            
+                    if(!errorFn){
+                        $.console('error','Function Name errorFn is required in obejct parameters.');
+                        return
                     };
                 }
-                catch (err:any) {
-                    errorFn.call(errorFn,JSON.parse(err.message));
-                };
+    
+                const res:Response = await fetch(settingParams.url, settings).then(res => res);
+    
+                if(usePromise){
+                    return new Promise<fetchClassReturnType<T>>((resolve,reject) => {
+                        if (res.status >= 200 && res.status < 300) {
+                            (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => resolve({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                                data:resItem
+                            }));
+                        }
+                        else {
+                            reject({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                            });
+                        };
+                    })
+                } else {
+                    // 更新 Request 成功與錯誤回傳內容 2022/03/14
+                    try {
+                        if (res.status >= 200 && res.status < 300) {
+                            (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => successFn?.call(successFn,{
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                                data:resItem
+                            })).then(() => excuteDone && excuteDone.call(excuteDone));
+                        }
+                        else {
+                            throw new Error(JSON.stringify({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                            }));
+                        };
+                    }
+                    catch (err:any) {
+                        errorFn?.call(errorFn,JSON.parse((err as Error).message));
+                    };
+                }
+            };
+    
+            this.createBase = ({ baseUrl,baseHeaders }) => { // 更新 fetch 物件組態設定方法 2022/03/24
+                //#region
+                /** 參數設定
+                 * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
+                 * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
+                 */
+                //#endregion
+                this.baseUrl = baseUrl
+                this.baseHeaders = baseHeaders
             }
-        };
-
-        public static createBase({ baseUrl,baseHeaders }:{ baseUrl:string,baseHeaders:{[key:string]:any} }){ // 更新 fetch 物件組態設定方法 2022/03/24
-            //#region
-            /** 參數設定
-             * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
-             * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
-             */
-            //#endregion
-            this.baseUrl = baseUrl
-            this.baseHeaders = baseHeaders
         }
-        
     }
 
     class FetchPromisClass extends FetchClass {
-        static get<T>(url:string,setting:{ headers:{[key:string]:any} }){ // 更新 Promise 導出 get 方法 2022/05/01
-            return this.fetchSetting<T>({ method: 'get',url ,...setting },true)
-        }
+        static get: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+        static post: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+        static patch: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+        static put: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+        static delete: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+            
+        static {
+            // 更新 Promise 導出 get 方法 2022/05/01
 
-        static post<T>(url:string,setting:{ headers:{[key:string]:any},data:{[key:string]:any} }){ // 更新 Promise 導出 post 方法 2022/05/01
-            return this.fetchSetting<T>({ method: 'post',url ,...setting },true)
-        }
+            this.get = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
 
-        static patch<T>(url:string,setting:{ headers:{[key:string]:any},data:{[key:string]:any} }){ // 更新 Promise 導出 patch 方法 2022/05/01
-            return this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
-        }
+            // 更新 Promise 導出 post 方法 2022/05/01
+            this.post = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
 
-        static put<T>(url:string,setting:{ headers:{[key:string]:any},data:{[key:string]:any} }){ // 更新 Promise 導出 put 方法 2022/05/01
-            return this.fetchSetting<T>({ method: 'put',url ,...setting },true)
-        }
+            // 更新 Promise 導出 patch 方法 2022/05/01
+            this.patch = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
 
-        static delete<T>(url:string,setting:{ headers:{[key:string]:any},data:{[key:string]:any} }){ // 更新 Promise 導出 delete 方法 2022/05/01
-            return this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
+            // 更新 Promise 導出 put 方法 2022/05/01
+            this.put = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
+
+            // 更新 Promise 導出 delete 方法 2022/05/01
+            this.delete = <T>(url: string, setting: { headers: { [key: string]: any; }; }) => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
         }
     }
 
     $.fetch = <T>(settingParams:{ // 更新 FetchClass 類方法導出 2022/03/24
-        method: string,
+        method: requestMethod,
         url: string,
         headers?: { [key: string]: any },
         contentType?: string,
@@ -514,6 +506,45 @@ const $: any = ((el) => {
 
     return $;
 })((el: any): any => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/8/31
+
+// Origin class extends method
+/*eslint no-extend-native: ["off", { "exceptions": ["Object"] }]*/
+// Use in node js
+// declare global {
+//     interface String { 
+//         format:(formatStr:string,value:any[]) => (string | undefined)
+//         appendText:(txt:string) => string
+//     }
+// }
+
+interface String {
+    format:(formatStr:string,value:any[]) => (string | undefined)
+    appendText:(txt:string) => string
+}
+
+String.prototype.appendText = function(txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.format = function(formatStr,...values) { // 更新方法 2022/06/24
+    if($.typeOf(formatStr,'String') && $.includes(formatStr,'{') && $.includes(formatStr,'}')){
+        if(formatStr.split('{').join('').split('}').length - 1 === values.length){
+
+            let formatStrTemp:string = formatStr
+
+            const valuesTemp:{ replaceKey:string,replaceValue:any }[] = $.maps(values,(value:any,index:number) => ({ replaceKey:`{${index}}`,replaceValue:value }))
+            
+            const returnReplaceDoneStr:string = $.maps(valuesTemp,({ replaceKey,replaceValue }:{ replaceKey:string,replaceValue:any }) => {
+                formatStrTemp = formatStrTemp.replace(replaceKey,replaceValue)
+                return formatStrTemp
+            }).slice(valuesTemp.length - 1,valuesTemp.length).join('')
+
+            return returnReplaceDoneStr
+        } else {
+            $.console('error',"Can't not find else aguments.")
+        }
+    } else {
+        $.console('error','First paramter must use type string,if use string must like this ex：abc {0} efg {1}.')
+    }
+}
 
 // Use in node js
 // declare global {
@@ -570,7 +601,7 @@ Date.prototype.toOptionTimeZoneForISO = function (zoneTime: number): string {
 // declare global {
 //     interface Array<T> { 
 //         append: (item:any) => void
-//         appendFirst:(...item:any[]) => any[]
+//         appendFirst:(...item:[]) => any[]
 //         remove:(pos:number) => any[]
 //         range:(startPos:number,endPos:number) => any[]
 //         removeFirst:() => any[]

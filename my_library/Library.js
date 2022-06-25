@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/05 Library language - javascript ver 1.4.5
+// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.6
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -118,19 +118,19 @@ const $ = ((el) => {
     };
     
     // public function
-    $.each = (item, fn) => item.forEach((items, index) => fn.call(item, items, index));
-    $.maps = (item, fn) => item.map((items, index) => fn.call(item, items, index));
-    $.filter = (item, fn) => item.filter((items) => fn.call(item, items));
-    $.find = (item,fn) => item.find(item => fn.call(item,items)) // 更新方法 2022/03/12
-    $.reduce = (item,fn) => item.reduce((a,b) => fn.call(item,a,b)) // 更新方法 2022/03/12
-    $.sort = (item,fn) => item.sort((a,b) => fn.call(item,a,b))
+    $.each = (item, callBack) => item.forEach((items, index) => callBack.call(callBack, items, index));
+    $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, items, index));
+    $.filter = (item, callBack) => item.filter((items) => callBack.call(callBack, items));
+    $.find = (item,callBack) => item.find(items => callBack.call(callBack,items)) // 更新方法 2022/03/12
+    $.reduce = (item,callBack) => item.reduce((a,b) => callBack.call(callBack,a,b)) // 更新方法 2022/03/12
+    $.sort = (item,callBack) => item.sort((a,b) => callBack.call(callBack,a,b))
     $.indexOf = (item, x) => item.indexOf(x);
     $.includes = (item, x) => item.includes(x);
-    $.findIndexOfObj = (item, fn) => item.findIndex((where) => fn.call(item, where));
-    $.findObjProperty = (obj,propertyName) => propertyName in obj // 更新方法 2022/03/23
-    $.sum = (item, fn) => item.reduce((a, b) => fn.call(item, a, b));
-    $.mergeArray = (item,mergeItem,fn) => fn === undefined ? item.concat(mergeItem) : fn.call(fn,item.concat(mergeItem)) // 更新方法 2022/03/23
-    $.typeOf = (item,classType) => classType === undefined ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
+    $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items));
+    $.findObjProperty = (obj,propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
+    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(item, a, b),initialVal) : item.reduce((a, b) => callBack.call(item, a, b))
+    $.mergeArray = (item,mergeItem,callBack) => callBack ? item.concat(mergeItem) : callBack.call(callBack,item.concat(mergeItem)) // 更新方法 2022/03/23
+    $.typeOf = (item,classType) => classType ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
     $.createArray = ({ type,item },repack) => { // 更新方法 2022/03/14
@@ -189,52 +189,13 @@ const $ = ((el) => {
     }
     $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
-    $.objManager = (obj,action,key,value) => { // 更新方法 2021/10/21
 
-        //#region 參數設定
-        /**
-         * @param {object} obj <= 型別物件 要管理的物件
-         * @param {string} action <= 型別字串，要執行的動作，有分為 get ( 取得管理物件內容 )、set ( 設定管理物件指定鍵與值 )、add ( 新增管理物件鍵與值 )、delete ( 刪除管理物件指定鍵與值 )
-         * @param {string} key <= 型別字串，為鍵值的鍵
-         * @param {any} value <= 型別任意，為鍵值的值
-         * @returns {object | void}
-         */
-        //#endregion
-
-        const check = () => {
-            if(obj === undefined){
-                return "Please put want to manage's object at first parameters";
-            };
-        
-            if(action === undefined || !$.includes(['get','set','add','delete'],action)){
-                return 'Please enter want to use methods "get、set、add、delete" at seconde parameters'
-            } else if(typeof action !== 'string'){
-                return 'Seconde parameters must use type string.';
-            };
-        
-            if(key === undefined){
-                return 'Please enter want to use key name at third parameters';
-            } else if(typeof key !== 'string'){
-                return 'Third parameters must use type string.';
-            };
-        
-            if(value === undefined){
-                return `Please enter want to set value at forth parameters.`;
-            };
-        }
-
-        switch(action){
-            case 'get':
-                return obj;
-            case 'set':
-                check() !== undefined ? $.console('error',check()) : key in obj ? obj[key] = value : $.console('error',`Key name ${key} not in this object.`);
-                break;
-            case 'add':
-                check() !== undefined ? $.console('error',check()) : key in obj ? $.console('error',`Key name ${key} already in this object`) : obj[key] = value;
-                break;
-            case 'delete':
-                check() !== undefined ? $.console('error',check()) : key in obj ? delete obj[key] : $.console('error',`Key name ${key} not in this object.`);
-                break;
+    $.currencyTranser = (currencyType,formatNumber) => { // 更新方法 2022/06/24
+        if(currencyType !== undefined){
+            const currencyOptionalObj = currencyType === '' ? {} : { style: 'currency', currency: currencyType }
+            return new Intl.NumberFormat(currencyType === '' ? 'TWN' : currencyType,currencyOptionalObj).format(formatNumber)
+        } else {
+            $.console('error','First argument currency type is must.')
         }
     }
 
@@ -244,7 +205,7 @@ const $ = ((el) => {
          * @param {object} 
          * { 
          *   formatDate: Date || string,
-         *   formatType:string, <= formatType 參數 time 取時間、date 取日期、full 取日期與時間
+         *   formatType:string, <= 取日期時間格式 yyyy-MM-dd HH:mm:ss 等方式
          *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          *   toDateFullNumber <= toDateFullNumber 將當前格式化時間改為數字，可以用於排序上，可選參數
          * }
@@ -276,167 +237,178 @@ const $ = ((el) => {
     }
 
     class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
-        constructor(){
-            this.baseUrl = ''
-            this.baseHeaders = {}
-        }
+        static #baseUrl = '';
+        static #baseHeaders = {}
 
-        static async fetchSetting(settingParams,usePromise) { 
-            // 更新類 ajax 方法 2021/09/11
-            // 更新類 ajax 方法內容 2021/10/21
-            //#region 參數設定
-            /**
-             * @param {string} method
-             * @param {string} url
-             * @param {object} header 追加 hearder 物件 2021/10/21
-             * @param {object} data
-             * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
-             * @param {string} contentType
-             * @param {Function} beforePost <= 回呼函式
-             * @param {Function} successFn <= 回呼函式
-             * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
-             * @param {Function} errorFn <= 回呼函式
-             */
-            //#endregion
-    
-            const settings = {};
-            const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
-    
-            settings.method = method;
-            settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
-
-            if(routeParams){
-                const [keyName] = Object.keys(routeParams)
-                settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
-            }
-
-            if (this.baseHeaders || headers) {
-                settings.headers = this.baseHeaders || headers;
-            }
-    
-            if (data) {
-                settings.headers = this.baseHeaders || { "Content-Type": contentType };
-                settings.body = $.convert(data, 'stringify');
-            }
-    
-            if ((this.baseHeaders || headers) && data) {
-                settings.headers = this.baseHeaders || { ...headers };
-                settings.body = $.convert(data, 'stringify');
-            };
-            
-            if(!usePromise) {
-                if (beforePost){
-                    beforePost.call(beforePost);
-                };
+        static {
+            this.fetchSetting = async (settingParams,usePromise) => { 
+                // 更新類 ajax 方法 2021/09/11
+                // 更新類 ajax 方法內容 2021/10/21
+                //#region 參數設定
+                /**
+                 * @param {string} method
+                 * @param {string} url
+                 * @param {object} header 追加 hearder 物件 2021/10/21
+                 * @param {object} data
+                 * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
+                 * @param {string} contentType
+                 * @param {Function} beforePost <= 回呼函式
+                 * @param {Function} successFn <= 回呼函式
+                 * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
+                 * @param {Function} errorFn <= 回呼函式
+                 */
+                //#endregion
         
-                if(!successFn){
-                    $.console('error','Function Name successFn is required in obejct parameters.');
-                    return
-                };
+                const settings = {};
+                const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
         
-                if(!errorFn){
-                    $.console('error','Function Name errorFn is required in obejct parameters.');
-                    return
-                };
-            }
-
-            const res = await fetch(settingParams.url, settings).then(res => res);
-            
-            if(usePromise){
-                // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
-                return new Promise((resolve,reject) => {
-                    if (res.status >= 200 && res.status < 300) {
-                        res.json().then(resItem => resolve({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                            data:resItem
-                        }));
+                settings.method = method;
+                settingParams.url = FetchClass.#baseUrl ? `${FetchClass.#baseUrl}${settingParams.url}` : settingParams.url;
+    
+                if(method){
+                    if(!$.includes(["get","post","patch","put","delete"],method.toLocaleLowerCase())){
+                        $.console('error','Method value must use valid request method,like get、post ...');
+                        return
                     }
-                    else {
-                        reject({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                        });
+                } else {
+                    $.console('error','Property name method is required in obejct parameters.');
+                    return
+                }
+    
+                if(routeParams){
+                    const [keyName] = Object.keys(routeParams)
+                    settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+                }
+    
+                if (Object.keys(FetchClass.#baseHeaders).length > 0 || headers) {
+                    settings.headers = Object.keys(FetchClass.#baseHeaders).length > 0 ? FetchClass.#baseHeaders : { "Content-Type": 'application/json',...headers };
+                } 
+                
+                if (!headers){
+                    settings.headers = { "Content-Type": contentType ? contentType : 'application/json' };
+                }
+        
+                if (data) {
+                    settings.headers = FetchClass.#baseHeaders || { "Content-Type": contentType || 'application/json' };
+                    settings.body = $.convert(data, 'stringify');
+                }
+        
+                if ((FetchClass.#baseHeaders || headers) && data) {
+                    settings.headers = FetchClass.#baseHeaders || { ...headers };
+                    settings.body = $.convert(data, 'stringify');
+                };
+                
+                if(!usePromise) {
+                    if (beforePost){
+                        beforePost.call(beforePost);
                     };
-                })
-            } else {
-                // 更新 Request 成功與錯誤回傳內容 2022/03/14
-                try {
-                    if (res.status >= 200 && res.status < 300) {
-                        res.json().then(resItem => successFn.call(successFn,{
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                            data:resItem
-                        })).then(() => excuteDone && excuteDone.call(excuteDone));
-                    }
-                    else {
-                        throw new Error(JSON.stringify({
-                            bodyUsed: res.bodyUsed,
-                            headers: res.headers,
-                            ok: res.ok,
-                            redirected: res.redirected,
-                            status: res.status,
-                            statusText: res.statusText,
-                            type: res.type,
-                            url:res.url,
-                        }));
+            
+                    if(!successFn){
+                        $.console('error','Function Name successFn is required in obejct parameters.');
+                        return
+                    };
+            
+                    if(!errorFn){
+                        $.console('error','Function Name errorFn is required in obejct parameters.');
+                        return
                     };
                 }
-                catch (err) {
-                    errorFn.call(errorFn,JSON.parse(err.message));
-                };
+    
+                const res = await fetch(settingParams.url, settings).then(res => res);
+                
+                if(usePromise){
+                    // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
+                    return new Promise((resolve,reject) => {
+                        if (res.status >= 200 && res.status < 300) {
+                            res[settings.headers["Content-Type"].split('/')[1]]().then(resItem => resolve({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                                data:resItem
+                            }));
+                        }
+                        else {
+                            reject({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                            });
+                        };
+                    })
+                } else {
+                    try {
+                        if (res.status >= 200 && res.status < 300) {
+                            res[settings.headers["Content-Type"].split('/')[1]]().then(resItem => successFn.call(successFn,{
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                                data:resItem
+                            })).then(() => excuteDone && excuteDone.call(excuteDone));
+                        }
+                        else {
+                            throw new Error(JSON.stringify({
+                                bodyUsed: res.bodyUsed,
+                                headers: res.headers,
+                                ok: res.ok,
+                                redirected: res.redirected,
+                                status: res.status,
+                                statusText: res.statusText,
+                                type: res.type,
+                                url:res.url,
+                            }));
+                        };
+                    }
+                    catch (err) {
+                        errorFn.call(errorFn,JSON.parse(err.message));
+                    };
+                    // 更新 Request 成功與錯誤回傳內容 2022/03/14
+                }
+            };
+    
+            this.createBase = ({ baseUrl,baseHeaders }) => { // 更新 fetch 物件組態設定方法 2022/03/24
+                //#region
+                /** 參數設定
+                 * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
+                 * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
+                 */
+                //#endregion
+                FetchClass.#baseUrl = baseUrl
+                FetchClass.#baseHeaders = baseHeaders
             }
-        };
-
-        static createBase({ baseUrl,baseHeaders }){ // 更新 fetch 物件組態設定方法 2022/03/24
-            //#region
-            /** 參數設定
-             * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
-             * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
-             */
-            //#endregion
-            this.baseUrl = baseUrl
-            this.baseHeaders = baseHeaders
         }
     }
 
     class FetchPromisClass extends FetchClass {
-        static get(url,setting){ // 更新 Promise 導出 get 方法 2022/05/01
-            return this.fetchSetting({ method: 'get',url ,...setting },true)
-        }
-
-        static post(url,setting){ // 更新 Promise 導出 post 方法 2022/05/01
-            return this.fetchSetting({ method: 'post',url ,...setting },true)
-        }
-
-        static patch(url,setting){ // 更新 Promise 導出 patch 方法 2022/05/01
-            return this.fetchSetting({ method: 'patch',url ,...setting },true)
-        }
-
-        static put(url,setting){ // 更新 Promise 導出 put 方法 2022/05/01
-            return this.fetchSetting({ method: 'put',url ,...setting },true)
-        }
-
-        static delete(url,setting){ // 更新 Promise 導出 delete 方法 2022/05/01
-            return this.fetchSetting({ method: 'delete',url ,...setting },true)
+        static {
+            // 更新 Promise 導出 get 方法 2022/05/01
+            this.get = (url,setting) => this.fetchSetting({ method: 'get',url ,...setting },true)
+    
+            // 更新 Promise 導出 post 方法 2022/05/01
+            this.post = (url,setting) => this.fetchSetting({ method: 'post',url ,...setting },true)
+    
+            // 更新 Promise 導出 patch 方法 2022/05/01
+            this.patch = (url,setting) => this.fetchSetting({ method: 'patch',url ,...setting },true) 
+    
+            // 更新 Promise 導出 put 方法 2022/05/01
+            this.put = (url,setting) => this.fetchSetting({ method: 'put',url ,...setting },true)
+    
+            // 更新 Promise 導出 delete 方法 2022/05/01
+            this.delete = (url,setting) => this.fetchSetting({ method: 'delete',url ,...setting },true)
         }
     }
 
@@ -469,6 +441,31 @@ const $ = ((el) => {
 
     return $;
 })((el) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/08/31
+
+// Origin class extends method
+String.prototype.appendText = function(txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.format = function(formatStr,...values) { // 更新方法 2022/06/24
+    if($.typeOf(formatStr,'String') && $.includes(formatStr,'{') && $.includes(formatStr,'}')){
+        if(formatStr.split('{').join('').split('}').length - 1 === values.length){
+
+            let formatStrTemp = formatStr
+
+            const valuesTemp = $.maps(values,(value,index) => ({ replaceKey:`{${index}}`,replaceValue:value }))
+            
+            const returnReplaceDoneStr = $.maps(valuesTemp,({ replaceKey,replaceValue }) => {
+                formatStrTemp = formatStrTemp.replace(replaceKey,replaceValue)
+                return formatStrTemp
+            }).slice(valuesTemp.length - 1,valuesTemp.length).join('')
+
+            return returnReplaceDoneStr
+        } else {
+            $.console('error',"Can't not find else aguments.")
+        }
+    } else {
+        $.console('error','First paramter must use type string,if use string must like this ex：abc {0} efg {1}.')
+    }
+}
 
 Date.prototype.calculateDay = function(format){ 
     // 更新方法內容與回傳內容 2021/09/22
