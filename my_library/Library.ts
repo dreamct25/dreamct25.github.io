@@ -1,20 +1,92 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.6
+// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.7
 // Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
 // export default $
 
-const $: any = ((el) => {
-    // String tips when use method
-    type createArrayType = 'fake' | 'new'
-    type localDataActionType = 'get' | 'set'
-    type stylesMethod = 'set' | 'remove'
-    type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
-    type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
-    type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
+// String tips when use method
+type createArrayType = 'fake' | 'new'
+type localDataActionType = 'get' | 'set'
+type stylesMethod = 'set' | 'remove'
+type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
+type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
+type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
 
-    const $ = (target: any): any => {
-        const self: any = el.call(el, target) || target;
+interface fetchClassReturnType<T> {
+    bodyUsed: boolean,
+    headers: object,
+    ok: boolean,
+    redirected: boolean,
+    status: number,
+    statusText: string,
+    type: string,
+    url: string,
+    data?: T
+}
+
+// declare $
+declare interface $ { // 更新 2022/06/29
+    (target: string | object): {
+        texts(txt?: string): string | void
+        html(dom?: string): string | void
+        addClass(classText: string): any
+        removeClass(classText: string): any
+        toggleClass(classText: string): void
+        on(eventType: string, fn: (self: any, t: Event) => void): void
+        listener(eventType: string, fn: () => void): void
+        removeListener(eventType: string, fn: () => void): void
+        val(valTemp?: string): string | void
+        attr(props: string, val?: any): (string | number | void)
+        props(props: string, val?: any): any
+        sibling(num: number): HTMLElement
+        child(num: number): HTMLElement
+        childFirst(): HTMLElement
+        childLast(): HTMLElement
+        parent(): HTMLElement
+        appendDom(el: HTMLElement): void
+        removeDom(): void
+        removeChildDom(): void
+        appendDomText(el: Text): void
+        easyAppendDom(orderBy: string, domStr: string): void
+        styles(method: stylesMethod, cssType: string, cssParameter: string): typeof self | undefined
+        getDomStyles(conditionProps: string[]): { [key: string]: any }
+        getDomPos():{ x: number,y: number,top: number,left: number,right: number,bottom: number,width: number,height: number }
+        scrollToTop(scrollSetting: { scrollTop: number, duration: number }):void
+        useWillMount(willMountCallBack: (target: HTMLDocument) => void): void
+        useMounted(useMountedCallBack: (target: HTMLDocument) => void): void
+    }
+    each(item: any[], callBack: (items: any,index:number) => void): void
+    maps(item: any[], callBack: (items: any,index:number) => any): any
+    filter(item: any[], callBack: (items: any) => any[]):any[]
+    find(item: any[], callBack: (items: any) => void):any
+    sort(item: any[], callBack: (a: any, b: any) => number):any[]
+    sum(item: any, callBack: (a: any, b: any) => any, initialVal: any):any
+    indexOf(item: any, x: any):number
+    includes(item: any, x: any): boolean;
+    findIndexOfObj(item: any, callBack: (items: any) => void):number
+    findObjProperty(obj: { [key: string]: any }, propertyName: string):boolean
+    mergeArray(item: any[], mergeItem: any[], callBack?: ((items: any) => any[]) | undefined):any[]
+    typeOf(item: any, classType: any): string | boolean;
+    console(type: consoleMethod, ...item: any): void;
+    localData(action: localDataActionType, keyName: string, item: any):any
+    convert<T>(val: any, type: convertType): (T | undefined)
+    createArray({ type, item }: { type: createArrayType; item: any | { random: number }}, repack?: ((y: any) => any) | undefined):any[] | undefined
+    createDom(tag: string, props: { [key: string]: any }):HTMLElement
+    createDomText(text: string):Text
+    objDetails(obj: { [key: string]: any }, method: string):void | any[]
+    currencyTranser(currencyType: string, formatNumber: number):string | undefined
+    formatDateTime(format: { 
+        formatDate: string | Date; 
+        formatType: string; 
+        localCountryTime?: number | undefined; 
+        toDateFullNumber?: boolean | undefined 
+    }):string | number | undefined
+    fetch: any
+}
+
+const $$:$ = ((el) => {
+    const $:$ = (target: string | object):any => {
+        const self: {[key:string]:any} = el.call(el, target) as HTMLElement || target as Object;
         self.texts = (txt?: string): string | void => txt ? self.textContent : self.textContent = txt;
         self.html = (dom?: string): string | void => dom ? self.innerHTML : self.innerHTML = dom;
         self.addClass = (classText: string): any => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -26,16 +98,16 @@ const $: any = ((el) => {
         self.val = (valTemp?: string): string | void => valTemp ? self.value : self.value = valTemp;
         self.attr = (props: string, val?: any): (string | number | void) => val ? self.getAttribute(props) : self.setAttribute(props, val);
         self.props = (props: string, val?: any): any => val ? self[props] : self[props] = val;
-        self.sibling = (num: number): HTMLElement => $(self[num]);         // 更新方法 2021/08/31
-        self.child = (num: number): HTMLElement => $(self.children[num]);  // 更新方法 2021/08/31
-        self.childFirst = (): HTMLElement => $(self.firstElementChild);    // 更新方法 2021/08/31
-        self.childLast = (): HTMLElement => $(self.lastElementChild);      // 更新方法 2021/08/31
-        self.parent = (): HTMLElement => $(self.parentNode);               // 更新方法 2021/08/31
-        self.appendDom = (el: HTMLElement): void => $(self).append(el);    // 更新方法 2021/09/12
-        self.removeDom = (): void => $(self).remove();                     // 更新方法 2021/09/12
-        self.removeChildDom = (): void => $(self).replaceChildren();       // 更新方法 2021/10/25
-        self.appendDomText = (el: Text): void => $(self).appendChild(el);  // 更新方法 2021/09/12
-        self.easyAppendDom = (orderBy: string, domStr: string): void => $(self).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr);  // 更新方法 2021/11/25
+        self.sibling = (num: number): HTMLElement => self[num];         // 更新方法 2021/08/31
+        self.child = (num: number): HTMLElement => self.children[num];  // 更新方法 2021/08/31
+        self.childFirst = (): HTMLElement => self.firstElementChild;    // 更新方法 2021/08/31
+        self.childLast = (): HTMLElement => self.lastElementChild;      // 更新方法 2021/08/31
+        self.parent = (): HTMLElement => self.parentNode;               // 更新方法 2021/08/31
+        self.appendDom = (el: HTMLElement): void => self.append(el);    // 更新方法 2021/09/12
+        self.removeDom = (): void => self.remove();                     // 更新方法 2021/09/12
+        self.removeChildDom = (): void => self.replaceChildren();       // 更新方法 2021/10/25
+        self.appendDomText = (el: Text): void => self.appendChild(el);  // 更新方法 2021/09/12
+        self.easyAppendDom = (orderBy: string, domStr: string): void => self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr);  // 更新方法 2021/11/25
         self.styles = (method: stylesMethod, cssType: string, cssParameter: string): typeof self | undefined => {
             // 更新方法 2021/10/26
             // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -54,7 +126,7 @@ const $: any = ((el) => {
                 if (conditionProps.length === 0) {
                     $.console('error', 'Parameter must use array,and css property must in array with string.');
                 } else {
-                    $.each(conditionProps, item => cssProperty[item] = getComputedStyle($(self)).getPropertyValue(item));
+                    $.each(conditionProps, item => cssProperty[item] = getComputedStyle(self as HTMLElement).getPropertyValue(item));
                     return cssProperty;
                 }
             }
@@ -70,14 +142,14 @@ const $: any = ((el) => {
             width: number,
             height: number
         } => ({
-            x: $(self).props('offsetLeft'),
-            y: $(self).props('offsetTop') - window.scrollY,
-            top: $(self).props('offsetTop') - window.scrollY,
-            left: $(self).props('offsetLeft'),
-            right: $(self).props('offsetLeft') + $(self).props('offsetWidth'),
-            bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
-            width: $(self).props('offsetWidth'),
-            height: $(self).props('offsetHeight')
+            x: self.props('offsetLeft'),
+            y: self.props('offsetTop') - window.scrollY,
+            top: self.props('offsetTop') - window.scrollY,
+            left: self.props('offsetLeft'),
+            right: self.props('offsetLeft') + self.props('offsetWidth'),
+            bottom: (self).props('offsetTop') + self.props('offsetHeight') - window.scrollY,
+            width: self.props('offsetWidth'),
+            height: self.props('offsetHeight')
         });
         self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
             let animateScroll: any = undefined;
@@ -115,7 +187,7 @@ const $: any = ((el) => {
         self.useWillMount = (willMountCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
             if (typeof self === 'object') {
                 if ($.typeOf(self, 'HTMLDocument')) {
-                    $(self).listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target))
+                    self.listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target))
                 } else {
                     $.console('error', 'UseWillMount hook just use when selector document.')
                 }
@@ -127,7 +199,7 @@ const $: any = ((el) => {
         self.useMounted = (useMountedCallBack: (target: HTMLDocument) => void): void => { // 更新方法 2022/03/19
             if (typeof self === 'object') {
                 if ($.typeOf(self, 'HTMLDocument')) {
-                    $(self).listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target))
+                    self.listener('readystatechange', ({ target }: { target: HTMLDocument }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target))
                 } else {
                     $.console('error', 'UseMounted Hook just use when selector document.')
                 }
@@ -138,22 +210,21 @@ const $: any = ((el) => {
 
         return self;
     };
-
-    $.each = (item: any[], callBack: (items: any,index:number) => void): void => item.forEach((items: any, index: number) => callBack.call(callBack, items, index));
-    $.maps = (item: any[], callBack: (items: any,index:number) => any[]): any[] => item.map((items: any, index: number) => callBack.call(callBack, items, index));
-    $.filter = (item: any[], callBack: (items: any) => any[]):any[] => item.filter((items: any) => callBack.call(callBack, items));
-    $.find = (item: any[], callBack: (items: any) => void): any => item.find((items: any) => callBack.call(callBack, items))  // 更新方法 2022/03/12
-    $.sort = (item: any[], callBack: (a: any,b:any) => number): any => item.sort((a: any, b: any) => callBack.call(callBack, a, b));
-    $.indexOf = (item: any, x: any): number => item.indexOf(x);
-    $.includes = (item: any[], x: any): boolean => item.includes(x);
-    $.findIndexOfObj = (item: any, callBack: (items: any) => void): number => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
-    $.findObjProperty = (obj: { [key: string]: any }, propertyName: string): boolean => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.sum = (item: any, callBack: (a: any,b:any) => any,initialVal:any):any => initialVal ? item.reduce((a:any, b:any) => callBack.call(callBack, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(callBack, a, b));
-    $.mergeArray = (item: any[], mergeItem: any[], callBack?: (items: any) => any[]): any[] => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
-    $.typeOf = (item: any, classType: any): string | boolean => classType ? item.constructor.name : item.constructor === classType; // 更新方法 2021/10/26
-    $.console = (type: consoleMethod, ...item: any): void => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
-    $.localData = (action: localDataActionType, keyName: string, item: any): any => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
-    $.createArray = ({ type, item }: { type: createArrayType, item: any[] | { random: number } }, repack?: (y: any) => any): (any[] | undefined) => { // 更新方法 2022/03/14
+    $.each = (item,callBack) => item.forEach((items: any, index: number) => callBack.call(callBack, items, index));
+    $.maps = (item, callBack) => item.map((items: any, index: number) => callBack.call(callBack, items, index));
+    $.filter = (item, callBack) => item.filter((items: any) => callBack.call(callBack, items));
+    $.find = (item, callBack) => item.find((items: any) => callBack.call(callBack, items))  // 更新方法 2022/03/12
+    $.sort = (item, callBack) => item.sort((a: any, b: any) => callBack.call(callBack, a, b));
+    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a:any, b:any) => callBack.call(callBack, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(callBack, a, b));
+    $.indexOf = (item, x) => item.indexOf(x);
+    $.includes = (item, x) => item.includes(x);
+    $.findIndexOfObj = (item, callBack) => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
+    $.findObjProperty = (obj, propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
+    $.mergeArray = (item, mergeItem, callBack) => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
+    $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
+    $.console = (type, ...item) => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
+    $.localData = (action, keyName, item) => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
+    $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
          * @param {string} type <= 型別字串 要創建種類，fake 為創建假陣列、new 為創建新陣列
@@ -171,8 +242,10 @@ const $: any = ((el) => {
         } else if (type === 'new' && !('random' in item)) {
             return Array.from(item)
         }
+
+        return undefined
     }
-    $.convert = <T>(val: any, type: convertType): (T | undefined) => {
+    $.convert = (val, type) => {
         // 更新方法 2021/10/22
         // 更新泛型回傳值 2022/03/19
         if (val === undefined || type === undefined) {
@@ -202,7 +275,7 @@ const $: any = ((el) => {
         return (returnItem as { [key: string]: any })[type];
     }
 
-    $.createDom = (tag: string, props: { [key: string]: any }): HTMLElement => { // 更新方法 2021/09/12
+    $.createDom = (tag, props) => { // 更新方法 2021/09/12
         const el: HTMLElement & { [key: string]: any } = document.createElement(tag);
         const propsArr: [string, any][] = Object.entries(props);
         $.each(propsArr, (getProps: [string, any]) => {
@@ -217,20 +290,23 @@ const $: any = ((el) => {
         })
         return el;
     };
-    $.createDomText = (text: string): Text => document.createTextNode(text); // 更新方法 2021/09/12
-    $.objDetails = (obj: { [key: string]: any }, method: string): any[] | void => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
 
+    $.createDomText = text => document.createTextNode(text); // 更新方法 2021/09/12
     
-    $.currencyTranser = (currencyType:string,formatNumber:number):(string | undefined) => { // 更新方法 2022/06/24
+    $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
+    
+    $.currencyTranser = (currencyType,formatNumber) => { // 更新方法 2022/06/24
         if(currencyType !== undefined){
             const currencyOptionalObj = currencyType === '' ? {} : { style: 'currency', currency: currencyType }
             return new Intl.NumberFormat(currencyType === '' ? 'TWN' : currencyType,currencyOptionalObj).format(formatNumber)
         } else {
             $.console('error','First argument currency type is must.')
         }
-    }
 
-    $.formatDateTime = (format: { formatDate: string | Date, formatType: string, localCountryTime?: number, toDateFullNumber?: boolean }): (string | number | undefined) => { // 更新方法 2021/12/01
+        return undefined
+    }
+    
+    $.formatDateTime = format => { // 更新方法 2021/12/01
         //#region 參數設定
         /**
          * @param {object}
@@ -269,184 +345,167 @@ const $: any = ((el) => {
         }
     }
 
-    interface fetchClassReturnType<T> {
-        bodyUsed: boolean,
-        headers: object,
-        ok: boolean,
-        redirected: boolean,
-        status: number,
-        statusText: string,
-        type: string,
-        url: string,
-        data?: T
-    }
-
     class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
         private static baseUrl:string = ''
         private static baseHeaders:{[key:string]:any} = {}
 
-        static fetchSetting: <T>(settingParams: { method: requestMethod; url: string; headers?: { [key: string]: any; } | undefined; contentType?: string | undefined; data?: { [key: string]: any; } | undefined; routeParams?: { [key: string]: any; } | undefined; beforePost?: (() => void) | undefined; successFn?: ((data: any) => void) | undefined; excuteDone?: (() => void) | undefined; errorFn?: ((err: any) => void) | undefined; }, usePromise: boolean) => Promise<void | fetchClassReturnType<T>>;
-        static createBase: ({ baseUrl, baseHeaders }: { baseUrl: string; baseHeaders: { [key: string]: any; }; }) => void;
-
-        static {
-            this.fetchSetting = async <T>(settingParams:{ 
-                method: requestMethod; 
-                url: string; 
-                headers?: { [key: string]: any; }; 
-                contentType?: string; data?: { [key: string]: any; }; 
-                routeParams?: { [key: string]: any; }; 
-                beforePost?: () => void; 
-                successFn?: (data: any) => void; 
-                excuteDone?: () => void; 
-                errorFn?: (err: any) => void; 
-            },usePromise:boolean):Promise<void | fetchClassReturnType<T>> => { 
-                // 更新類 ajax 方法 2021/09/11
-                // 更新類 ajax 方法內容 2021/10/21
-                //#region 參數設定
-                /**
-                 * @param {string} method
-                 * @param {string} url
-                 * @param {object} header 追加 hearder 物件 2021/10/21
-                 * @param {object} data
-                 * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
-                 * @param {string} contentType
-                 * @param {Function} beforePost <= 回呼函式
-                 * @param {Function} successFn <= 回呼函式
-                 * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
-                 * @param {Function} errorFn <= 回呼函式
-                 */
-                //#endregion
-        
-                const settings:{ [key: string]: any } = {};
-                const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
-        
-                settings.method = method;
-                settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+        static async fetchSetting <T>(settingParams:{ 
+            method: requestMethod; 
+            url: string; 
+            headers?: { [key: string]: any; }; 
+            contentType?: string; data?: { [key: string]: any; }; 
+            routeParams?: { [key: string]: any; }; 
+            beforePost?: () => void; 
+            successFn?: (data: any) => void; 
+            excuteDone?: () => void; 
+            errorFn?: (err: any) => void; 
+        },usePromise:boolean):Promise<void | fetchClassReturnType<T>> { 
+            // 更新類 ajax 方法 2021/09/11
+            // 更新類 ajax 方法內容 2021/10/21
+            //#region 參數設定
+            /**
+             * @param {string} method
+             * @param {string} url
+             * @param {object} header 追加 hearder 物件 2021/10/21
+             * @param {object} data
+             * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
+             * @param {string} contentType
+             * @param {Function} beforePost <= 回呼函式
+             * @param {Function} successFn <= 回呼函式
+             * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
+             * @param {Function} errorFn <= 回呼函式
+             */
+            //#endregion
     
-                if(method){
-                    if(!$.includes(["get","post","patch","put","delete"],method.toLocaleLowerCase())){
-                        $.console('error','Method value must use valid request method,like get、post ...');
-                        return
-                    }
-                } else {
-                    $.console('error','Property name method is required in obejct parameters.');
+            const settings:{ [key: string]: any } = {};
+            const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
+    
+            settings.method = method;
+            settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+
+            if(method){
+                if(!$.includes(["get","post","patch","put","delete"],method.toLocaleLowerCase())){
+                    $.console('error','Method value must use valid request method,like get、post ...');
                     return
                 }
-        
-                if(routeParams){
-                    const [keyName] = Object.keys(routeParams)
-                    settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
-                }
-    
-                if (Object.keys(this.baseHeaders).length > 0 || headers) {
-                    settings.headers = Object.keys(this.baseHeaders).length > 0 ? this.baseHeaders : { "Content-Type": 'application/json',...headers };
-                } 
-                
-                if (!headers){
-                    settings.headers = { "Content-Type": contentType ? contentType : 'application/json' };
-                }
-        
-                if (data) {
-                    settings.headers = this.baseHeaders || { "Content-Type": contentType || 'application/json' };
-                    settings.body = $.convert(data, 'stringify');
-                }
-        
-                if ((this.baseHeaders || headers) && data) {
-                    settings.headers = this.baseHeaders || { ...headers };
-                    settings.body = $.convert(data, 'stringify');
-                };
-    
-                if(!usePromise){
-                    if (beforePost){
-                        beforePost!.call(beforePost);
-                    };
-            
-                    if(!successFn){
-                        $.console('error','Function Name successFn is required in obejct parameters.');
-                        return
-                    };
-            
-                    if(!errorFn){
-                        $.console('error','Function Name errorFn is required in obejct parameters.');
-                        return
-                    };
-                }
-    
-                const res:Response = await fetch(settingParams.url, settings).then(res => res);
-    
-                if(usePromise){
-                    return new Promise<fetchClassReturnType<T>>((resolve,reject) => {
-                        if (res.status >= 200 && res.status < 300) {
-                            (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => resolve({
-                                bodyUsed: res.bodyUsed,
-                                headers: res.headers,
-                                ok: res.ok,
-                                redirected: res.redirected,
-                                status: res.status,
-                                statusText: res.statusText,
-                                type: res.type,
-                                url:res.url,
-                                data:resItem
-                            }));
-                        }
-                        else {
-                            reject({
-                                bodyUsed: res.bodyUsed,
-                                headers: res.headers,
-                                ok: res.ok,
-                                redirected: res.redirected,
-                                status: res.status,
-                                statusText: res.statusText,
-                                type: res.type,
-                                url:res.url,
-                            });
-                        };
-                    })
-                } else {
-                    // 更新 Request 成功與錯誤回傳內容 2022/03/14
-                    try {
-                        if (res.status >= 200 && res.status < 300) {
-                            (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => successFn?.call(successFn,{
-                                bodyUsed: res.bodyUsed,
-                                headers: res.headers,
-                                ok: res.ok,
-                                redirected: res.redirected,
-                                status: res.status,
-                                statusText: res.statusText,
-                                type: res.type,
-                                url:res.url,
-                                data:resItem
-                            })).then(() => excuteDone && excuteDone.call(excuteDone));
-                        }
-                        else {
-                            throw new Error(JSON.stringify({
-                                bodyUsed: res.bodyUsed,
-                                headers: res.headers,
-                                ok: res.ok,
-                                redirected: res.redirected,
-                                status: res.status,
-                                statusText: res.statusText,
-                                type: res.type,
-                                url:res.url,
-                            }));
-                        };
-                    }
-                    catch (err:any) {
-                        errorFn?.call(errorFn,JSON.parse((err as Error).message));
-                    };
-                }
-            };
-    
-            this.createBase = ({ baseUrl,baseHeaders }) => { // 更新 fetch 物件組態設定方法 2022/03/24
-                //#region
-                /** 參數設定
-                 * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
-                 * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
-                 */
-                //#endregion
-                this.baseUrl = baseUrl
-                this.baseHeaders = baseHeaders
+            } else {
+                $.console('error','Property name method is required in obejct parameters.');
+                return
             }
+    
+            if(routeParams){
+                const [keyName] = Object.keys(routeParams)
+                settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+            }
+
+            if (Object.keys(this.baseHeaders).length > 0 || headers) {
+                settings.headers = Object.keys(this.baseHeaders).length > 0 ? this.baseHeaders : { "Content-Type": 'application/json',...headers };
+            } 
+            
+            if (!headers){
+                settings.headers = { "Content-Type": contentType ? contentType : 'application/json' };
+            }
+    
+            if (data) {
+                settings.headers = this.baseHeaders || { "Content-Type": contentType || 'application/json' };
+                settings.body = $.convert(data, 'stringify');
+            }
+    
+            if ((this.baseHeaders || headers) && data) {
+                settings.headers = this.baseHeaders || { ...headers };
+                settings.body = $.convert(data, 'stringify');
+            };
+
+            if(!usePromise){
+                if (beforePost){
+                    beforePost!.call(beforePost);
+                };
+        
+                if(!successFn){
+                    $.console('error','Function Name successFn is required in obejct parameters.');
+                    return
+                };
+        
+                if(!errorFn){
+                    $.console('error','Function Name errorFn is required in obejct parameters.');
+                    return
+                };
+            }
+
+            const res:Response = await fetch(settingParams.url, settings).then(res => res);
+
+            if(usePromise){
+                return new Promise<fetchClassReturnType<T>>((resolve,reject) => {
+                    if (res.status >= 200 && res.status < 300) {
+                        (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => resolve({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                            data:resItem
+                        }));
+                    }
+                    else {
+                        reject({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                        });
+                    };
+                })
+            } else {
+                // 更新 Request 成功與錯誤回傳內容 2022/03/14
+                try {
+                    if (res.status >= 200 && res.status < 300) {
+                        (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => successFn?.call(successFn,{
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                            data:resItem
+                        })).then(() => excuteDone && excuteDone.call(excuteDone));
+                    }
+                    else {
+                        throw new Error(JSON.stringify({
+                            bodyUsed: res.bodyUsed,
+                            headers: res.headers,
+                            ok: res.ok,
+                            redirected: res.redirected,
+                            status: res.status,
+                            statusText: res.statusText,
+                            type: res.type,
+                            url:res.url,
+                        }));
+                    };
+                }
+                catch (err:any) {
+                    errorFn?.call(errorFn,JSON.parse((err as Error).message));
+                };
+            }
+        };
+
+        static createBase({ baseUrl,baseHeaders }:{ baseUrl:string,baseHeaders:{ [key: string]: any }}) { // 更新 fetch 物件組態設定方法 2022/03/24
+            //#region
+            /** 參數設定
+             * @param {string} baseUrl 固定網址，設定後網址後半部變動部分只須設定 url
+             * @param {object} baseHeaders 固定使用的 headers 內容，如 token、Content-Type 之類的
+             */
+            //#endregion
+            this.baseUrl = baseUrl
+            this.baseHeaders = baseHeaders
         }
     }
 
@@ -486,39 +545,39 @@ const $: any = ((el) => {
         successFn: (data: any) => void,
         excuteDone?: () => void,
         errorFn: (err: any) => void
-    }):Promise<fetchClassReturnType<T> | void> => FetchClass.fetchSetting<T>(settingParams,false);
+    }):Promise<fetchClassReturnType<T> | void> | { get:() => void} => FetchClass.fetchSetting<T>(settingParams,false)
 
-    ($.fetch as {[key:string]:any}).get = <T>(url:string,settingParams:{ headers:{[key:string]:any} } = { headers:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.get<T>(url,settingParams);
+    $.fetch.get = <T>(url:string,settingParams:{ headers:{[key:string]:any} } = { headers:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.get<T>(url,settingParams);
 
-    ($.fetch as {[key:string]:any}).post = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.post<T>(url,settingParams);
+    $.fetch.post = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.post<T>(url,settingParams);
 
-    ($.fetch as {[key:string]:any}).patch = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.patch<T>(url,settingParams);
+    $.fetch.patch = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.patch<T>(url,settingParams);
 
-    ($.fetch as {[key:string]:any}).put = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.put<T>(url,settingParams);
+    $.fetch.put = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.put<T>(url,settingParams);
 
-    ($.fetch as {[key:string]:any}).delete = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.delete<T>(url,settingParams);
+    $.fetch.delete = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.delete<T>(url,settingParams);
 
-    ($.fetch as {[key:string]:any}).createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+    $.fetch.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:string,
         baseHeaders:{[key:string]:any}
     }):void => FetchClass.createBase(paramters);
 
     return $;
-})((el: any): any => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)); // 更新元素指向 2021/8/31
+})((el: string | object): (HTMLElement | Object) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)!); // 更新元素指向 2021/8/31
 
 // Origin class extends method
 /*eslint no-extend-native: ["off", { "exceptions": ["Object"] }]*/
 // Use in node js
 // declare global {
 //     interface String { 
-//         format:(formatStr:string,value:any[]) => (string | undefined)
-//         appendText:(txt:string) => string
+//         format(formatStr:string,value:any[]):(string | undefined)
+//         appendText(txt:string):string
 //     }
 // }
 
 interface String {
-    format:(formatStr:string,value:any[]) => (string | undefined)
-    appendText:(txt:string) => string
+    format(formatStr:string,value:any[]):(string | undefined)
+    appendText(txt:string):string
 }
 
 String.prototype.appendText = function(txt) { return this.toString() + txt } // 更新方法 2022/06/24
@@ -543,22 +602,24 @@ String.prototype.format = function(formatStr,...values) { // 更新方法 2022/0
     } else {
         $.console('error','First paramter must use type string,if use string must like this ex：abc {0} efg {1}.')
     }
+
+    return undefined
 }
 
 // Use in node js
 // declare global {
 //     interface Date { 
-//         calculateDay: (format: { day: number, method: string }) => (Date | undefined)
-//         toOptionTimeZoneForISO:(zoneTime:number) => string
+//         calculateDay(format: { day: number, method: string }):(Date | undefined)
+//         toOptionTimeZoneForISO(zoneTime:number):string
 //     }
 // }
 
 interface Date {
-    calculateDay: ({ day: number, method: string }) => (Date | undefined)
-    toOptionTimeZoneForISO: (zoneTime: number) => string
+    calculateDay({ day: number, method: string }):(Date | undefined)
+    toOptionTimeZoneForISO(zoneTime: number):string
 }
 
-Date.prototype.calculateDay = function (format: { day: number, method: string }): (Date | undefined) {
+Date.prototype.calculateDay = function(format) {
     // 更新方法內容與回傳內容 2021/09/22
     // 更新方法 2021/12/01
     // 改變回傳物件 2022/03/23
@@ -592,29 +653,29 @@ Date.prototype.calculateDay = function (format: { day: number, method: string })
     return (obj as { [key: string]: any })[format.method]
 };
 
-Date.prototype.toOptionTimeZoneForISO = function (zoneTime: number): string {
+Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
     return new Date(+this + ((zoneTime === undefined ? 8 : zoneTime) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
 }
 
 // Use in node js
 // declare global {
 //     interface Array<T> { 
-//         append: (item:any) => void
-//         appendFirst:(...item:any[]) => any[]
-//         remove:(pos:number) => any[]
-//         range:(startPos:number,endPos:number) => any[]
-//         removeFirst:() => any[]
-//         removeLast:() => any[]
+//         append(item:any):void
+//         appendFirst(...item:any[]):any[]
+//         remove(pos:number):any[]
+//         range(startPos:number,endPos:number):any[]
+//         removeFirst():any[]
+//         removeLast():any[]
 //     }
 // }
 
 interface Array<T> { // 更新方法 2022/03/23
-    append: (item: any) => void
-    appendFirst: (...item: any[]) => any[]
-    remove: (pos: number) => any[]
-    range: (startPos: number, endPos: number) => any[]
-    removeFirst: () => any[]
-    removeLast: () => any[]
+    append(item: any):void
+    appendFirst(...item: any[]):any[]
+    remove(pos: number):any[]
+    range(startPos: number, endPos: number):any[]
+    removeFirst():any[]
+    removeLast():any[]
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23

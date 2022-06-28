@@ -1,9 +1,10 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.6
+// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.7
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
     const $ = target => {
         const self = el.call(el, target) || target;
+        console.log(el.call(el, target))
         self.texts = (txt) => txt === undefined ? self.textContent : self.textContent = txt;
         self.html = (dom) => dom === undefined ? self.innerHTML : self.innerHTML = dom;
         self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -15,16 +16,16 @@ const $ = ((el) => {
         self.val = (valTemp) => valTemp === undefined ? self.value : self.value = valTemp;
         self.attr = (props, val) => val === undefined ? self.getAttribute(props) : self.setAttribute(props, val);
         self.props = (props, val) => val === undefined ? self[props] : self[props] = val;        // 更新方法 2021/08/31
-        self.sibling = (num) => $(self[num]);                                                          // 更新方法 2021/08/31
-        self.child = (num) => $(self.children[num]);                                                   // 更新方法 2021/08/31
-        self.childFirst = () => $(self.firstElementChild);                                             // 更新方法 2021/08/31
-        self.childLast = () => $(self.lastElementChild);                                               // 更新方法 2021/08/31
-        self.parent = () => $(self.parentNode);                                                        // 更新方法 2021/08/31
-        self.appendDom = (el) => $(self).append(el);                                                   // 更新方法 2021/09/12
-        self.removeDom = () => $(self).remove();                                                       // 更新方法 2021/09/12
-        self.removeChildDom = () => $(self).replaceChildren();                                         // 更新方法 2021/10/25
-        self.appendDomText = (el) => $(self).appendChild(el);                                          // 更新方法 2021/09/12
-        self.easyAppendDom = (orderBy,domStr) => $(self).insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);    // 更新方法 2021/11/25
+        self.sibling = (num) => self[num];                                                          // 更新方法 2021/08/31
+        self.child = (num) => self.children[num];                                                   // 更新方法 2021/08/31
+        self.childFirst = () => self.firstElementChild;                                             // 更新方法 2021/08/31
+        self.childLast = () => self.lastElementChild;                                               // 更新方法 2021/08/31
+        self.parent = () => self.parentNode;                                                        // 更新方法 2021/08/31
+        self.appendDom = (el) => self.append(el);                                                   // 更新方法 2021/09/12
+        self.removeDom = () => self.remove();                                                       // 更新方法 2021/09/12
+        self.removeChildDom = () => self.replaceChildren();                                         // 更新方法 2021/10/25
+        self.appendDomText = (el) => self.appendChild(el);                                          // 更新方法 2021/09/12
+        self.easyAppendDom = (orderBy,domStr) => self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend',domStr);    // 更新方法 2021/11/25
         self.styles = (method,cssType, cssParameter) => { 
             // 更新方法 2021/10/26
             // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -45,21 +46,21 @@ const $ = ((el) => {
                     $.console('error','Parameter must use array,and css property must in array with string.'); 
                     return; 
                 } else { 
-                    $.each(conditionProps,item => cssProperty[item] = getComputedStyle($(self)).getPropertyValue(item)); 
+                    $.each(conditionProps,item => cssProperty[item] = getComputedStyle(self).getPropertyValue(item)); 
                     return cssProperty; 
                 } 
             }; 
         };
 
         self.getDomPos = () => ({ // 更新方法 2022/03/23
-            x: $(self).props('offsetLeft'),
-            y: $(self).props('offsetTop') - window.scrollY,
-            top: $(self).props('offsetTop') - window.scrollY,
-            left: $(self).props('offsetLeft'),
-            right: $(self).props('offsetLeft') + $(self).props('offsetWidth'),
-            bottom: ($(self).props('offsetTop') + $(self).props('offsetHeight')) - window.scrollY,
-            width: $(self).props('offsetWidth'),
-            height: $(self).props('offsetHeight')
+            x: self.props('offsetLeft'),
+            y: self.props('offsetTop') - window.scrollY,
+            top: self.props('offsetTop') - window.scrollY,
+            left: self.props('offsetLeft'),
+            right: self.props('offsetLeft') + self.props('offsetWidth'),
+            bottom: (self.props('offsetTop') + self.props('offsetHeight')) - window.scrollY,
+            width: self.props('offsetWidth'),
+            height: self.props('offsetHeight')
         });
 
         self.scrollToTop = (scrollSetting = { scrollTop:0,duration:0 }) => { // 更新方法 2021/10/26
@@ -93,7 +94,7 @@ const $ = ((el) => {
         self.useWillMount = willMountCallBack => { // 更新方法 2022/03/19
             if(typeof self === 'object'){
                 if($.typeOf(self,'HTMLDocument')){
-                    $(self).listener('readystatechange',({ target }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
+                    self.listener('readystatechange',({ target }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack,target))
                 } else {
                     $.console('error','UseWillMount hook just use when selector document.')
                 }
@@ -105,7 +106,7 @@ const $ = ((el) => {
         self.useMounted = useMountedCallBack => { // 更新方法 2022/03/19
             if(typeof self === 'object'){
                 if($.typeOf(self,'HTMLDocument')){
-                    $(self).listener('readystatechange',({ target }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
+                    self.listener('readystatechange',({ target }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack,target))
                 } else {
                     $.console('error','UseMounted Hook just use when selector document.')
                 }
@@ -129,7 +130,7 @@ const $ = ((el) => {
     $.findObjProperty = (obj,propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
     $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b),initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b))
     $.mergeArray = (item,mergeItem,callBack) => callBack ? item.concat(mergeItem) : callBack.call(callBack,item.concat(mergeItem)) // 更新方法 2022/03/23
-    $.typeOf = (item,classType) => classType ? item.constructor.name : item.constructor.name === classType; // 更新方法 2021/10/26
+    $.typeOf = (item,classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
     $.createArray = ({ type,item },repack) => { // 更新方法 2022/03/14
