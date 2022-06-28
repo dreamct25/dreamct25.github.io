@@ -84,7 +84,7 @@ declare interface $ { // 更新 2022/06/29
     fetch: any
 }
 
-const $$:$ = ((el) => {
+const $:$ = ((el) => {
     const $:$ = (target: string | object):any => {
         const self: {[key:string]:any} = el.call(el, target) as HTMLElement || target as Object;
         self.texts = (txt?: string): string | void => txt ? self.textContent : self.textContent = txt;
