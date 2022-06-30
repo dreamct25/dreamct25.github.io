@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.7
+// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.8
 // Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
@@ -87,17 +87,17 @@ declare interface $ { // 更新 2022/06/29
 const $:$ = ((el) => {
     const $:$ = (target: string | object):any => {
         const self: {[key:string]:any} = el.call(el, target) as HTMLElement || target as Object;
-        self.texts = (txt?: string): string | void => txt ? self.textContent : self.textContent = txt;
-        self.html = (dom?: string): string | void => dom ? self.innerHTML : self.innerHTML = dom;
+        self.texts = (txt?: string): string | void => txt ? self.textContent = txt : self.textContent;
+        self.html = (dom?: string): string | void => dom ?  self.innerHTML = dom : self.innerHTML;
         self.addClass = (classText: string): any => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
         self.removeClass = (classText: string): any => { self.classList.remove(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText: string): void => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType: string, fn: (self: any, t: Event) => void): void => { self[["on", eventType].join("")] = (t: Event) => fn.call(fn, self, t); }; // 更新方法 2021/09/20
         self.listener = (eventType: string, fn: () => void): void => self.addEventListener(eventType, fn);
         self.removeListener = (eventType: string, fn: () => void): void => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
-        self.val = (valTemp?: string): string | void => valTemp ? self.value : self.value = valTemp;
-        self.attr = (props: string, val?: any): (string | number | void) => val ? self.getAttribute(props) : self.setAttribute(props, val);
-        self.props = (props: string, val?: any): any => val ? self[props] : self[props] = val;
+        self.val = (valTemp?: string): string | void => valTemp ? self.value = valTemp : self.value;
+        self.attr = (props: string, val?: any): (string | number | void) => val ? self.setAttribute(props, val) : self.getAttribute(props);
+        self.props = (props: string, val?: any): any => val ? self[props] = val : self[props];
         self.sibling = (num: number): HTMLElement => self[num];         // 更新方法 2021/08/31
         self.child = (num: number): HTMLElement => self.children[num];  // 更新方法 2021/08/31
         self.childFirst = (): HTMLElement => self.firstElementChild;    // 更新方法 2021/08/31

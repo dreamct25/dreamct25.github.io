@@ -1,21 +1,21 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.7
+// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.8
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
     const $ = target => {
         const self = el.call(el, target) || target;
         console.log(el.call(el, target))
-        self.texts = (txt) => txt === undefined ? self.textContent : self.textContent = txt;
-        self.html = (dom) => dom === undefined ? self.innerHTML : self.innerHTML = dom;
+        self.texts = (txt) => txt ? self.textContent = txt : self.textContent;
+        self.html = (dom) => dom ? self.innerHTML = dom : self.innerHTML;
         self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
         self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText) => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType, fn) => { self[["on",eventType].join("")] = () => fn.call(fn,self); }; // 更新方法 2021/09/20
         self.listener = (eventType, fn) => self.addEventListener(eventType, fn);
         self.removeListener = (eventType,fn) => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
-        self.val = (valTemp) => valTemp === undefined ? self.value : self.value = valTemp;
-        self.attr = (props, val) => val === undefined ? self.getAttribute(props) : self.setAttribute(props, val);
-        self.props = (props, val) => val === undefined ? self[props] : self[props] = val;        // 更新方法 2021/08/31
+        self.val = (valTemp) => valTemp ? self.value = valTemp : self.value;
+        self.attr = (props, val) => val ? self.setAttribute(props, val) : self.getAttribute(props);
+        self.props = (props, val) => val ? self[props] = val : self[props];        // 更新方法 2021/08/31
         self.sibling = (num) => self[num];                                                          // 更新方法 2021/08/31
         self.child = (num) => self.children[num];                                                   // 更新方法 2021/08/31
         self.childFirst = () => self.firstElementChild;                                             // 更新方法 2021/08/31
