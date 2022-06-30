@@ -4,7 +4,6 @@
 const $ = ((el) => {
     const $ = target => {
         const self = el.call(el, target) || target;
-        console.log(el.call(el, target))
         self.texts = (txt) => txt ? self.textContent = txt : self.textContent;
         self.html = (dom) => dom ? self.innerHTML = dom : self.innerHTML;
         self.addClass = (classText) => { self.classList.add(classText); return self;} // 更新方法 2022/03/12 變形為可鏈式寫法
