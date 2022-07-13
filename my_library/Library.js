@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - javascript ver 1.4.8
+// CopyRight by Chen 2021/08 - 2022/07 Library language - javascript ver 1.4.9
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -132,6 +132,10 @@ const $ = ((el) => {
     $.typeOf = (item,classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
     $.console = (type,...item) => console[type](...item); // 更新方法 2021/10/26
     $.localData = (action,keyName,item) => action === 'get' ? ($.convert(localStorage.getItem(keyName),'json') || []) : localStorage.setItem(keyName,$.convert(item,'stringify')); // 更新方法 2021/11/29
+    $.createCustomEvent = (eventName,setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName,{ detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
+    $.registerCustomEvent = (eventName,fn) => window.addEventListener(eventName,fn) // 更新方法 2022/07/13
+    $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
+    $.removeCustomEvent = (eventName,fn) => window.removeEventListener(eventName,fn) // 更新方法 2022/07/13
     $.createArray = ({ type,item },repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**

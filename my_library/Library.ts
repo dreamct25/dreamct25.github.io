@@ -1,10 +1,11 @@
-// CopyRight by Chen 2021/08 - 2022/06 Library language - typescript ver 1.4.8
+// CopyRight by Chen 2021/08 - 2022/07 Library language - typescript ver 1.4.9
 // Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
 // export default $
 
 // String tips when use method
+type objDetailsMethod = 'keys' | 'values' | 'entries'
 type createArrayType = 'fake' | 'new'
 type localDataActionType = 'get' | 'set'
 type stylesMethod = 'set' | 'remove'
@@ -69,11 +70,15 @@ declare interface $ { // 更新 2022/06/29
     typeOf(item: any, classType: any): string | boolean;
     console(type: consoleMethod, ...item: any): void;
     localData(action: localDataActionType, keyName: string, item: any):any
-    convert<T>(val: any, type: convertType): (T | undefined)
+    createCustomEvent(eventName:string,setEventResposeContext?:any):CustomEvent
+    registerCustomEvent(eventName:string,fn:() => void):void
+    useCustomEvent(eventObj:CustomEvent):void
+    removeCustomEvent(eventName:string,fn:() => void):void
     createArray({ type, item }: { type: createArrayType; item: any | { random: number }}, repack?: ((y: any) => any) | undefined):any[] | undefined
+    convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
     createDomText(text: string):Text
-    objDetails(obj: { [key: string]: any }, method: string):void | any[]
+    objDetails(obj: { [key: string]: any }, method: objDetailsMethod):void | any[]
     currencyTranser(currencyType: string, formatNumber: number):string | undefined
     formatDateTime(format: { 
         formatDate: string | Date; 
@@ -81,7 +86,25 @@ declare interface $ { // 更新 2022/06/29
         localCountryTime?: number | undefined; 
         toDateFullNumber?: boolean | undefined 
     }):string | number | undefined
-    fetch: any
+    fetch?:{
+        <T>(settingParams:{
+            method: requestMethod,
+            url: string,
+            headers?: { [key: string]: any },
+            contentType?: string,
+            data?: { [key: string]: any },
+            beforePost?: () => void,
+            successFn: (data: fetchClassReturnType<T>) => void,
+            excuteDone?: () => void,
+            errorFn: (err: fetchClassReturnType<T>) => void
+        }):Promise<void | fetchClassReturnType<T>>
+        get<T>(url: string, settingParams?: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
+        post<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
+        patch<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
+        put<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
+        delete<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
+        createBase(paramters: { baseUrl: string; baseHeaders: { [key: string]: any }}):void
+    }
 }
 
 const $:$ = ((el) => {
@@ -210,6 +233,8 @@ const $:$ = ((el) => {
 
         return self;
     };
+
+    // public function
     $.each = (item,callBack) => item.forEach((items: any, index: number) => callBack.call(callBack, items, index));
     $.maps = (item, callBack) => item.map((items: any, index: number) => callBack.call(callBack, items, index));
     $.filter = (item, callBack) => item.filter((items: any) => callBack.call(callBack, items));
@@ -224,6 +249,10 @@ const $:$ = ((el) => {
     $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
     $.console = (type, ...item) => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action, keyName, item) => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
+    $.createCustomEvent = (eventName,setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName,{ detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
+    $.registerCustomEvent = (eventName,fn) => window.addEventListener(eventName,fn) // 更新方法 2022/07/13
+    $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
+    $.removeCustomEvent = (eventName,fn) => window.removeEventListener(eventName,fn) // 更新方法 2022/07/13
     $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
@@ -535,7 +564,7 @@ const $:$ = ((el) => {
         }
     }
 
-    $.fetch = <T>(settingParams:{ // 更新 FetchClass 類方法導出 2022/03/24
+    ($.fetch as any) = <T>(settingParams:{ // 更新 FetchClass 類方法導出 2022/03/24
         method: requestMethod,
         url: string,
         headers?: { [key: string]: any },
@@ -545,19 +574,19 @@ const $:$ = ((el) => {
         successFn: (data: any) => void,
         excuteDone?: () => void,
         errorFn: (err: any) => void
-    }):Promise<fetchClassReturnType<T> | void> | { get:() => void} => FetchClass.fetchSetting<T>(settingParams,false)
+    }):Promise<fetchClassReturnType<T> | void> => FetchClass.fetchSetting<T>(settingParams,false)
 
-    $.fetch.get = <T>(url:string,settingParams:{ headers:{[key:string]:any} } = { headers:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.get<T>(url,settingParams);
+    $.fetch!.get = <T>(url:string,settingParams:{ headers:{[key:string]:any} } = { headers:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.get<T>(url,settingParams);
 
-    $.fetch.post = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.post<T>(url,settingParams);
+    $.fetch!.post = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.post<T>(url,settingParams);
 
-    $.fetch.patch = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.patch<T>(url,settingParams);
+    $.fetch!.patch = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.patch<T>(url,settingParams);
 
-    $.fetch.put = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.put<T>(url,settingParams);
+    $.fetch!.put = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.put<T>(url,settingParams);
 
-    $.fetch.delete = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.delete<T>(url,settingParams);
+    $.fetch!.delete = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.delete<T>(url,settingParams);
 
-    $.fetch.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+    $.fetch!.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:string,
         baseHeaders:{[key:string]:any}
     }):void => FetchClass.createBase(paramters);
