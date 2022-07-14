@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/07 Library language - typescript ver 1.4.9
+// CopyRight by Chen 2021/08 - 2022/07 Library language - typescript ver 1.5.0
 // Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
@@ -74,11 +74,13 @@ declare interface $ { // 更新 2022/06/29
     registerCustomEvent(eventName:string,fn:() => void):void
     useCustomEvent(eventObj:CustomEvent):void
     removeCustomEvent(eventName:string,fn:() => void):void
+    createPromise<T>(callBack:(success:(value: any) => void,error: (reason?: any) => void) => void):Promise<T>
+    createPromiseAll<T>(...paramaters:Promise<Awaited<T>>[]):Promise<Awaited<T>[]>
+    createDomText(text: string):Text
+    objDetails(obj: { [key: string]: any }, method: objDetailsMethod):void | any[]
     createArray({ type, item }: { type: createArrayType; item: any | { random: number }}, repack?: ((y: any) => any) | undefined):any[] | undefined
     convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
-    createDomText(text: string):Text
-    objDetails(obj: { [key: string]: any }, method: objDetailsMethod):void | any[]
     currencyTranser(currencyType: string, formatNumber: number):string | undefined
     formatDateTime(format: { 
         formatDate: string | Date; 
@@ -141,6 +143,7 @@ const $:$ = ((el) => {
             method === 'set' ? self.style.setProperty(cssType, cssParameter) : self.style.removeProperty(cssType);
             return self
         };
+
         self.getDomStyles = (conditionProps: string[]): { [key: string]: any } => { // 更新方法 2021/10/26
             const cssProperty: { [key: string]: any } = {};
             if (typeof conditionProps !== "object") {
@@ -155,6 +158,7 @@ const $:$ = ((el) => {
             }
             return cssProperty;
         };
+
         self.getDomPos = (): { // 更新方法 2022/03/23
             x: number,
             y: number,
@@ -174,6 +178,7 @@ const $:$ = ((el) => {
             width: self.props('offsetWidth'),
             height: self.props('offsetHeight')
         });
+        
         self.scrollToTop = (scrollSetting: { scrollTop: number, duration: number } = { scrollTop: 0, duration: 0 }): void => { // 更新方法 2021/10/26
             let animateScroll: any = undefined;
             const [keyI, keyII]: string[] = Object.keys(scrollSetting);
@@ -253,6 +258,10 @@ const $:$ = ((el) => {
     $.registerCustomEvent = (eventName,fn) => window.addEventListener(eventName,fn) // 更新方法 2022/07/13
     $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
     $.removeCustomEvent = (eventName,fn) => window.removeEventListener(eventName,fn) // 更新方法 2022/07/13
+    $.createPromise = (callBack) => new Promise((resovle,reject) => callBack.call(callBack,resovle,reject)) // 更新方法 2022/07/14
+    $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
+    $.createDomText = text => document.createTextNode(text); // 更新方法 2021/09/12
+    $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
     $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
@@ -274,6 +283,7 @@ const $:$ = ((el) => {
 
         return undefined
     }
+
     $.convert = (val, type) => {
         // 更新方法 2021/10/22
         // 更新泛型回傳值 2022/03/19
@@ -319,10 +329,6 @@ const $:$ = ((el) => {
         })
         return el;
     };
-
-    $.createDomText = text => document.createTextNode(text); // 更新方法 2021/09/12
-    
-    $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
     
     $.currencyTranser = (currencyType,formatNumber) => { // 更新方法 2022/06/24
         if(currencyType !== undefined){
@@ -547,7 +553,6 @@ const $:$ = ((el) => {
             
         static {
             // 更新 Promise 導出 get 方法 2022/05/01
-
             this.get = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
 
             // 更新 Promise 導出 post 方法 2022/05/01

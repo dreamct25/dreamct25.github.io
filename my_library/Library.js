@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/07 Library language - javascript ver 1.4.9
+// CopyRight by Chen 2021/08 - 2022/07 Library language - javascript ver 1.5.0
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -34,7 +34,8 @@ const $ = ((el) => {
             }; 
             method === 'set' ? self.style.setProperty(cssType, cssParameter) : self.style.removeProperty(cssType);
             return self
-        }; 
+        };
+        
         self.getDomStyles = (conditionProps) => { // 更新方法 2021/10/26
             let cssProperty = {}; 
             if(typeof conditionProps !== "object"){ 
@@ -136,6 +137,10 @@ const $ = ((el) => {
     $.registerCustomEvent = (eventName,fn) => window.addEventListener(eventName,fn) // 更新方法 2022/07/13
     $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
     $.removeCustomEvent = (eventName,fn) => window.removeEventListener(eventName,fn) // 更新方法 2022/07/13
+    $.createPromise = (callBack) => new Promise((resovle,reject) => callBack.call(callBack,resovle,reject)) // 更新方法 2022/07/14
+    $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
+    $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
+    $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
     $.createArray = ({ type,item },repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
@@ -155,6 +160,7 @@ const $ = ((el) => {
             return Array.from(item)
         }
     }
+
     $.convert = (val,type) => { // 更新方法 2021/10/22
         if(val === undefined || type === undefined || !$.includes(['string','number','float','boolean','json','stringify'],type)){
             $.console('error',"Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
@@ -175,6 +181,7 @@ const $ = ((el) => {
 
         return returnItem[type];
     }
+
     $.createDom = (tag,props) => { // 更新方法 2021/09/12
         const el = document.createElement(tag);
         const propsArr = Object.entries(props);
@@ -190,8 +197,6 @@ const $ = ((el) => {
         })
         return el;
     }
-    $.createDomText = (text) => document.createTextNode(text); // 更新方法 2021/09/12
-    $.objDetails = (obj,method) => method === undefined || !$.includes(['keys','values','entries'],method) ? $.console('error',"please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj); // 更新方法 2021/09/12
 
     $.currencyTranser = (currencyType,formatNumber) => { // 更新方法 2022/06/24
         if(currencyType !== undefined){
