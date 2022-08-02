@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/07 Library language - typescript ver 1.5.0
+// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - typescript ver 1.5.1
 // Work Environment Typescript v4.7.4、eslint v8.12.0
 //
 // Use in node js
@@ -67,7 +67,7 @@ declare interface $ { // 更新 2022/06/29
     findIndexOfObj(item: any, callBack: (items: any) => void):number
     findObjProperty(obj: { [key: string]: any }, propertyName: string):boolean
     mergeArray(item: any[], mergeItem: any[], callBack?: ((items: any) => any[]) | undefined):any[]
-    typeOf(item: any, classType: any): string | boolean;
+    typeOf(item: any, classType?: any): string | boolean;
     console(type: consoleMethod, ...item: any): void;
     localData(action: localDataActionType, keyName: string, item: any):any
     createCustomEvent(eventName:string,setEventResposeContext?:any):CustomEvent
@@ -86,8 +86,9 @@ declare interface $ { // 更新 2022/06/29
         formatDate: string | Date; 
         formatType: string; 
         localCountryTime?: number | undefined; 
-        toDateFullNumber?: boolean | undefined 
-    }):string | number | undefined
+        toDateFullNumber?: boolean | undefined;
+        customWeekItem?:any[]
+    }):string | number | undefined | { fullDateTime:string,getWeekName:any }
     fetch?:{
         <T>(settingParams:{
             method: requestMethod,
@@ -350,6 +351,7 @@ const $:$ = ((el) => {
          *   formatType:string, <= 取日期時間格式 yyyy-MM-dd HH:mm:ss 等方式
          *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          *   toDateFullNumber <= toDateFullNumber 將當前格式化時間改為數字，可以用於排序上，可選參數
+         *   customWeekItem <= customWeekItem 放入格式化文字日別，如 ['週一','週二',...'週日'] // 更新方法 2021/08/02
          * }
          * @returns {string | number}
          */
@@ -358,6 +360,21 @@ const $:$ = ((el) => {
         if (!('formatDate' in format || 'formatType' in format)) {
             $.console('error', 'Please enter an object and use formatType property in the object.');
             return undefined;
+        }
+
+        if($.findObjProperty(format,'customWeekItem')){
+            if(!($.typeOf(format.customWeekItem) === 'Array')){
+                $.console('error','customWeekItem property Must use array.')
+                return
+            }
+
+            if(format.customWeekItem!.length <= 6 || format.customWeekItem!.length > 7){
+                $.console('error','customWeekItem property must put seven days name of week in array.')
+                return
+            }
+
+            format.customWeekItem = [format.customWeekItem![format.customWeekItem!.length - 1],...format.customWeekItem!]
+            format.customWeekItem.pop()
         }
 
         const localCountryTime: number = ('localCountryTime' in format ? format.localCountryTime || 0 : 8) * 60 * 60 * 1000
@@ -375,6 +392,11 @@ const $:$ = ((el) => {
             const currentAMorPM: string = $.convert<number>(hour, 'number')! > 11 ? 'PM' : 'AM'
             const transHour: string = ($.convert<number>(hour, 'number')! - 12) < 10 ? `0${$.convert<number>(hour, 'number')! - 12}` : $.convert<string>($.convert<number>(hour, 'number')! - 12, 'string')!
             return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
+        } else if ($.findObjProperty(format,'customWeekItem')) { // 更新客製化週數命名 2022/07/27
+            return {
+                fullDateTime:format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second),
+                getWeekName:format.customWeekItem![new Date(+new Date(format.formatDate)).getDay()]
+            }
         } else {
             return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
         }
@@ -600,6 +622,7 @@ const $:$ = ((el) => {
 })((el: string | object): (HTMLElement | Object) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)!); // 更新元素指向 2021/8/31
 
 // Origin class extends method
+// Use in node js you can use to import prototype extends like import './Library.ts'
 /*eslint no-extend-native: ["off", { "exceptions": ["Object"] }]*/
 // Use in node js
 // declare global {
@@ -723,3 +746,78 @@ Array.prototype.range = function (startPos, endPos) { return this.slice(startPos
 Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
+
+// Use in node js
+// declare global {
+//     interface Map<K,V> {
+//         append(keyName:K,value:V):void
+//         getValue(keyName:K):any
+//         deleteKeyValue(keyName:K):boolean
+//         removeAll():void
+//         isKeyInMap(keyName:K):boolean
+//         toObject():{[key:string]:any}
+//     }
+// }
+
+interface Map<K,V> { // 更新方法 2022/08/02
+    append(keyName:string,value:any):void
+    getValue(keyName:string):any
+    deleteKeyValue(keyName:string):boolean
+    removeAll():void
+    isKeyInMap(keyName:string):boolean
+    toObject():{[key:string]:any}
+}
+
+Map.prototype.append = function(keyName,value){ this.set(keyName,value) } // 更新方法 2022/08/02
+
+Map.prototype.getValue = function(keyName){ return this.get(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.deleteKeyValue = function(keyName){ return this.delete(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
+
+Map.prototype.isKeyInMap = function(keyName){ return this.has(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.toObject = function(){ return Object.fromEntries(this) } // 更新方法 2022/08/02
+
+// Use in node js
+// declare global {
+//     interface Set<T> {
+//         append(value:any):void
+//         deleteValue(value:any):boolean
+//         isValueInSet(value:any):boolean
+//         removeAll():void
+//         toArray():any[]
+//     }
+// }
+
+interface Set<T> { // 更新方法 2022/08/02
+    append(value:any):void
+    deleteValue(value:any):boolean
+    isValueInSet(value:any):boolean
+    removeAll():void
+    toArray():any[]
+}
+
+Set.prototype.append = function(value){ this.add(value) } // 更新方法 2022/08/02
+
+Set.prototype.deleteValue = function(value){ return this.delete(value) } // 更新方法 2022/08/02
+
+Set.prototype.isValueInSet = function(value){ return this.has(value) } // 更新方法 2022/08/02
+
+Set.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
+
+Set.prototype.toArray = function(){ return [...this] } // 更新方法 2022/08/02
+
+// Use in node js
+// declare global {
+//     interface Object { // 更新方法 2022/08/02
+//         toMap(obj:{[key:string]:any}):Map<string,any>
+//     }
+// }
+
+interface Object { // 更新方法 2022/08/02
+    toMap(obj:{[key:string]:any}):Map<string,any>
+}
+
+Object.prototype.toMap = function(obj){ return new Map(Object.entries(obj)) } // 更新方法 2022/08/02

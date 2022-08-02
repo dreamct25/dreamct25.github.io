@@ -1,4 +1,4 @@
-// CopyRight by Chen 2021/08 - 2022/07 Library language - javascript ver 1.5.0
+// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - javascript ver 1.5.1
 // Work Environment Javascript ES6 or latest
 "use strict";
 const $ = ((el) => {
@@ -220,10 +220,27 @@ const $ = ((el) => {
          * @returns {string}
          */
         //#endregion
+
+        let customWeekItemTemp = []
     
         if(!('formatDate' in format || 'formatType' in format)){
             $.console('error','Please enter an object and use formatType property in the object.');
             return
+        }
+
+        if($.findObjProperty(format,'customWeekItem')){
+            if(!($.typeOf(format.customWeekItem) === 'Array')){
+                $.console('error','customWeekItem property Must use array.')
+                return
+            }
+
+            if(format.customWeekItem.length <= 6 || format.customWeekItem.length > 7){
+                $.console('error','customWeekItem property must put seven days name of week in array.')
+                return
+            }
+
+            format.customWeekItem = [format.customWeekItem[format.customWeekItem.length - 1],...format.customWeekItem]
+            format.customWeekItem.pop()
         }
         
         const localCountryTime = ('localCountryTime' in format ? format.localCountryTime : 8)* 60 * 60 * 1000
@@ -239,6 +256,11 @@ const $ = ((el) => {
             const currentAMorPM = $.convert(hour,'number') > 11 ? 'PM' : 'AM'
             const transHour = ($.convert(hour,'number') - 12) < 10 ? `0${$.convert(hour,'number') - 12}` : $.convert($.convert(hour,'number') - 12,'string')
             return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,transHour).replace(/mm/g,minute).replace(/ss/g,second).replace(/tt/g,currentAMorPM)
+        } else if ($.findObjProperty(format,'customWeekItem')) {
+            return {
+                fullDateTime:format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second),
+                getWeekName:format.customWeekItem[new Date(+new Date(format.formatDate)).getDay()]
+            }
         } else {
             return format.formatType.replace(/yyyy/g,year).replace(/MM/g,month).replace(/dd/g,date).replace(/HH/g,hour).replace(/mm/g,minute).replace(/ss/g,second)
         }
@@ -521,3 +543,27 @@ Array.prototype.remove = function(pos){ this.splice(pos,1); return this } // 更
 Array.prototype.removeFirst = function(){ this.shift(); return this } // 更新方法 2021/03/23
 
 Array.prototype.removeLast = function(){ this.pop(); return this } // 更新方法 2021/03/23
+
+Map.prototype.append = function(keyName,value){ this.set(keyName,value) } // 更新方法 2022/08/02
+
+Map.prototype.getValue = function(keyName){ return this.get(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.deleteKeyValue = function(keyName){ return this.delete(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
+
+Map.prototype.isKeyInMap = function(keyName){ return this.has(keyName) } // 更新方法 2022/08/02
+
+Map.prototype.toObject = function(){ return Object.fromEntries(this) } // 更新方法 2022/08/02
+
+Set.prototype.append = function(value){ this.add(value) } // 更新方法 2022/08/02
+
+Set.prototype.deleteValue = function(value){ return this.delete(value) } // 更新方法 2022/08/02
+
+Set.prototype.isValueInSet = function(value){ return this.has(value) } // 更新方法 2022/08/02
+
+Set.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
+
+Set.prototype.toArray = function(){ return [...this] } // 更新方法 2022/08/02
+
+Object.prototype.toMap = function(obj){ return new Map(Object.entries(obj)) } // 更新方法 2022/08/02
