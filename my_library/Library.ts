@@ -1,5 +1,5 @@
-// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - typescript ver 1.5.1
-// Work Environment Typescript v4.7.4、eslint v8.12.0
+// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - typescript ver 1.5.2
+// Work Environment Typescript v4.8.2、eslint v8.22.0
 //
 // Use in node js
 // export default $
@@ -12,6 +12,7 @@ type stylesMethod = 'set' | 'remove'
 type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
 type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
 type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
+type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone' 
 
 interface fetchClassReturnType<T> {
     bodyUsed: boolean,
@@ -95,18 +96,19 @@ declare interface $ { // 更新 2022/06/29
             url: string,
             headers?: { [key: string]: any },
             contentType?: string,
+            returnType?:retunType,
             data?: { [key: string]: any },
             beforePost?: () => void,
             successFn: (data: fetchClassReturnType<T>) => void,
             excuteDone?: () => void,
             errorFn: (err: fetchClassReturnType<T>) => void
-        }):Promise<void | fetchClassReturnType<T>>
-        get<T>(url: string, settingParams?: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
-        post<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
-        patch<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
-        put<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
-        delete<T>(url: string, settingParams?: { headers: { [key: string]: any }; data: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>>
-        createBase(paramters: { baseUrl: string; baseHeaders: { [key: string]: any }}):void
+        }):Promise<fetchClassReturnType<T> | undefined>
+        get<T>(url: string, settingParams?: { headers: { [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        post<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        patch<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        put<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        delete<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{[key:string]:any},returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        createBase(paramters: { baseUrl: string; baseHeaders: { [key:string]:any }}):void
     }
 }
 
@@ -410,13 +412,15 @@ const $:$ = ((el) => {
             method: requestMethod; 
             url: string; 
             headers?: { [key: string]: any; }; 
-            contentType?: string; data?: { [key: string]: any; }; 
+            contentType?: string;
+            returnType?: retunType;
+            data?: { [key: string]: any; }; 
             routeParams?: { [key: string]: any; }; 
             beforePost?: () => void; 
             successFn?: (data: any) => void; 
             excuteDone?: () => void; 
             errorFn?: (err: any) => void; 
-        },usePromise:boolean):Promise<void | fetchClassReturnType<T>> { 
+        },usePromise:boolean):Promise<fetchClassReturnType<T> | undefined> { 
             // 更新類 ajax 方法 2021/09/11
             // 更新類 ajax 方法內容 2021/10/21
             //#region 參數設定
@@ -427,6 +431,7 @@ const $:$ = ((el) => {
              * @param {object} data
              * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
              * @param {string} contentType
+             * @param {string} retunType 追加 retunType 回傳轉譯 2022/08/26
              * @param {Function} beforePost <= 回呼函式
              * @param {Function} successFn <= 回呼函式
              * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
@@ -435,10 +440,12 @@ const $:$ = ((el) => {
             //#endregion
     
             const settings:{ [key: string]: any } = {};
-            const { method, headers, contentType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
+            const { method, headers, contentType, returnType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
     
             settings.method = method;
             settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
+
+            const returnTypeUse = returnType || 'json'
 
             if(method){
                 if(!$.includes(["get","post","patch","put","delete"],method.toLocaleLowerCase())){
@@ -489,12 +496,16 @@ const $:$ = ((el) => {
                 };
             }
 
-            const res:Response = await fetch(settingParams.url, settings).then(res => res);
+            console.log(settings,settingParams)
+
+            const res:Response = await fetch(settingParams.url, settings);
 
             if(usePromise){
-                return new Promise<fetchClassReturnType<T>>((resolve,reject) => {
+                return new Promise<fetchClassReturnType<T>>(async (resolve,reject) => {
                     if (res.status >= 200 && res.status < 300) {
-                        (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => resolve({
+                        const result = await (res as {[key:string]:any})[returnTypeUse]() as T
+
+                        return resolve({
                             bodyUsed: res.bodyUsed,
                             headers: res.headers,
                             ok: res.ok,
@@ -503,8 +514,8 @@ const $:$ = ((el) => {
                             statusText: res.statusText,
                             type: res.type,
                             url:res.url,
-                            data:resItem
-                        }));
+                            data:result
+                        })
                     }
                     else {
                         reject({
@@ -523,7 +534,9 @@ const $:$ = ((el) => {
                 // 更新 Request 成功與錯誤回傳內容 2022/03/14
                 try {
                     if (res.status >= 200 && res.status < 300) {
-                        (res as {[key:string]:any})[settings.headers["Content-Type"].split('/')[1]]().then((resItem:T) => successFn?.call(successFn,{
+                        const result = await (res as {[key:string]:any})[returnTypeUse]() as T
+                        
+                        successFn?.call(successFn,{
                             bodyUsed: res.bodyUsed,
                             headers: res.headers,
                             ok: res.ok,
@@ -532,8 +545,10 @@ const $:$ = ((el) => {
                             statusText: res.statusText,
                             type: res.type,
                             url:res.url,
-                            data:resItem
-                        })).then(() => excuteDone && excuteDone.call(excuteDone));
+                            data:result
+                        })
+                        
+                        excuteDone && excuteDone.call(excuteDone)
                     }
                     else {
                         throw new Error(JSON.stringify({
@@ -567,27 +582,27 @@ const $:$ = ((el) => {
     }
 
     class FetchPromisClass extends FetchClass {
-        static get: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
-        static post: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
-        static patch: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
-        static put: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
-        static delete: <T>(url: string, setting: { headers: { [key: string]: any; }; }) => Promise<void | fetchClassReturnType<T>>;
+        static get: <T>(url: string, setting: { headers:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
+        static post: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
+        static patch: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
+        static put: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
+        static delete: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
             
         static {
             // 更新 Promise 導出 get 方法 2022/05/01
-            this.get = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
+            this.get = <T>(url: string, setting: { headers:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
 
             // 更新 Promise 導出 post 方法 2022/05/01
-            this.post = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
+            this.post = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
 
             // 更新 Promise 導出 patch 方法 2022/05/01
-            this.patch = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
+            this.patch = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
 
             // 更新 Promise 導出 put 方法 2022/05/01
-            this.put = <T>(url: string, setting: { headers: { [key: string]: any } }):Promise<void | fetchClassReturnType<T>> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
+            this.put = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
 
             // 更新 Promise 導出 delete 方法 2022/05/01
-            this.delete = <T>(url: string, setting: { headers: { [key: string]: any; }; }) => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
+            this.delete = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
         }
     }
 
@@ -596,26 +611,27 @@ const $:$ = ((el) => {
         url: string,
         headers?: { [key: string]: any },
         contentType?: string,
+        returnType?: retunType,
         data?: { [key: string]: any },
         beforePost?: () => void,
         successFn: (data: any) => void,
         excuteDone?: () => void,
         errorFn: (err: any) => void
-    }):Promise<fetchClassReturnType<T> | void> => FetchClass.fetchSetting<T>(settingParams,false)
+    }):Promise<fetchClassReturnType<T> | undefined> => FetchClass.fetchSetting<T>(settingParams,false)
 
-    $.fetch!.get = <T>(url:string,settingParams:{ headers:{[key:string]:any} } = { headers:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.get<T>(url,settingParams);
+    $.fetch!.get = <T>(url:string,settingParams:{ headers:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.get<T>(url,settingParams);
 
-    $.fetch!.post = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.post<T>(url,settingParams);
+    $.fetch!.post = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.post<T>(url,settingParams);
 
-    $.fetch!.patch = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.patch<T>(url,settingParams);
+    $.fetch!.patch = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.patch<T>(url,settingParams);
 
-    $.fetch!.put = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.put<T>(url,settingParams);
+    $.fetch!.put = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.put<T>(url,settingParams);
 
-    $.fetch!.delete = <T>(url:string,settingParams:{ headers:{[key:string]:any},data:{[key:string]:any} } = { headers:{},data:{} }):Promise<fetchClassReturnType<T> | void> => FetchPromisClass.delete<T>(url,settingParams);
+    $.fetch!.delete = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.delete<T>(url,settingParams);
 
     $.fetch!.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:string,
-        baseHeaders:{[key:string]:any}
+        baseHeaders:{ [key:string]:any }
     }):void => FetchClass.createBase(paramters);
 
     return $;
