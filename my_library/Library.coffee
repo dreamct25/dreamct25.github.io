@@ -1,4 +1,4 @@
-# CopyRight 2021/08 - 2022/08 Alex Chen. Library language - coffeescript ver 1.5.2
+# CopyRight 2021/08 - 2022/09 Alex Chen. Library language - coffeescript ver 1.5.3
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -265,6 +265,9 @@ $ = ((el) ->
             localStorage.setItem keyName, $.convert item, 'stringify' 
             return
 
+    $.getNumberOfDecimal = (num,digits) -> # 更新方法 2022/09/28
+        parseInt num.toFixed digits 
+
     $.createCustomEvent = (eventName, setEventResposeContext) -> # 更新方法 2022/07/13
         if setEventResposeContext
             new CustomEvent eventName, { detail: setEventResposeContext }
@@ -374,7 +377,7 @@ $ = ((el) ->
         [year, month, date, hour, minute, second] = dateSplit
 
         if 'toDateFullNumber' of format
-            Number dateSplit.join ''
+            $.convert (dateSplit.join ''),'number'
 
         if format.formatType.match 'tt'
             currentAMorPM = if $.convert hour, 'number' > 11 then 'PM' else 'AM'
@@ -407,22 +410,23 @@ $ = ((el) ->
             else
                 $.console('error', 'Property name method is required in obejct parameters.')
                 return
+
             if routeParams
-                [keyName] = Object.keys routeParams
+                [keyName] = $.objDetails routeParams, 'keys'
                 settingParams.url = "#{settingParams.url}/#{routeParams[keyName]}"
 
-            if (Object.keys @baseHeaders).length > 0 or headers
-                settings.headers = if (Object.keys @baseHeaders).length > 0 then @baseHeaders else { 'Content-Type': 'application/json', headers... }
+            if ($.objDetails @baseHeaders, 'keys').length > 0 or (headers and ($.objDetails headers, 'keys').length > 0)
+                settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': 'application/json', headers... }
 
-            if !headers
+            if !headers and data
                 settings.headers = { 'Content-Type': contentType || 'application/json' }
 
             if data
-                settings.headers = @baseHeaders or { 'Content-Type': contentType or 'application/json' }
+                settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': contentType or 'application/json' }
                 settings.body = $.convert data, 'stringify'
 
-            if (@baseHeaders or headers) and data
-                settings.headers = @baseHeaders or { headers... }
+            if (($.objDetails @baseHeaders, 'keys').length > 0 or headers) and data
+                settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { headers... }
                 settings.body = $.convert data, 'stringify'
 
             if !usePromise
@@ -442,7 +446,7 @@ $ = ((el) ->
             if usePromise 
             # 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
                 new Promise (resolve, reject) -> 
-                    if res.status >= 200 and res.status < 300
+                    if res.status >= 200 and res.status < 400
                         result = await res[returnTypeUse]()
                         resolve({
                             bodyUsed: res.bodyUsed
@@ -471,7 +475,7 @@ $ = ((el) ->
             else
                 # 更新 Request 成功與錯誤回傳內容 2022/03/14
                 try
-                    if res.status >= 200 && res.status < 300
+                    if res.status >= 200 && res.status < 400
                         result = await res[returnTypeUse]()
 
                         successFn.call successFn, {
@@ -594,19 +598,17 @@ Date.prototype.calculateDay = (format) ->
     $.console 'error', "Please enter method type 'addDay' or 'reduceDay'."
     return
 
-  obj = {
+  {
     addDay: new Date +this + (format.day * 24 * 60 * 60 * 1000)
     reduceDay: new Date +this - (format.day * 24 * 60 * 60 * 1000)
-  }
-
-  obj[format.method]
+  }[format.method]
 
 Date.prototype.toOptionTimeZoneForISO = (zoneTime) ->
-  new Date +this + ((if !zoneTime then 8 else zoneTime) * 60 * 60 * 1000).toISOString() # 更新方法 2021/03/23
+  new Date +this + ((zoneTime or 8) * 60 * 60 * 1000).toISOString() # 更新方法 2021/03/23
 
 Array.prototype.append = (item) -> this.push(item) # 更新方法 2021/03/23
 
-Array.prototype.appendFirst = (...item) -> this.unshift(...item); this # 更新方法 2021/03/23
+Array.prototype.appendFirst = (item) -> this.unshift(item); this # 更新方法 2021/03/23
 
 Array.prototype.range = (startPos, endPos) -> this.slice(startPos, endPos)
 

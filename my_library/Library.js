@@ -1,4 +1,4 @@
-// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - javascript ver 1.5.2
+// CopyRight 2021/08 - 2022/09 Alex Chen. Library language - javascript ver 1.5.3
 // Work Environment Javascript ES6 or latest、eslint 8.22.0
 
 /* eslint-disable no-return-assign */
@@ -139,6 +139,7 @@ const $ = ((el) => {
   $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name // 更新方法 2021/10/26
   $.console = (type, ...item) => console[type](...item) // 更新方法 2021/10/26
   $.localData = (action, keyName, item) => action === 'get' ? ($.convert(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert(item, 'stringify')) // 更新方法 2021/11/29
+  $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
   $.createCustomEvent = (eventName, setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName, { detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
   $.registerCustomEvent = (eventName, fn) => window.addEventListener(eventName, fn) // 更新方法 2022/07/13
   $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
@@ -146,7 +147,7 @@ const $ = ((el) => {
   $.createPromise = (callBack) => new Promise((resovle, reject) => callBack.call(callBack, resovle, reject)) // 更新方法 2022/07/14
   $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
   $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/09/12
-  $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/09/12
+  $.objDetails = (obj, method) => !method || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/09/12
   $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
     // #region 參數設定
     /**
@@ -252,9 +253,7 @@ const $ = ((el) => {
     const dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').split('.')[0].split('-')
     const [year, month, date, hour, minute, second] = dateSplit
 
-    if ('toDateFullNumber' in format) {
-      return Number(dateSplit.join(''))
-    }
+    if ('toDateFullNumber' in format) return $.convert(dateSplit.join(''), 'number')
 
     if (format.formatType.match('tt')) {
       const currentAMorPM = $.convert(hour, 'number') > 11 ? 'PM' : 'AM'
@@ -282,7 +281,7 @@ const $ = ((el) => {
         /**
          * @param {string} method
          * @param {string} url
-         * @param {object} header 追加 hearder 物件 2021/10/21
+         * @param {object} headers 追加 hearder 物件 2021/10/21
          * @param {object} data
          * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
          * @param {string} contentType
@@ -313,25 +312,21 @@ const $ = ((el) => {
         }
 
         if (routeParams) {
-          const [keyName] = Object.keys(routeParams)
+          const [keyName] = $.objDetails(routeParams, 'keys')
           settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
         }
 
-        if (Object.keys(FetchClass.#baseHeaders).length > 0 || headers) {
-          settings.headers = Object.keys(FetchClass.#baseHeaders).length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': 'application/json', ...headers }
-        }
-
-        if (!headers) {
-          settings.headers = { 'Content-Type': contentType || 'application/json' }
+        if ($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || (headers && $.objDetails(headers, 'keys').length > 0)) {
+          settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': 'application/json', ...headers }
         }
 
         if (data) {
-          settings.headers = FetchClass.#baseHeaders || { 'Content-Type': contentType || 'application/json' }
+          settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': contentType || 'application/json' }
           settings.body = $.convert(data, 'stringify')
         }
 
-        if ((FetchClass.#baseHeaders || headers) && data) {
-          settings.headers = FetchClass.#baseHeaders || { ...headers }
+        if (($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || headers) && data) {
+          settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { ...headers }
           settings.body = $.convert(data, 'stringify')
         };
 
@@ -356,7 +351,7 @@ const $ = ((el) => {
         if (usePromise) {
           // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
           return new Promise(async (resolve, reject) => {
-            if (res.status >= 200 && res.status < 300) {
+            if (res.status >= 200 && res.status < 400) {
               const result = await res[returnTypeUse]()
               resolve({
                 bodyUsed: res.bodyUsed,
@@ -385,7 +380,7 @@ const $ = ((el) => {
         } else {
           // 更新 Request 成功與錯誤回傳內容 2022/03/14
           try {
-            if (res.status >= 200 && res.status < 300) {
+            if (res.status >= 200 && res.status < 400) {
               const result = await res[returnTypeUse]()
 
               successFn.call(successFn, {
@@ -531,21 +526,19 @@ Date.prototype.calculateDay = function (format) {
     return
   };
 
-  const obj = {
+  return {
     addDay: new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
     reduceDay: new Date(+this - (format.day * 24 * 60 * 60 * 1000))
-  }
-
-  return obj[format.method]
+  }[format.method]
 }
 
 Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
-  return new Date(+this + ((zoneTime === undefined ? 8 : zoneTime) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
+  return new Date(+this + ((zoneTime || 8) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
 
-Array.prototype.appendFirst = function (...item) { this.unshift(...item); return this } // 更新方法 2021/03/23
+Array.prototype.appendFirst = function (item) { this.unshift(item); return this } // 更新方法 2021/03/23
 
 Array.prototype.range = function (startPos, endPos) { return this.slice(startPos, endPos) }
 

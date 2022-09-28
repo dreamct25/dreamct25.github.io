@@ -1,4 +1,4 @@
-// CopyRight 2021/08 - 2022/08 Alex Chen. Library language - typescript ver 1.5.2
+// CopyRight 2021/08 - 2022/09 Alex Chen. Library language - typescript ver 1.5.3
 // Work Environment Typescript v4.8.2、eslint v8.22.0
 //
 // Use in node js
@@ -71,6 +71,7 @@ declare interface $ { // 更新 2022/06/29
     typeOf(item: any, classType?: any): string | boolean;
     console(type: consoleMethod, ...item: any): void;
     localData(action: localDataActionType, keyName: string, item: any):any
+    getNumberOfDecimal(num:number,digits:number):number
     createCustomEvent(eventName:string,setEventResposeContext?:any):CustomEvent
     registerCustomEvent(eventName:string,fn:() => void):void
     useCustomEvent(eventObj:CustomEvent):void
@@ -257,6 +258,7 @@ const $:$ = ((el) => {
     $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
     $.console = (type, ...item) => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action, keyName, item) => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
+    $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
     $.createCustomEvent = (eventName,setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName,{ detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
     $.registerCustomEvent = (eventName,fn) => window.addEventListener(eventName,fn) // 更新方法 2022/07/13
     $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
@@ -384,9 +386,7 @@ const $:$ = ((el) => {
         const dateSplit: string[] = dateStr.replace(/T/g, "-").replace(/:/g, "-").split(".")[0].split("-");
         const [year, month, date, hour, minute, second] = dateSplit;
 
-        if ('toDateFullNumber' in format) {
-            return $.convert<number>(dateSplit.join(""), 'number')
-        }
+        if ('toDateFullNumber' in format) return $.convert<number>(dateSplit.join(""), 'number')
 
         // 更新是否格式化 AM 或 PM 2022/03/19
 
@@ -458,26 +458,22 @@ const $:$ = ((el) => {
             }
     
             if(routeParams){
-                const [keyName] = Object.keys(routeParams)
+                const [keyName] = $.objDetails(routeParams, 'keys') as string[]
                 settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
             }
 
-            if (Object.keys(this.baseHeaders).length > 0 || headers) {
-                settings.headers = Object.keys(this.baseHeaders).length > 0 ? this.baseHeaders : { "Content-Type": 'application/json',...headers };
-            } 
-            
-            if (!headers){
-                settings.headers = { "Content-Type": contentType ? contentType : 'application/json' };
+            if (($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 || (headers && ($.objDetails(headers, 'keys') as string[]).length > 0)) {
+                settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { 'Content-Type': 'application/json', ...headers }
             }
     
             if (data) {
-                settings.headers = this.baseHeaders || { "Content-Type": contentType || 'application/json' };
-                settings.body = $.convert(data, 'stringify');
+                settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { 'Content-Type': contentType || 'application/json' }
+                settings.body = $.convert(data, 'stringify')
             }
     
-            if ((this.baseHeaders || headers) && data) {
-                settings.headers = this.baseHeaders || { ...headers };
-                settings.body = $.convert(data, 'stringify');
+            if ((($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 || headers) && data) {
+                settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { ...headers }
+                settings.body = $.convert(data, 'stringify')
             };
 
             if(!usePromise){
@@ -496,13 +492,11 @@ const $:$ = ((el) => {
                 };
             }
 
-            console.log(settings,settingParams)
-
             const res:Response = await fetch(settingParams.url, settings);
 
             if(usePromise){
                 return new Promise<fetchClassReturnType<T>>(async (resolve,reject) => {
-                    if (res.status >= 200 && res.status < 300) {
+                    if (res.status >= 200 && res.status < 400) {
                         const result = await (res as {[key:string]:any})[returnTypeUse]() as T
 
                         return resolve({
@@ -533,7 +527,7 @@ const $:$ = ((el) => {
             } else {
                 // 更新 Request 成功與錯誤回傳內容 2022/03/14
                 try {
-                    if (res.status >= 200 && res.status < 300) {
+                    if (res.status >= 200 && res.status < 400) {
                         const result = await (res as {[key:string]:any})[returnTypeUse]() as T
                         
                         successFn?.call(successFn,{
@@ -688,7 +682,7 @@ String.prototype.format = function(formatStr,...values) { // 更新方法 2022/0
 // }
 
 interface Date {
-    calculateDay({ day: number, method: string }):(Date | undefined)
+    calculateDay(format:{ day: number, method: string }):(Date | undefined)
     toOptionTimeZoneForISO(zoneTime: number):string
 }
 
@@ -715,26 +709,21 @@ Date.prototype.calculateDay = function(format) {
         return
     }
 
-    const obj: {
-        addDay: Date,
-        reduceDay: Date
-    } = {
+    return {
         addDay: new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
         reduceDay: new Date(+this - (format.day * 24 * 60 * 60 * 1000))
-    }
-
-    return (obj as { [key: string]: any })[format.method]
+    }[format.method]
 };
 
 Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
-    return new Date(+this + ((zoneTime === undefined ? 8 : zoneTime) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
+    return new Date(+this + ((zoneTime || 8) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
 }
 
 // Use in node js
 // declare global {
 //     interface Array<T> { 
 //         append(item:any):void
-//         appendFirst(...item:any[]):any[]
+//         appendFirst(item:any):any[]
 //         remove(pos:number):any[]
 //         range(startPos:number,endPos:number):any[]
 //         removeFirst():any[]
@@ -744,7 +733,7 @@ Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
 
 interface Array<T> { // 更新方法 2022/03/23
     append(item: any):void
-    appendFirst(...item: any[]):any[]
+    appendFirst(item: any):any[]
     remove(pos: number):any[]
     range(startPos: number, endPos: number):any[]
     removeFirst():any[]
@@ -753,7 +742,7 @@ interface Array<T> { // 更新方法 2022/03/23
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
 
-Array.prototype.appendFirst = function (...item) { this.unshift(...item); return this } // 更新方法 2021/03/23
+Array.prototype.appendFirst = function (item) { this.unshift(item); return this } // 更新方法 2021/03/23
 
 Array.prototype.remove = function (pos) { this.splice(pos, 1); return this } // 更新方法 2021/03/23
 
