@@ -1,4 +1,4 @@
-# CopyRight 2021/08 - 2022/09 Alex Chen. Library language - coffeescript ver 1.5.3
+# CopyRight 2021/08 - 2022/11 Alex Chen. Library language - coffeescript ver 1.5.4
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -291,7 +291,7 @@ $ = ((el) ->
             callBack.call callBack, resovle, reject
             return
 
-    $.createPromiseAll = (...paramaters) -> # 更新方法 2022/07/14
+    $.createPromiseAll = (paramaters) -> # 更新方法 2022/07/14
         Promise.all paramaters
 
     $.createDomText = (text) -> # 更新方法 2021/09/12
@@ -415,6 +415,10 @@ $ = ((el) ->
                 [keyName] = $.objDetails routeParams, 'keys'
                 settingParams.url = "#{settingParams.url}/#{routeParams[keyName]}"
 
+            if queryParams # 更新方法 2022/11/21
+                querys = ($.maps Object.entries(queryParams),([key,value]) => "#{key}=#{value}").join '&'
+                settingParams.url = "#{settingParams.url}?#{querys}"
+
             if ($.objDetails @baseHeaders, 'keys').length > 0 or (headers and ($.objDetails headers, 'keys').length > 0)
                 settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': 'application/json', headers... }
 
@@ -534,6 +538,9 @@ $ = ((el) ->
         headers: {}
         contentType: ''
         data: {}
+        returnType: '',
+        routeParams: {},
+        queryParams: {},
         beforePost: undefined
         successFn: undefined
         excuteDone: undefined
@@ -542,13 +549,13 @@ $ = ((el) ->
 
     $.fetch.get = (url, settingParams = { headers: {} }) -> FetchPromisClass.get url, settingParams
 
-    $.fetch.post = (url, settingParams = { headers: {}, data: {} }) -> FetchPromisClass.post url, settingParams
+    $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.post url, settingParams
 
-    $.fetch.patch = (url, settingParams = { headers: {}, data: {} }) -> FetchPromisClass.patch url, settingParams
+    $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.patch url, settingParams
 
-    $.fetch.put = (url, settingParams = { headers: {}, data: {} }) -> FetchPromisClass.put url, settingParams
+    $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.put url, settingParams
 
-    $.fetch.delete = (url, settingParams = { headers: {}, data: {} }) -> FetchPromisClass.delete url, settingParams
+    $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.delete url, settingParams
 
     $.fetch.createBase = (paramters = { # 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl: ''
@@ -564,6 +571,8 @@ $ = ((el) ->
 )
 
 String.prototype.appendText = (txt) -> this.toString() + txt # 更新方法 2022/06/24
+
+String.prototype.range = (startPos,endPos) -> this.toString().slice(startPos,endPos) # 更新方法 2022/11/21
 
 String.prototype.format = (formatStr, values...) -> # 更新方法 2022/06/24
   if $.typeOf formatStr, 'String' and $.includes formatStr, '{' and $.includes formatStr, '}'

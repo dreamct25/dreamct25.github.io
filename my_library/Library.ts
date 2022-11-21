@@ -1,5 +1,5 @@
-// CopyRight 2021/08 - 2022/09 Alex Chen. Library language - typescript ver 1.5.3
-// Work Environment Typescript v4.8.2、eslint v8.22.0
+// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - typescript ver 1.5.4
+// Work Environment Typescript v4.9.3、eslint v8.22.0
 //
 // Use in node js
 // export default $
@@ -26,6 +26,29 @@ interface fetchClassReturnType<T> {
     data?: T
 }
 
+interface fetchClassSettingParmasType { 
+    method: requestMethod; 
+    url: string; 
+    headers?: { [key: string]: any; }; 
+    contentType?: string;
+    returnType?: retunType;
+    data?: { [key: string]: any; }; 
+    routeParams?: { [key: string]: any; };
+    queryParams?: { [key: string]:any }
+    beforePost?: () => void; 
+    successFn?: (data: any) => void; 
+    excuteDone?: () => void; 
+    errorFn?: (err: any) => void; 
+}
+
+interface fetchPromiseClassSettingParmasType{
+    headers?: { [key: string]: any; }; 
+    returnType?: retunType;
+    data?: { [key: string]: any; };
+    routeParams?: { [key: string]: any; };
+    queryParams?: { [key: string]:any }
+}
+
 // declare $
 declare interface $ { // 更新 2022/06/29
     (target: string | object): {
@@ -35,8 +58,8 @@ declare interface $ { // 更新 2022/06/29
         removeClass(classText: string): any
         toggleClass(classText: string): void
         on(eventType: string, fn: (self: any, t: Event) => void): void
-        listener(eventType: string, fn: () => void): void
-        removeListener(eventType: string, fn: () => void): void
+        listener(eventType: string, fn: (event:any) => void): void
+        removeListener(eventType: string, fn: (event:any) => void): void
         val(valTemp?: string): string | void
         attr(props: string, val?: any): (string | number | void)
         props(props: string, val?: any): any
@@ -57,12 +80,12 @@ declare interface $ { // 更新 2022/06/29
         useWillMount(willMountCallBack: (target: HTMLDocument) => void): void
         useMounted(useMountedCallBack: (target: HTMLDocument) => void): void
     }
-    each(item: any[], callBack: (items: any,index:number) => void): void
-    maps(item: any[], callBack: (items: any,index:number) => any): any
-    filter(item: any[], callBack: (items: any) => any[]):any[]
-    find(item: any[], callBack: (items: any) => void):any
-    sort(item: any[], callBack: (a: any, b: any) => number):any[]
-    sum(item: any, callBack: (a: any, b: any) => any, initialVal: any):any
+    each<T>(item: T[], callBack: (items: T,index:number) => void): void
+    maps<T,R>(item: T[], callBack: (items: T,index:number) => R): R[]
+    filter<T>(item: T[], callBack: (items: T) => T[]):T[]
+    find<T>(item: T[], callBack: (items: T) => T | undefined):T | undefined
+    sort<T>(item: T[], callBack: (a: T, b: T) => number):T[]
+    sum<T,R>(item: T[], callBack: (a: T, b: T) => R, initialVal?: any):R
     indexOf(item: any, x: any):number
     includes(item: any, x: any): boolean;
     findIndexOfObj(item: any, callBack: (items: any) => void):number
@@ -70,14 +93,14 @@ declare interface $ { // 更新 2022/06/29
     mergeArray(item: any[], mergeItem: any[], callBack?: ((items: any) => any[]) | undefined):any[]
     typeOf(item: any, classType?: any): string | boolean;
     console(type: consoleMethod, ...item: any): void;
-    localData(action: localDataActionType, keyName: string, item: any):any
+    localData<T>(action: localDataActionType, keyName: string, item?: string):T
     getNumberOfDecimal(num:number,digits:number):number
     createCustomEvent(eventName:string,setEventResposeContext?:any):CustomEvent
     registerCustomEvent(eventName:string,fn:() => void):void
     useCustomEvent(eventObj:CustomEvent):void
     removeCustomEvent(eventName:string,fn:() => void):void
     createPromise<T>(callBack:(success:(value: any) => void,error: (reason?: any) => void) => void):Promise<T>
-    createPromiseAll<T>(...paramaters:Promise<Awaited<T>>[]):Promise<Awaited<T>[]>
+    createPromiseAll<T>(paramaters:Promise<Awaited<T>>[]):Promise<Awaited<T>[]>
     createDomText(text: string):Text
     objDetails(obj: { [key: string]: any }, method: objDetailsMethod):void | any[]
     createArray({ type, item }: { type: createArrayType; item: any | { random: number }}, repack?: ((y: any) => any) | undefined):any[] | undefined
@@ -92,23 +115,12 @@ declare interface $ { // 更新 2022/06/29
         customWeekItem?:any[]
     }):string | number | undefined | { fullDateTime:string,getWeekName:any }
     fetch?:{
-        <T>(settingParams:{
-            method: requestMethod,
-            url: string,
-            headers?: { [key: string]: any },
-            contentType?: string,
-            returnType?:retunType,
-            data?: { [key: string]: any },
-            beforePost?: () => void,
-            successFn: (data: fetchClassReturnType<T>) => void,
-            excuteDone?: () => void,
-            errorFn: (err: fetchClassReturnType<T>) => void
-        }):Promise<fetchClassReturnType<T> | undefined>
-        get<T>(url: string, settingParams?: { headers: { [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
-        post<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
-        patch<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
-        put<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
-        delete<T>(url: string, settingParams?: { headers:{ [key:string]:any },data:{[key:string]:any},returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined>
+        <T>(settingParams:fetchClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        get<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        post<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        patch<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        put<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        delete<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
         createBase(paramters: { baseUrl: string; baseHeaders: { [key:string]:any }}):void
     }
 }
@@ -122,8 +134,8 @@ const $:$ = ((el) => {
         self.removeClass = (classText: string): any => { self.classList.remove(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
         self.toggleClass = (classText: string): void => self.classList.toggle(classText); // 更新方法 2021/09/20
         self.on = (eventType: string, fn: (self: any, t: Event) => void): void => { self[["on", eventType].join("")] = (t: Event) => fn.call(fn, self, t); }; // 更新方法 2021/09/20
-        self.listener = (eventType: string, fn: () => void): void => self.addEventListener(eventType, fn);
-        self.removeListener = (eventType: string, fn: () => void): void => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
+        self.listener = (eventType: string, fn: (event:any) => void): void => self.addEventListener(eventType, fn);
+        self.removeListener = (eventType: string, fn: (event:any) => void): void => self.removeEventListener(eventType, fn); // 更新方法 2022/01/04
         self.val = (valTemp?: string): string | void => valTemp ? self.value = valTemp : self.value;
         self.attr = (props: string, val?: any): (string | number | void) => val ? self.setAttribute(props, val) : self.getAttribute(props);
         self.props = (props: string, val?: any): any => val ? self[props] = val : self[props];
@@ -156,7 +168,7 @@ const $:$ = ((el) => {
                 if (conditionProps.length === 0) {
                     $.console('error', 'Parameter must use array,and css property must in array with string.');
                 } else {
-                    $.each(conditionProps, item => cssProperty[item] = getComputedStyle(self as HTMLElement).getPropertyValue(item));
+                    $.each<string>(conditionProps, item => cssProperty[item] = getComputedStyle(self as HTMLElement).getPropertyValue(item));
                     return cssProperty;
                 }
             }
@@ -175,7 +187,7 @@ const $:$ = ((el) => {
         } => ({
             x: self.props('offsetLeft'),
             y: self.props('offsetTop') - window.scrollY,
-            top: self.props('offsetTop') - window.scrollY,
+            top: self.props('offsetTop'),
             left: self.props('offsetLeft'),
             right: self.props('offsetLeft') + self.props('offsetWidth'),
             bottom: (self).props('offsetTop') + self.props('offsetHeight') - window.scrollY,
@@ -244,12 +256,12 @@ const $:$ = ((el) => {
     };
 
     // public function
-    $.each = (item,callBack) => item.forEach((items: any, index: number) => callBack.call(callBack, items, index));
-    $.maps = (item, callBack) => item.map((items: any, index: number) => callBack.call(callBack, items, index));
-    $.filter = (item, callBack) => item.filter((items: any) => callBack.call(callBack, items));
-    $.find = (item, callBack) => item.find((items: any) => callBack.call(callBack, items))  // 更新方法 2022/03/12
-    $.sort = (item, callBack) => item.sort((a: any, b: any) => callBack.call(callBack, a, b));
-    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a:any, b:any) => callBack.call(callBack, a, b),initialVal) : item.reduce((a:any, b:any) => callBack.call(callBack, a, b));
+    $.each = (item,callBack) => item.forEach((items, index) => callBack.call(callBack, items, index));
+    $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, items, index));
+    $.filter = (item, callBack) => item.filter(items => callBack.call(callBack, items));
+    $.find = (item, callBack) => item.find(items => callBack.call(callBack, items))  // 更新方法 2022/03/12
+    $.sort = (item, callBack) => item.sort((a, b) => callBack.call(callBack, a, b));
+    $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b),initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b));
     $.indexOf = (item, x) => item.indexOf(x);
     $.includes = (item, x) => item.includes(x);
     $.findIndexOfObj = (item, callBack) => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
@@ -264,7 +276,7 @@ const $:$ = ((el) => {
     $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
     $.removeCustomEvent = (eventName,fn) => window.removeEventListener(eventName,fn) // 更新方法 2022/07/13
     $.createPromise = (callBack) => new Promise((resovle,reject) => callBack.call(callBack,resovle,reject)) // 更新方法 2022/07/14
-    $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
+    $.createPromiseAll = (paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
     $.createDomText = text => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
     $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
@@ -415,7 +427,8 @@ const $:$ = ((el) => {
             contentType?: string;
             returnType?: retunType;
             data?: { [key: string]: any; }; 
-            routeParams?: { [key: string]: any; }; 
+            routeParams?: { [key: string]: any; };
+            queryParams?: { [key: string]:any }
             beforePost?: () => void; 
             successFn?: (data: any) => void; 
             excuteDone?: () => void; 
@@ -430,6 +443,7 @@ const $:$ = ((el) => {
              * @param {object} header 追加 hearder 物件 2021/10/21
              * @param {object} data
              * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
+             * @param {object} queryParams 追加 queryParams 路由參數 2022/11/21
              * @param {string} contentType
              * @param {string} retunType 追加 retunType 回傳轉譯 2022/08/26
              * @param {Function} beforePost <= 回呼函式
@@ -440,7 +454,7 @@ const $:$ = ((el) => {
             //#endregion
     
             const settings:{ [key: string]: any } = {};
-            const { method, headers, contentType, returnType, data,routeParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
+            const { method, headers, contentType, returnType, data,routeParams,queryParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
     
             settings.method = method;
             settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
@@ -460,6 +474,11 @@ const $:$ = ((el) => {
             if(routeParams){
                 const [keyName] = $.objDetails(routeParams, 'keys') as string[]
                 settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+            }
+
+            if(queryParams){
+                const querys = $.maps(Object.entries(queryParams),([key,value]) => `${key}=${value}`).join('&') as string
+                settingParams.url = `${settingParams.url}?${querys}`
             }
 
             if (($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 || (headers && ($.objDetails(headers, 'keys') as string[]).length > 0)) {
@@ -576,52 +595,34 @@ const $:$ = ((el) => {
     }
 
     class FetchPromisClass extends FetchClass {
-        static get: <T>(url: string, setting: { headers:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
-        static post: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
-        static patch: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
-        static put: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
-        static delete: <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }) => Promise<fetchClassReturnType<T> | undefined>;
-            
-        static {
-            // 更新 Promise 導出 get 方法 2022/05/01
-            this.get = <T>(url: string, setting: { headers:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
-
-            // 更新 Promise 導出 post 方法 2022/05/01
-            this.post = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
-
-            // 更新 Promise 導出 patch 方法 2022/05/01
-            this.patch = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
-
-            // 更新 Promise 導出 put 方法 2022/05/01
-            this.put = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
-
-            // 更新 Promise 導出 delete 方法 2022/05/01
-            this.delete = <T>(url: string, setting: { headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
-        }
+        
+        // 更新 Promise 導出 get 方法 2022/05/01
+        static get = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
+        
+        // 更新 Promise 導出 post 方法 2022/05/01
+        static post = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
+        
+        // 更新 Promise 導出 patch 方法 2022/05/01
+        static patch = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
+        
+        // 更新 Promise 導出 put 方法 2022/05/01
+        static put = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
+        
+        // 更新 Promise 導出 delete 方法 2022/05/01
+        static delete = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
     }
+    
+    ($.fetch as any) = <T>(settingParams:fetchClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchClass.fetchSetting<T>(settingParams,false) // 更新 FetchClass 類方法導出 2022/03/24
 
-    ($.fetch as any) = <T>(settingParams:{ // 更新 FetchClass 類方法導出 2022/03/24
-        method: requestMethod,
-        url: string,
-        headers?: { [key: string]: any },
-        contentType?: string,
-        returnType?: retunType,
-        data?: { [key: string]: any },
-        beforePost?: () => void,
-        successFn: (data: any) => void,
-        excuteDone?: () => void,
-        errorFn: (err: any) => void
-    }):Promise<fetchClassReturnType<T> | undefined> => FetchClass.fetchSetting<T>(settingParams,false)
+    $.fetch!.get = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.get<T>(url,settingParams);
 
-    $.fetch!.get = <T>(url:string,settingParams:{ headers:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.get<T>(url,settingParams);
+    $.fetch!.post = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.post<T>(url,settingParams);
 
-    $.fetch!.post = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.post<T>(url,settingParams);
+    $.fetch!.patch = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.patch<T>(url,settingParams);
 
-    $.fetch!.patch = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.patch<T>(url,settingParams);
+    $.fetch!.put = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.put<T>(url,settingParams);
 
-    $.fetch!.put = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.put<T>(url,settingParams);
-
-    $.fetch!.delete = <T>(url:string,settingParams:{ headers:{ [key:string]:any },data:{ [key:string]:any },returnType?: retunType }):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.delete<T>(url,settingParams);
+    $.fetch!.delete = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.delete<T>(url,settingParams);
 
     $.fetch!.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:string,
@@ -639,15 +640,19 @@ const $:$ = ((el) => {
 //     interface String { 
 //         format(formatStr:string,value:any[]):(string | undefined)
 //         appendText(txt:string):string
+//         range(startPos:number,endPos:number):string
 //     }
 // }
 
 interface String {
     format(formatStr:string,value:any[]):(string | undefined)
     appendText(txt:string):string
+    range(startPos:number,endPos:number):string
 }
 
 String.prototype.appendText = function(txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.range = function(startPos,endPos){ return this.toString().slice(startPos,endPos) } // 更新方法 2022/11/21
 
 String.prototype.format = function(formatStr,...values) { // 更新方法 2022/06/24
     if($.typeOf(formatStr,'String') && $.includes(formatStr,'{') && $.includes(formatStr,'}')){

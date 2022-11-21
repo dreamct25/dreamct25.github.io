@@ -1,4 +1,4 @@
-// CopyRight 2021/08 - 2022/09 Alex Chen. Library language - javascript ver 1.5.3
+// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - javascript ver 1.5.4
 // Work Environment Javascript ES6 or latest、eslint 8.22.0
 
 /* eslint-disable no-return-assign */
@@ -284,6 +284,7 @@ const $ = ((el) => {
          * @param {object} headers 追加 hearder 物件 2021/10/21
          * @param {object} data
          * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
+         * @param {object} queryParams 追加 queryParams 路由參數 2022/11/21
          * @param {string} contentType
          * @param {string} returnType 追加 retunType 回傳轉譯 2022/08/26
          * @param {Function} beforePost <= 回呼函式
@@ -294,7 +295,7 @@ const $ = ((el) => {
         // #endregion
 
         const settings = {}
-        const { method, headers, contentType, returnType, data, routeParams, beforePost, successFn, excuteDone, errorFn } = settingParams
+        const { method, headers, contentType, returnType, data, routeParams,queryParams, beforePost, successFn, excuteDone, errorFn } = settingParams
 
         settings.method = method
         settingParams.url = FetchClass.#baseUrl ? `${FetchClass.#baseUrl}${settingParams.url}` : settingParams.url
@@ -314,6 +315,11 @@ const $ = ((el) => {
         if (routeParams) {
           const [keyName] = $.objDetails(routeParams, 'keys')
           settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
+        }
+
+        if(queryParams){
+          const querys = $.maps(Object.entries(queryParams),([key,value]) => `${key}=${value}`).join('&')
+          settingParams.url = `${settingParams.url}?${querys}`
         }
 
         if ($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || (headers && $.objDetails(headers, 'keys').length > 0)) {
@@ -452,6 +458,8 @@ const $ = ((el) => {
     headers: {},
     contentType: '',
     returnType: '',
+    routeParams: {},
+    queryParams: {},
     data: {},
     beforePost: undefined,
     successFn: undefined,
@@ -459,15 +467,15 @@ const $ = ((el) => {
     errorFn: undefined
   }) => FetchClass.fetchSetting(settingParams, false)
 
-  $.fetch.get = (url, settingParams = { headers: {}, returnType: '' }) => FetchPromisClass.get(url, settingParams)
+  $.fetch.get = (url, settingParams = { headers: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.get(url, settingParams)
 
-  $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '' }) => FetchPromisClass.post(url, settingParams)
+  $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.post(url, settingParams)
 
-  $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '' }) => FetchPromisClass.patch(url, settingParams)
+  $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.patch(url, settingParams)
 
-  $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '' }) => FetchPromisClass.put(url, settingParams)
+  $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.put(url, settingParams)
 
-  $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '' }) => FetchPromisClass.delete(url, settingParams)
+  $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.delete(url, settingParams)
 
   $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
     baseUrl: '',
@@ -481,6 +489,8 @@ const $ = ((el) => {
 // Use in node js you can use to import prototype extends like import './Library.js'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
 String.prototype.appendText = function (txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.range = function(startPos,endPos){ return this.toString().slice(startPos,endPos) } // 更新方法 2022/11/21
 
 String.prototype.format = function (formatStr, ...values) { // 更新方法 2022/06/24
   if ($.typeOf(formatStr, 'String') && $.includes(formatStr, '{') && $.includes(formatStr, '}')) {
