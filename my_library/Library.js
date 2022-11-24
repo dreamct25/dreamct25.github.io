@@ -1,5 +1,8 @@
-// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - javascript ver 1.5.4
-// Work Environment Javascript ES6 or latest、eslint 8.22.0
+// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - javascript ver 1.5.5
+// Work Environment Javascript ES6 or latest、eslint 8.28.0
+//
+// Use in CommonJS
+// module.exports = $
 
 /* eslint-disable no-return-assign */
 /* eslint-disable no-prototype-builtins */
@@ -148,6 +151,12 @@ const $ = ((el) => {
   $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
   $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/09/12
   $.objDetails = (obj, method) => !method || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/09/12
+  $.useBase64 = (method,str) => method === 'encode' ? btoa(str) : atob(str) // 更新方法 2021/11/24
+  $.useSHA = async (shaType,str) => { // 更新方法 2021/11/24
+      // Cryptoing only working in https of production or http of development environment
+      const hashBuffer = await window.crypto.subtle.digest(shaType, new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
   $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
     // #region 參數設定
     /**

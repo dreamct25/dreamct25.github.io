@@ -1,4 +1,4 @@
-# CopyRight 2021/08 - 2022/11 Alex Chen. Library language - coffeescript ver 1.5.4
+# CopyRight 2021/08 - 2022/11 Alex Chen. Library language - coffeescript ver 1.5.5
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -303,6 +303,14 @@ $ = ((el) ->
             return
         else
             Object[method](obj)
+    
+    $.useBase64 = (method,str) -> if method is 'encode' then btoa str else atob str # 更新方法 2021/11/24
+    
+    $.useSHA = (shaType,str) -> # 更新方法 2021/11/24
+        # Cryptoing only working in https of production or http of development environment
+        hashBuffer = await window.crypto.subtle.digest shaType, (new TextEncoder().encode str);
+        return Array.from(new Uint8Array hashBuffer).map((b) -> (b.toString 16).padStart 2, '0').join '';
+    
     $.createArray = ({ type, item }, repack) -> # 更新方法 2022/03/14
         if type is 'fake'
             if 'random' of item and $.typeOf item.random, 'Number' and repack and $.typeOf repack, 'Function'

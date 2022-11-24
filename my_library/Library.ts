@@ -1,7 +1,7 @@
-// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - typescript ver 1.5.4
-// Work Environment Typescript v4.9.3、eslint v8.22.0
+// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - typescript ver 1.5.5
+// Work Environment Typescript v4.9.3、eslint v8.28.0
 //
-// Use in node js
+// Use in ESModule
 // export default $
 
 // String tips when use method
@@ -12,7 +12,8 @@ type stylesMethod = 'set' | 'remove'
 type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
 type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
 type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
-type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone' 
+type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone'
+type SHAType = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
 
 interface fetchClassReturnType<T> {
     bodyUsed: boolean,
@@ -85,7 +86,7 @@ declare interface $ { // 更新 2022/06/29
     filter<T>(item: T[], callBack: (items: T) => T[]):T[]
     find<T>(item: T[], callBack: (items: T) => T | undefined):T | undefined
     sort<T>(item: T[], callBack: (a: T, b: T) => number):T[]
-    sum<T,R>(item: T[], callBack: (a: T, b: T) => R, initialVal?: any):R
+    sum<T,R>(item: T[], callBack: (a: T, b: T) => any, initialVal?: any):R
     indexOf(item: any, x: any):number
     includes(item: any, x: any): boolean;
     findIndexOfObj(item: any, callBack: (items: any) => void):number
@@ -107,6 +108,8 @@ declare interface $ { // 更新 2022/06/29
     convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
     currencyTranser(currencyType: string, formatNumber: number):string | undefined
+    useBase64(method: 'encode' | 'decode',str:string):string
+    useSHA(shaType:SHAType,str:string):Promise<string>
     formatDateTime(format: { 
         formatDate: string | Date; 
         formatType: string; 
@@ -279,6 +282,12 @@ const $:$ = ((el) => {
     $.createPromiseAll = (paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
     $.createDomText = text => document.createTextNode(text); // 更新方法 2021/09/12
     $.objDetails = (obj, method) => method === undefined || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : (Object as { [key: string]: any })[method](obj); // 更新方法 2021/09/12
+    $.useBase64 = (method,str) => method === 'encode' ? btoa(str) : atob(str) // 更新方法 2021/11/24
+    $.useSHA = async (shaType,str) => { // 更新方法 2021/11/24
+        // Cryptoing only working in https of production or http of development environment
+        const hashBuffer = await window.crypto.subtle.digest(shaType, new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
     $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
         //#region 參數設定
         /**
@@ -633,9 +642,9 @@ const $:$ = ((el) => {
 })((el: string | object): (HTMLElement | Object) => typeof el === "object" ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)!); // 更新元素指向 2021/8/31
 
 // Origin class extends method
-// Use in node js you can use to import prototype extends like import './Library.ts'
+// Use in ESModule you can use to import prototype extends like import './Library.ts'
 /*eslint no-extend-native: ["off", { "exceptions": ["Object"] }]*/
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface String { 
 //         format(formatStr:string,value:any[]):(string | undefined)
@@ -678,7 +687,7 @@ String.prototype.format = function(formatStr,...values) { // 更新方法 2022/0
     return undefined
 }
 
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface Date { 
 //         calculateDay(format: { day: number, method: string }):(Date | undefined)
@@ -724,7 +733,7 @@ Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
     return new Date(+this + ((zoneTime || 8) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
 }
 
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface Array<T> { 
 //         append(item:any):void
@@ -757,7 +766,7 @@ Array.prototype.removeFirst = function () { this.shift(); return this } // 更�
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
 
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface Map<K,V> {
 //         append(keyName:K,value:V):void
@@ -790,7 +799,7 @@ Map.prototype.isKeyInMap = function(keyName){ return this.has(keyName) } // 更�
 
 Map.prototype.toObject = function(){ return Object.fromEntries(this) } // 更新方法 2022/08/02
 
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface Set<T> {
 //         append(value:any):void
@@ -819,7 +828,7 @@ Set.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
 
 Set.prototype.toArray = function(){ return [...this] } // 更新方法 2022/08/02
 
-// Use in node js
+// Use in ESModule
 // declare global {
 //     interface Object { // 更新方法 2022/08/02
 //         toMap(obj:{[key:string]:any}):Map<string,any>
