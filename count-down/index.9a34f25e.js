@@ -213,7 +213,7 @@ var i,r,o,a,s,l,u,c,d,f,h,p,v,g,m,y,b,w,x,k,S,C,O,P,_,z,E,M;e(t.exports,"AsyncMo
         bottom: 0;
         color: white;
         box-shadow: 0 0 2px 0 rgba(255,255,255,.7);
-        transform: translateX(225px);
+        transform: translateX(265px);
         padding: 3px 8px 5px 8px;
         font-size: 14px;
         border-radius: 5px 0 0 0;
