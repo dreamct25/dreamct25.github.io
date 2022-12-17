@@ -138,6 +138,11 @@ var i,r,o,a,s,l,u,c,d,f,h,p,v,g,m,y,b,w,x,k,S,C,O,P,_,z,E,M;e(t.exports,"AsyncMo
             user-select: none;
             backdrop-filter: blur(5px);
 
+            @media screen and (max-width:1024px){
+                width: 180px;
+                padding: 5px;
+            }
+
             svg{
                 width: 20px;
                 height: 20px;
@@ -214,6 +219,10 @@ var i,r,o,a,s,l,u,c,d,f,h,p,v,g,m,y,b,w,x,k,S,C,O,P,_,z,E,M;e(t.exports,"AsyncMo
         border-radius: 5px 0 0 0;
         backdrop-filter: blur(5px);
         transition: .5s ease;
+
+        @media screen and (max-width:414px){
+            font-size: 14px;
+        }
 
         &.active{
             transform: translateX(0px);
