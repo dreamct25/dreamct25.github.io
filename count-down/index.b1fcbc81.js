@@ -195,7 +195,7 @@ var i,r,o,a,s,l,u,c,d,f,h,p,v,g,m,y,b,w,x,k,S,C,O,P,_,z,E,M;e(t.exports,"AsyncMo
 
                 &.active{
                     opacity: 1;
-                    max-height: 148px;
+                    max-height: 100vh;
                 }
             }
         }
