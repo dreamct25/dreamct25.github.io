@@ -78,7 +78,10 @@ var i,r,o,a,s,l,u,c,d,f,h,p,v,g,m,y,b,w,x,k,S,C,O,P,_,z,E,M;e(t.exports,"AsyncMo
     }
 `)),vt=ct.div(ft||(ft=ht`
     .center{
-        position: relative;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
         z-index: 10;
         text-align: center;
 
