@@ -1,5 +1,5 @@
-// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - typescript ver 1.5.5
-// Work Environment Typescript v4.9.3、eslint v8.28.0
+// CopyRight 2021/08 - 2023/02 Alex Chen. Library language - typescript ver 1.5.6
+// Work Environment Typescript v4.9.5、eslint v8.28.0
 //
 // Use in ESModule
 // export default $
@@ -14,6 +14,7 @@ type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringi
 type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone'
 type SHAType = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
+type padDirection = 'left' | 'right'
 
 interface fetchClassReturnType<T> {
     bodyUsed: boolean,
@@ -74,7 +75,7 @@ declare interface $ { // 更新 2022/06/29
         removeChildDom(): void
         appendDomText(el: Text): void
         easyAppendDom(orderBy: string, domStr: string): void
-        styles(method: stylesMethod, cssType: string, cssParameter: string): typeof self | undefined
+        styles(method: stylesMethod, cssType: string, cssParameter: string): typeof $ | undefined
         getDomStyles(conditionProps: string[]): { [key: string]: any }
         getDomPos():{ x: number,y: number,top: number,left: number,right: number,bottom: number,width: number,height: number }
         scrollToTop(scrollSetting: { scrollTop: number, duration: number }):void
@@ -83,16 +84,16 @@ declare interface $ { // 更新 2022/06/29
     }
     each<T>(item: T[], callBack: (items: T,index:number) => void): void
     maps<T,R>(item: T[], callBack: (items: T,index:number) => R): R[]
-    filter<T>(item: T[], callBack: (items: T) => T[]):T[]
-    find<T>(item: T[], callBack: (items: T) => T | undefined):T | undefined
+    filter<T>(item: T[], callBack: (items: T) => boolean):T[]
+    find<T>(item: T[], callBack: (items: T) => T | undefined):(T | undefined)
     sort<T>(item: T[], callBack: (a: T, b: T) => number):T[]
     sum<T,R>(item: T[], callBack: (a: T, b: T) => any, initialVal?: any):R
-    indexOf(item: any, x: any):number
-    includes(item: any, x: any): boolean;
-    findIndexOfObj(item: any, callBack: (items: any) => void):number
-    findObjProperty(obj: { [key: string]: any }, propertyName: string):boolean
-    mergeArray(item: any[], mergeItem: any[], callBack?: ((items: any) => any[]) | undefined):any[]
-    typeOf(item: any, classType?: any): string | boolean;
+    indexOf<T>(item: T, x: string | number):number
+    includes<T>(item: T, x: string | number): boolean;
+    findIndexOfObj<T>(item: T[], callBack: (items: T) => boolean):number
+    findObjProperty<T>(obj: T, propertyName: string):boolean
+    mergeArray<T,M>(item: T, mergeItem: M, callBack?: ((items: any) => any)):any
+    typeOf<T>(item: T, classType?: string): string | boolean;
     console(type: consoleMethod, ...item: any): void;
     localData<T>(action: localDataActionType, keyName: string, item?: string):T
     getNumberOfDecimal(num:number,digits:number):number
@@ -103,8 +104,8 @@ declare interface $ { // 更新 2022/06/29
     createPromise<T>(callBack:(success:(value: any) => void,error: (reason?: any) => void) => void):Promise<T>
     createPromiseAll<T>(paramaters:Promise<Awaited<T>>[]):Promise<Awaited<T>[]>
     createDomText(text: string):Text
-    objDetails(obj: { [key: string]: any }, method: objDetailsMethod):void | any[]
-    createArray({ type, item }: { type: createArrayType; item: any | { random: number }}, repack?: ((y: any) => any) | undefined):any[] | undefined
+    objDetails<T>(obj: T, method: objDetailsMethod):void | any[]
+    createArray<T,R>({ type, item }: { type: createArrayType; item: T | { random: number }}, repack?: ((y: number) => R) | undefined):R[] | undefined
     convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
     currencyTranser(currencyType: string, formatNumber: number):string | undefined
@@ -265,12 +266,12 @@ const $:$ = ((el) => {
     $.find = (item, callBack) => item.find(items => callBack.call(callBack, items))  // 更新方法 2022/03/12
     $.sort = (item, callBack) => item.sort((a, b) => callBack.call(callBack, a, b));
     $.sum = (item, callBack,initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b),initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b));
-    $.indexOf = (item, x) => item.indexOf(x);
-    $.includes = (item, x) => item.includes(x);
-    $.findIndexOfObj = (item, callBack) => item.findIndex((items: { [key: string]: any }) => callBack.call(callBack, items));
-    $.findObjProperty = (obj, propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.mergeArray = (item, mergeItem, callBack) => callBack ? item.concat(mergeItem) : callBack!.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
-    $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name; // 更新方法 2021/10/26
+    $.indexOf = (item, x) => (item as any).indexOf(x);
+    $.includes = (item, x) => (item as any).includes(x);
+    $.findIndexOfObj = (item, callBack) => item.findIndex(items => callBack.call(callBack, items));
+    $.findObjProperty = (obj, propertyName) => (obj as {[key:string]:any}).hasOwnProperty(propertyName) // 更新方法 2022/03/23
+    $.mergeArray = (item, mergeItem, callBack) => callBack ? (item as any).concat(mergeItem) : callBack!.call(callBack, (item as any).concat(mergeItem)) // 更新方法 2022/03/23
+    $.typeOf = (item, classType) => classType ? (item as any).constructor.name === classType : (item as any).constructor.name; // 更新方法 2021/10/26
     $.console = (type, ...item) => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action, keyName, item) => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
     $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
@@ -297,14 +298,17 @@ const $:$ = ((el) => {
          * @returns {Array}
          */
         //#endregion
+
+        const itemTemp = item as { random: number }
+
         if (type === 'fake') {
-            if ('random' in item && $.typeOf(item.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
-                return Array.from({ length: item.random }, (_, items) => repack.call(repack, items))
+            if ('random' in itemTemp && $.typeOf(itemTemp.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
+                return Array.from({ length: itemTemp.random }, (_, items) => repack.call(repack, items as number))
             } else {
                 $.console('error', 'item property must have random in object and radom type must be number,with call back function in secode parameters.')
             }
-        } else if (type === 'new' && !('random' in item)) {
-            return Array.from(item)
+        } else if (type === 'new' && !('random' in itemTemp)) {
+            return Array.from(item as [])
         }
 
         return undefined
@@ -313,10 +317,10 @@ const $:$ = ((el) => {
     $.convert = (val, type) => {
         // 更新方法 2021/10/22
         // 更新泛型回傳值 2022/03/19
-        if (val === undefined || type === undefined) {
+        if (!val || !type) {
             $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.");
             return
-        } else if (typeof val === 'object' && $.includes(['string', 'number', 'float', 'boolean'], type)) {
+        } else if ($.typeOf(val,'Object') && $.includes(['string', 'number', 'float', 'boolean'], type)) {
             $.console('error', `Convert value can't be object when use convert type ${type}.`);
             return
         }
@@ -407,13 +411,13 @@ const $:$ = ((el) => {
         const dateSplit: string[] = dateStr.replace(/T/g, "-").replace(/:/g, "-").split(".")[0].split("-");
         const [year, month, date, hour, minute, second] = dateSplit;
 
-        if ('toDateFullNumber' in format) return $.convert<number>(dateSplit.join(""), 'number')
+        if ('toDateFullNumber' in format) return $.convert(dateSplit.join(""), 'number')
 
         // 更新是否格式化 AM 或 PM 2022/03/19
 
         if (format.formatType.match('tt')) {
-            const currentAMorPM: string = $.convert<number>(hour, 'number')! > 11 ? 'PM' : 'AM'
-            const transHour: string = ($.convert<number>(hour, 'number')! - 12) < 10 ? `0${$.convert<number>(hour, 'number')! - 12}` : $.convert<string>($.convert<number>(hour, 'number')! - 12, 'string')!
+            const currentAMorPM: string = $.convert(hour, 'number')! > 11 ? 'PM' : 'AM'
+            const transHour: string = ($.convert<number>(hour, 'number')! - 12) < 10 ? `0${$.convert<number>(hour, 'number')! - 12}` : $.convert($.convert<number>(hour, 'number')! - 12, 'string')!
             return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
         } else if ($.findObjProperty(format,'customWeekItem')) { // 更新客製化週數命名 2022/07/27
             return {
@@ -644,22 +648,85 @@ const $:$ = ((el) => {
 // Origin class extends method
 // Use in ESModule you can use to import prototype extends like import './Library.ts'
 /*eslint no-extend-native: ["off", { "exceptions": ["Object"] }]*/
-// Use in ESModule
+
+// Use in ESModule global.d.ts
 // declare global {
+//     interface Math { 
+//         toFixedNum(setting:{ value:string | number,toFloatPos:number }):(number | undefined)
+//     }
+
 //     interface String { 
 //         format(formatStr:string,value:any[]):(string | undefined)
 //         appendText(txt:string):string
+//         appendDirection(direction:padDirection,pos:number,txt:string):string
 //         range(startPos:number,endPos:number):string
 //     }
+
+//     interface Date { 
+//         calculateDay(format: { day: number, method: string }):(Date | undefined)
+//         toOptionTimeZoneForISO(timeZone:number):(string | void)
+//         getLocalTimeZone():number
+//     }
+
+//     interface Array<T> { 
+//         append(item:any):void
+//         appendFirst(item:any):any[]
+//         remove(pos:number):any[]
+//         range(startPos:number,endPos:number):any[]
+//         removeFirst():any[]
+//         removeLast():any[]
+//     }
+
+//     interface Map<K,V> {
+//         append(keyName:K,value:V):void
+//         getValue(keyName:K):any
+//         deleteKeyValue(keyName:K):boolean
+//         removeAll():void
+//         isKeyInMap(keyName:K):boolean
+//         toObject():{[key:string]:any}
+//     }
+
+//     interface Set<T> {
+//         append(value:any):void
+//         deleteValue(value:any):boolean
+//         isValueInSet(value:any):boolean
+//         removeAll():void
+//         toArray():any[]
+//     }
+
+//     interface Object { // 更新方法 2022/08/02
+//         toMap(obj:{[key:string]:any}):Map<string,any>
+//     }
 // }
+
+interface Math {
+    toFixedNum(setting:{ value:string | number,toFloatPos:number }):(number | undefined)
+}
+
+Math.toFixedNum = setting => { // 更新方法 2023/02/07
+    if(!setting || !('value' in setting) || !('toFloatPos' in setting)){
+      $.console('error','Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }')
+      return
+    }
+  
+    if(!$.typeOf(setting.toFloatPos,'Number')){
+      $.console('error','toFloatPos key must use number.')
+      return
+    }
+    
+    return $.typeOf(setting.value,'String') ? Number(parseFloat(setting.value as string).toFixed(setting.toFloatPos)) : Number((setting.value as number).toFixed(setting.toFloatPos))
+}
 
 interface String {
     format(formatStr:string,value:any[]):(string | undefined)
     appendText(txt:string):string
+    appendDirection(direction:padDirection,pos:number,txt:string):string
     range(startPos:number,endPos:number):string
 }
 
 String.prototype.appendText = function(txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.appendDirection = function(direction,pos,txt){ return this[direction === 'left' ? 'padStart' : 'padEnd'](pos,txt) } // 更新方法 2023/02/07
 
 String.prototype.range = function(startPos,endPos){ return this.toString().slice(startPos,endPos) } // 更新方法 2022/11/21
 
@@ -674,7 +741,7 @@ String.prototype.format = function(formatStr,...values) { // 更新方法 2022/0
             const returnReplaceDoneStr:string = $.maps(valuesTemp,({ replaceKey,replaceValue }:{ replaceKey:string,replaceValue:any }) => {
                 formatStrTemp = formatStrTemp.replace(replaceKey,replaceValue)
                 return formatStrTemp
-            }).slice(valuesTemp.length - 1,valuesTemp.length).join('')
+            }).range(valuesTemp.length - 1,valuesTemp.length).join('')
 
             return returnReplaceDoneStr
         } else {
@@ -687,17 +754,10 @@ String.prototype.format = function(formatStr,...values) { // 更新方法 2022/0
     return undefined
 }
 
-// Use in ESModule
-// declare global {
-//     interface Date { 
-//         calculateDay(format: { day: number, method: string }):(Date | undefined)
-//         toOptionTimeZoneForISO(zoneTime:number):string
-//     }
-// }
-
 interface Date {
     calculateDay(format:{ day: number, method: string }):(Date | undefined)
-    toOptionTimeZoneForISO(zoneTime: number):string
+    toOptionTimeZoneForISO(timeZone: number):(string | void)
+    getLocalTimeZone():number
 }
 
 Date.prototype.calculateDay = function(format) {
@@ -712,7 +772,7 @@ Date.prototype.calculateDay = function(format) {
      */
     //#endregion
 
-    if (format === undefined || !('day' in format && 'method' in format)) {
+    if (!format || !('day' in format && 'method' in format)) {
         $.console('error', 'Please enter an object and use day and method property in the object.');
         return
     } else if (typeof format.day !== 'number') {
@@ -729,21 +789,11 @@ Date.prototype.calculateDay = function(format) {
     }[format.method]
 };
 
-Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
-    return new Date(+this + ((zoneTime || 8) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
-}
+Date.prototype.getLocalTimeZone = function(){ return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
 
-// Use in ESModule
-// declare global {
-//     interface Array<T> { 
-//         append(item:any):void
-//         appendFirst(item:any):any[]
-//         remove(pos:number):any[]
-//         range(startPos:number,endPos:number):any[]
-//         removeFirst():any[]
-//         removeLast():any[]
-//     }
-// }
+Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
+    return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error','Lost one parameter in function.') // 更新方法 2021/03/23
+}
 
 interface Array<T> { // 更新方法 2022/03/23
     append(item: any):void
@@ -766,18 +816,6 @@ Array.prototype.removeFirst = function () { this.shift(); return this } // 更�
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
 
-// Use in ESModule
-// declare global {
-//     interface Map<K,V> {
-//         append(keyName:K,value:V):void
-//         getValue(keyName:K):any
-//         deleteKeyValue(keyName:K):boolean
-//         removeAll():void
-//         isKeyInMap(keyName:K):boolean
-//         toObject():{[key:string]:any}
-//     }
-// }
-
 interface Map<K,V> { // 更新方法 2022/08/02
     append(keyName:string,value:any):void
     getValue(keyName:string):any
@@ -799,17 +837,6 @@ Map.prototype.isKeyInMap = function(keyName){ return this.has(keyName) } // 更�
 
 Map.prototype.toObject = function(){ return Object.fromEntries(this) } // 更新方法 2022/08/02
 
-// Use in ESModule
-// declare global {
-//     interface Set<T> {
-//         append(value:any):void
-//         deleteValue(value:any):boolean
-//         isValueInSet(value:any):boolean
-//         removeAll():void
-//         toArray():any[]
-//     }
-// }
-
 interface Set<T> { // 更新方法 2022/08/02
     append(value:any):void
     deleteValue(value:any):boolean
@@ -827,13 +854,6 @@ Set.prototype.isValueInSet = function(value){ return this.has(value) } // 更新
 Set.prototype.removeAll = function(){ this.clear() } // 更新方法 2022/08/02
 
 Set.prototype.toArray = function(){ return [...this] } // 更新方法 2022/08/02
-
-// Use in ESModule
-// declare global {
-//     interface Object { // 更新方法 2022/08/02
-//         toMap(obj:{[key:string]:any}):Map<string,any>
-//     }
-// }
 
 interface Object { // 更新方法 2022/08/02
     toMap(obj:{[key:string]:any}):Map<string,any>

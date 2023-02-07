@@ -1,4 +1,4 @@
-// CopyRight 2021/08 - 2022/11 Alex Chen. Library language - javascript ver 1.5.5
+// © CopyRight 2021/08 - 2023/02 Alex Chen. Library language - javascript ver 1.5.6
 // Work Environment Javascript ES6 or latest、eslint 8.28.0
 //
 // Use in CommonJS
@@ -178,10 +178,10 @@ const $ = ((el) => {
   }
 
   $.convert = (val, type) => { // 更新方法 2021/10/22
-    if (val === undefined || type === undefined || !$.includes(['string', 'number', 'float', 'boolean', 'json', 'stringify'], type)) {
+    if (!val || !type || !$.includes(['string', 'number', 'float', 'boolean', 'json', 'stringify'], type)) {
       $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
       return
-    } else if (typeof val === 'object' && $.includes(['string', 'number', 'float', 'boolean'], type)) {
+    } else if ($.typeOf(val,'Object') && $.includes(['string', 'number', 'float', 'boolean'], type)) {
       $.console('error', `Convert value can't be object when use convert type ${type}.`)
       return
     }
@@ -497,7 +497,23 @@ const $ = ((el) => {
 // Origin class extends method
 // Use in node js you can use to import prototype extends like import './Library.js'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
+Math.toFixedNum = (setting = { value,toFloatPos }) => { // 更新方法 2023/02/07
+  if(!setting || !$.findObjProperty(setting,'value') || !$.findObjProperty(setting,'toFloatPos')){
+    $.console('error','Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }')
+    return
+  }
+
+  if(!$.typeOf(setting.toFloatPos,'Number')){
+    $.console('error','toFloatPos key must use number.')
+    return
+  }
+  
+  return $.typeOf(setting.value,'String') ? Number(parseFloat(setting.value).toFixed(setting.toFloatPos)) : Number(setting.value.toFixed(setting.toFloatPos))
+}
+
 String.prototype.appendText = function (txt) { return this.toString() + txt } // 更新方法 2022/06/24
+
+String.prototype.appendDirection = function(direction,pos,txt){ return this[direction === 'left' ? 'padStart' : 'padEnd'](pos,txt) } // 更新方法 2023/02/07
 
 String.prototype.range = function(startPos,endPos){ return this.toString().slice(startPos,endPos) } // 更新方法 2022/11/21
 
@@ -511,7 +527,7 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
       const returnReplaceDoneStr = $.maps(valuesTemp, ({ replaceKey, replaceValue }) => {
         formatStrTemp = formatStrTemp.replace(replaceKey, replaceValue)
         return formatStrTemp
-      }).slice(valuesTemp.length - 1, valuesTemp.length).join('')
+      }).range(valuesTemp.length - 1, valuesTemp.length).join('')
 
       return returnReplaceDoneStr
     } else {
@@ -534,7 +550,7 @@ Date.prototype.calculateDay = function (format) {
    */
   // #endregion
 
-  if (format === undefined || !('day' in format && 'method' in format)) {
+  if (!format || !('day' in format && 'method' in format)) {
     $.console('error', 'Please enter an object and use day and method property in the object.')
     return
   } else if (typeof format.day !== 'number') {
@@ -551,8 +567,10 @@ Date.prototype.calculateDay = function (format) {
   }[format.method]
 }
 
-Date.prototype.toOptionTimeZoneForISO = function (zoneTime) {
-  return new Date(+this + ((zoneTime || 8) * 60 * 60 * 1000)).toISOString() // 更新方法 2021/03/23
+Date.prototype.getLocalTimeZone = function(){ return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
+
+Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
+    return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error','Lost one parameter in function.') // 更新方法 2021/03/23
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23

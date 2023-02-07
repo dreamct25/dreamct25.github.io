@@ -1,4 +1,4 @@
-# CopyRight 2021/08 - 2022/11 Alex Chen. Library language - coffeescript ver 1.5.5
+# © CopyRight 2021/08 - 2023/02 Alex Chen. Library language - coffeescript ver 1.5.6
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -578,7 +578,18 @@ $ = ((el) ->
     else document.querySelector el
 )
 
+Math.toFixedNum = (setting = { value,toFloatPos }) -> # 更新方法 2023/02/07
+  if !setting or !$.findObjProperty setting,'value' || !$.findObjProperty setting,'toFloatPos'
+    $.console 'error','Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }'
+    return
+  if !$.typeOf setting.toFloatPos,'Number'
+    $.console 'error','toFloatPos key must use number.'
+    return
+  return if $.typeOf setting.value,'String' then Number parseFloat(setting.value).toFixed setting.toFloatPos else Number setting.value.toFixed setting.toFloatPos
+
 String.prototype.appendText = (txt) -> this.toString() + txt # 更新方法 2022/06/24
+
+String.prototype.appendDirection = (direction,pos,txt) -> this[if direction is 'left' then 'padStart' else 'padEnd'] pos,txt # 更新方法 2023/02/07
 
 String.prototype.range = (startPos,endPos) -> this.toString().slice(startPos,endPos) # 更新方法 2022/11/21
 
@@ -592,7 +603,7 @@ String.prototype.format = (formatStr, values...) -> # 更新方法 2022/06/24
       returnReplaceDoneStr = ($.maps valuesTemp, ({ replaceKey, replaceValue }) -> 
         formatStrTemp = formatStrTemp.replace(replaceKey, replaceValue)
         formatStrTemp
-      ).slice(valuesTemp.length - 1, valuesTemp.length).join ''
+      ).range(valuesTemp.length - 1, valuesTemp.length).join ''
 
       returnReplaceDoneStr
     else
@@ -620,8 +631,10 @@ Date.prototype.calculateDay = (format) ->
     reduceDay: new Date +this - (format.day * 24 * 60 * 60 * 1000)
   }[format.method]
 
-Date.prototype.toOptionTimeZoneForISO = (zoneTime) ->
-  new Date +this + ((zoneTime or 8) * 60 * 60 * 1000).toISOString() # 更新方法 2021/03/23
+Date.prototype.getLocalTimeZone = () -> Math.abs this.getTimezoneOffset() / 60 # 更新方法 2023/02/07
+
+Date.prototype.toOptionTimeZoneForISO = (timeZone) ->
+  new Date +this + (timeZone * 60 * 60 * 1000).toISOString() # 更新方法 2021/03/23
 
 Array.prototype.append = (item) -> this.push(item) # 更新方法 2021/03/23
 
