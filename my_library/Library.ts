@@ -379,6 +379,7 @@ const $:$ = ((el) => {
          * { 
          *   formatDate: Date || string,
          *   formatType:string, <= 取日期時間格式 yyyy-MM-dd HH:mm:ss 等方式
+         *   toROCYear:boolean <= 輸出民國年，可選參數
          *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
          *   toDateFullNumber <= toDateFullNumber 將當前格式化時間改為數字，可以用於排序上，可選參數
          *   customWeekItem <= customWeekItem 放入格式化文字日別，如 ['週一','週二',...'週日'] // 更新方法 2021/08/02
