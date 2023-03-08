@@ -1,4 +1,4 @@
-# © CopyRight 2021/08 - 2023/02 Alex Chen. Library language - coffeescript ver 1.5.6
+# © CopyRight 2021-08 - 2023-02 Alex Chen. Library language - coffeescript ver 1.5.7
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -362,7 +362,7 @@ $ = ((el) ->
             return
     
     $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方法 2021/12/01
-        if !'formatDate' of format or 'formatType' of format
+        if !($.findObjProperty format,'formatDate') or $.findObjProperty format,'formatType'
             $.console 'error', 'Please enter an object and use formatType property in the object.'
             return
 
@@ -379,12 +379,14 @@ $ = ((el) ->
             
             format.customWeekItem.pop()
 
-        localCountryTime = (if 'localCountryTime' of format then format.localCountryTime else 8) * 60 * 60 * 1000
+        localCountryTime = (if $.findObjProperty format,'localCountryTime' then format.localCountryTime else 8) * 60 * 60 * 1000
         dateStr = new Date (+new Date format.formatDate + localCountryTime).toJSON()
         dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').split('.')[0].split '-'
-        [year, month, date, hour, minute, second] = dateSplit
+        [yearTemp, month, date, hour, minute, second] = dateSplit
 
-        if 'toDateFullNumber' of format
+        year = if format.toROCYear then (parseInt(yearTemp) - 1911).toString() else yearTemp # 更新方法 2023/03/08
+
+        if $.findObjProperty format,'toDateFullNumber'
             $.convert (dateSplit.join ''),'number'
 
         if format.formatType.match 'tt'
@@ -405,7 +407,7 @@ $ = ((el) ->
 
         @fetchSetting:(settingParams, usePromise) -> 
             settings = {}
-            { method, headers, contentType, returnType, data, routeParams, beforePost, successFn, excuteDone, errorFn } = settingParams
+            { method, headers, contentType, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
             settings.method = method
             settingParams.url = if @baseUrl then "#{@baseUrl}#{settingParams.url}" else settingParams.url
 
@@ -452,8 +454,16 @@ $ = ((el) ->
                 if !errorFn
                     $.console 'error', 'Function Name errorFn is required in obejct parameters.'
                     return
-                    
-            res = await fetch settingParams.url, settings
+            
+            abController = new AbortController()
+
+            if timeout # 更新 Request timeout 逾時請求處理 2023/03/08
+                setTimeout () -> 
+                    abController.abort()
+                    return
+                ,timeout
+
+            res = await fetch(settingParams.url, if timeout then { ...settings, signal:abController.signal } else settings)
 
             if usePromise 
             # 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01

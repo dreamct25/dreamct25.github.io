@@ -1,5 +1,5 @@
-// CopyRight 2021/08 - 2023/02 Alex Chen. Library language - typescript ver 1.5.6
-// Work Environment Typescript v4.9.5、eslint v8.28.0
+// © CopyRight 2021-08 - 2023-02 Alex Chen. Library language - typescript ver 1.5.7
+// Work Environment Typescript v4.9.5、eslint v8.35.0
 //
 // Use in ESModule
 // export default $
@@ -36,7 +36,8 @@ interface fetchClassSettingParmasType {
     returnType?: retunType;
     data?: { [key: string]: any; }; 
     routeParams?: { [key: string]: any; };
-    queryParams?: { [key: string]:any }
+    queryParams?: { [key: string]:any };
+    timeout?:number;
     beforePost?: () => void; 
     successFn?: (data: any) => void; 
     excuteDone?: () => void; 
@@ -48,7 +49,8 @@ interface fetchPromiseClassSettingParmasType{
     returnType?: retunType;
     data?: { [key: string]: any; };
     routeParams?: { [key: string]: any; };
-    queryParams?: { [key: string]:any }
+    queryParams?: { [key: string]:any };
+    timeout?:number;
 }
 
 // declare $
@@ -108,12 +110,13 @@ declare interface $ { // 更新 2022/06/29
     createArray<T,R>({ type, item }: { type: createArrayType; item: T | { random: number }}, repack?: ((y: number) => R) | undefined):R[] | undefined
     convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
-    currencyTranser(currencyType: string, formatNumber: number):string | undefined
+    currencyTranser(currencyType: string, formatNumber: number):string | void
     useBase64(method: 'encode' | 'decode',str:string):string
     useSHA(shaType:SHAType,str:string):Promise<string>
     formatDateTime(format: { 
         formatDate: string | Date; 
-        formatType: string; 
+        formatType: string;
+        toROCYear?: boolean;
         localCountryTime?: number | undefined; 
         toDateFullNumber?: boolean | undefined;
         customWeekItem?:any[]
@@ -270,7 +273,7 @@ const $:$ = ((el) => {
     $.includes = (item, x) => (item as any).includes(x);
     $.findIndexOfObj = (item, callBack) => item.findIndex(items => callBack.call(callBack, items));
     $.findObjProperty = (obj, propertyName) => (obj as {[key:string]:any}).hasOwnProperty(propertyName) // 更新方法 2022/03/23
-    $.mergeArray = (item, mergeItem, callBack) => callBack ? (item as any).concat(mergeItem) : callBack!.call(callBack, (item as any).concat(mergeItem)) // 更新方法 2022/03/23
+    $.mergeArray = (item, mergeItem, callBack) => callBack ? (item as any).concat(mergeItem) : (callBack as unknown as Function).call(callBack, (item as any).concat(mergeItem)) // 更新方法 2022/03/23
     $.typeOf = (item, classType) => classType ? (item as any).constructor.name === classType : (item as any).constructor.name; // 更新方法 2021/10/26
     $.console = (type, ...item) => (console as { [key: string]: any })[type](...item) // 更新方法 2021/10/26
     $.localData = (action, keyName, item) => action === 'get' ? ($.convert<any>(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert<string>(item, 'stringify')!); // 更新方法 2021/11/29
@@ -367,8 +370,6 @@ const $:$ = ((el) => {
         } else {
             $.console('error','First argument currency type is must.')
         }
-
-        return undefined
     }
     
     $.formatDateTime = format => { // 更新方法 2021/12/01
@@ -386,7 +387,7 @@ const $:$ = ((el) => {
          */
         //#endregion
 
-        if (!('formatDate' in format || 'formatType' in format)) {
+        if (!($.findObjProperty(format,'formatDate') || $.findObjProperty(format,'formatType'))) {
             $.console('error', 'Please enter an object and use formatType property in the object.');
             return undefined;
         }
@@ -402,16 +403,17 @@ const $:$ = ((el) => {
                 return
             }
 
-            format.customWeekItem = [format.customWeekItem![format.customWeekItem!.length - 1],...format.customWeekItem!]
-            format.customWeekItem.pop()
+            format.customWeekItem = [format.customWeekItem![format.customWeekItem!.length - 1],...format.customWeekItem!].removeFirst()
         }
 
         const localCountryTime: number = ('localCountryTime' in format ? format.localCountryTime || 0 : 8) * 60 * 60 * 1000
         const dateStr: string = new Date(+new Date(format.formatDate) + localCountryTime).toJSON();
         const dateSplit: string[] = dateStr.replace(/T/g, "-").replace(/:/g, "-").split(".")[0].split("-");
-        const [year, month, date, hour, minute, second] = dateSplit;
+        const [yearTemp, month, date, hour, minute, second] = dateSplit;
 
-        if ('toDateFullNumber' in format) return $.convert(dateSplit.join(""), 'number')
+        const year = format?.toROCYear ? (parseInt(yearTemp) - 1911).toString() : yearTemp // 更新方法 2023/03/08
+        
+        if ($.findObjProperty(format,'toDateFullNumber')) return $.convert(dateSplit.join(""), 'number')
 
         // 更新是否格式化 AM 或 PM 2022/03/19
 
@@ -441,7 +443,8 @@ const $:$ = ((el) => {
             returnType?: retunType;
             data?: { [key: string]: any; }; 
             routeParams?: { [key: string]: any; };
-            queryParams?: { [key: string]:any }
+            queryParams?: { [key: string]:any };
+            timeout?: number;
             beforePost?: () => void; 
             successFn?: (data: any) => void; 
             excuteDone?: () => void; 
@@ -458,6 +461,7 @@ const $:$ = ((el) => {
              * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
              * @param {object} queryParams 追加 queryParams 路由參數 2022/11/21
              * @param {string} contentType
+             * @param {number} timeout 追加 timeout 逾時請求處理參數 (單位毫秒 Ex:1000 = 1秒) 2023/03/08
              * @param {string} retunType 追加 retunType 回傳轉譯 2022/08/26
              * @param {Function} beforePost <= 回呼函式
              * @param {Function} successFn <= 回呼函式
@@ -467,7 +471,7 @@ const $:$ = ((el) => {
             //#endregion
     
             const settings:{ [key: string]: any } = {};
-            const { method, headers, contentType, returnType, data,routeParams,queryParams,beforePost,successFn,excuteDone,errorFn } = settingParams;
+            const { method, headers, contentType, returnType, data,routeParams,queryParams, timeout,beforePost,successFn,excuteDone,errorFn } = settingParams;
     
             settings.method = method;
             settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
@@ -524,14 +528,20 @@ const $:$ = ((el) => {
                 };
             }
 
-            const res:Response = await fetch(settingParams.url, settings);
+            const abController = new AbortController()
+
+            if(timeout){ // 更新 Request timeout 逾時請求處理 2023/03/08
+                setTimeout(() => abController.abort(),timeout)
+            }
+
+            const res = await fetch(settingParams.url, timeout ? { ...settings, signal:abController.signal } : settings);
 
             if(usePromise){
                 return new Promise<fetchClassReturnType<T>>(async (resolve,reject) => {
                     if (res.status >= 200 && res.status < 400) {
                         const result = await (res as {[key:string]:any})[returnTypeUse]() as T
 
-                        return resolve({
+                        resolve({
                             bodyUsed: res.bodyUsed,
                             headers: res.headers,
                             ok: res.ok,
@@ -542,8 +552,7 @@ const $:$ = ((el) => {
                             url:res.url,
                             data:result
                         })
-                    }
-                    else {
+                    } else {
                         reject({
                             bodyUsed: res.bodyUsed,
                             headers: res.headers,
@@ -575,8 +584,7 @@ const $:$ = ((el) => {
                         })
                         
                         excuteDone && excuteDone.call(excuteDone)
-                    }
-                    else {
+                    } else {
                         throw new Error(JSON.stringify({
                             bodyUsed: res.bodyUsed,
                             headers: res.headers,

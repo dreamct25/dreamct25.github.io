@@ -1,8 +1,11 @@
-// © CopyRight 2021/08 - 2023/02 Alex Chen. Library language - javascript ver 1.5.6
-// Work Environment Javascript ES6 or latest、eslint 8.28.0
+// © CopyRight 2021-08 - 2023-03 Alex Chen. Library language - javascript ver 1.5.7
+// Work Environment Javascript ES6 or latest、eslint 8.35.0
 //
 // Use in CommonJS
 // module.exports = $
+//
+// Use in ESModule
+// export default $
 
 /* eslint-disable no-return-assign */
 /* eslint-disable no-prototype-builtins */
@@ -237,7 +240,7 @@ const $ = ((el) => {
      */
     // #endregion
 
-    if (!('formatDate' in format || 'formatType' in format)) {
+    if (!($.findObjProperty(format,'formatDate') || $.findObjProperty(format,'formatType'))) {
       $.console('error', 'Please enter an object and use formatType property in the object.')
       return
     }
@@ -253,16 +256,17 @@ const $ = ((el) => {
         return
       }
 
-      format.customWeekItem = [format.customWeekItem[format.customWeekItem.length - 1], ...format.customWeekItem]
-      format.customWeekItem.pop()
+      format.customWeekItem = [format.customWeekItem[format.customWeekItem.length - 1], ...format.customWeekItem].removeLast()
     }
 
-    const localCountryTime = ('localCountryTime' in format ? format.localCountryTime : 8) * 60 * 60 * 1000
+    const localCountryTime = ($.findObjProperty(format,'localCountryTime') ? format.localCountryTime : 8) * 60 * 60 * 1000
     const dateStr = new Date(+new Date(format.formatDate) + localCountryTime).toJSON()
     const dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').split('.')[0].split('-')
-    const [year, month, date, hour, minute, second] = dateSplit
+    const [yearTemp, month, date, hour, minute, second] = dateSplit
 
-    if ('toDateFullNumber' in format) return $.convert(dateSplit.join(''), 'number')
+    const year = format?.toROCYear ? (parseInt(yearTemp) - 1911).toString() : yearTemp // 更新方法 2023/03/08
+
+    if ($.findObjProperty(format,'toDateFullNumber')) return $.convert(dateSplit.join(''), 'number')
 
     if (format.formatType.match('tt')) {
       const currentAMorPM = $.convert(hour, 'number') > 11 ? 'PM' : 'AM'
@@ -294,6 +298,7 @@ const $ = ((el) => {
          * @param {object} data
          * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
          * @param {object} queryParams 追加 queryParams 路由參數 2022/11/21
+         * @param {number} timeout 追加 timeout 逾時請求處理參數 (單位毫秒 Ex:1000 = 1秒) 2023/03/08
          * @param {string} contentType
          * @param {string} returnType 追加 retunType 回傳轉譯 2022/08/26
          * @param {Function} beforePost <= 回呼函式
@@ -304,7 +309,7 @@ const $ = ((el) => {
         // #endregion
 
         const settings = {}
-        const { method, headers, contentType, returnType, data, routeParams,queryParams, beforePost, successFn, excuteDone, errorFn } = settingParams
+        const { method, headers, contentType, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
 
         settings.method = method
         settingParams.url = FetchClass.#baseUrl ? `${FetchClass.#baseUrl}${settingParams.url}` : settingParams.url
@@ -361,7 +366,13 @@ const $ = ((el) => {
           };
         }
 
-        const res = await fetch(settingParams.url, settings)
+        const abController = new AbortController()
+
+        if(timeout){ // 更新 Request timeout 逾時請求處理 2023/03/08
+          setTimeout(() => abController.abort(),timeout)
+        }
+
+        const res = await fetch(settingParams.url, timeout ? { ...settings, signal:abController.signal } : settings);
 
         if (usePromise) {
           // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
