@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-03 Alex Chen. Library language - typescript ver 1.5.7
-// Work Environment Typescript v4.9.5、eslint v8.35.0
+// © CopyRight 2021-08 - 2023-04 Alex Chen. Library language - typescript ver 1.5.8
+// Work Environment Typescript v5.0.4、eslint v8.39.0
 //
 // Use in ESModule
 // export default $
@@ -15,6 +15,20 @@ type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone'
 type SHAType = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
 type padDirection = 'left' | 'right'
+type typeOfClassType = 'String' | 'Number' | 'Boolean' | 'Array' | 'Object'
+
+// Use in ESModule
+// export interface fetchClassReturnType<T> {
+//     bodyUsed: boolean,
+//     headers: object,
+//     ok: boolean,
+//     redirected: boolean,
+//     status: number,
+//     statusText: string,
+//     type: string,
+//     url: string,
+//     data?: T
+// };
 
 interface fetchClassReturnType<T> {
     bodyUsed: boolean,
@@ -26,7 +40,7 @@ interface fetchClassReturnType<T> {
     type: string,
     url: string,
     data?: T
-}
+};
 
 interface fetchClassSettingParmasType { 
     method: requestMethod; 
@@ -34,6 +48,8 @@ interface fetchClassSettingParmasType {
     headers?: { [key: string]: any; }; 
     contentType?: string;
     returnType?: retunType;
+    useFormData?: boolean;
+    useXMLHttpRequest?: boolean;
     data?: { [key: string]: any; }; 
     routeParams?: { [key: string]: any; };
     queryParams?: { [key: string]:any };
@@ -44,13 +60,40 @@ interface fetchClassSettingParmasType {
     errorFn?: (err: any) => void; 
 }
 
+// Use in ESModule
+// export interface fetchPromiseClassSettingParmasType{
+//     headers?: { [key: string]: any; }; 
+//     returnType?: retunType;
+//     data?: { [key: string]: any; };
+//     useFormData?: boolean;
+//     useXMLHttpRequest?: boolean;
+//     routeParams?: { [key: string]: any; };
+//     queryParams?: { [key: string]:any };
+//     timeout?:number;
+// };
+
 interface fetchPromiseClassSettingParmasType{
     headers?: { [key: string]: any; }; 
     returnType?: retunType;
     data?: { [key: string]: any; };
+    useFormData?: boolean;
+    useXMLHttpRequest?: boolean;
     routeParams?: { [key: string]: any; };
     queryParams?: { [key: string]:any };
     timeout?:number;
+}
+
+// Use in ESModule
+// export interface xhrReturnMethodType<T> {
+//     xhrResponseResult(callBack: (result:T) => void):void;
+//     xhrUploadProgress(callBack: (p:number) => void):void;
+//     xhrRequestStart():void;
+// }
+
+interface xhrReturnMethodType<T> {
+    xhrResponseResult(callBack: (result:T) => void):void;
+    xhrUploadProgress(callBack: (p:number) => void):void;
+    xhrRequestStart():void;
 }
 
 // declare $
@@ -95,7 +138,7 @@ declare interface $ { // 更新 2022/06/29
     findIndexOfObj<T>(item: T[], callBack: (items: T) => boolean):number
     findObjProperty<T>(obj: T, propertyName: string):boolean
     mergeArray<T,M>(item: T, mergeItem: M, callBack?: ((items: any) => any)):any
-    typeOf<T>(item: T, classType?: string): string | boolean;
+    typeOf<T>(item: T, classType?: typeOfClassType | string): string | boolean;
     console(type: consoleMethod, ...item: any): void;
     localData<T>(action: localDataActionType, keyName: string, item?: string):T
     getNumberOfDecimal(num:number,digits:number):number
@@ -110,7 +153,7 @@ declare interface $ { // 更新 2022/06/29
     createArray<T,R>({ type, item }: { type: createArrayType; item: T | { random: number }}, repack?: ((y: number) => R) | undefined):R[] | undefined
     convert<T>(val: any, type: convertType): (T | undefined)
     createDom(tag: string, props: { [key: string]: any }):HTMLElement
-    currencyTranser(currencyType: string, formatNumber: number):string | void
+    currencyTranser(formatNumber: number,currencyType: string):string | void
     useBase64(method: 'encode' | 'decode',str:string):string
     useSHA(shaType:SHAType,str:string):Promise<string>
     formatDateTime(format: { 
@@ -122,12 +165,24 @@ declare interface $ { // 更新 2022/06/29
         customWeekItem?:any[]
     }):string | number | undefined | { fullDateTime:string,getWeekName:any }
     fetch?:{
-        <T>(settingParams:fetchClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
-        get<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
-        post<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
-        patch<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
-        put<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
-        delete<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined>
+        <T>(settingParams:fetchClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
+        get<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
+        post<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
+        patch<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
+        put<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
+        delete<T>(url: string, settingParams?: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        >
         createBase(paramters: { baseUrl: string; baseHeaders: { [key:string]:any }}):void
     }
 }
@@ -363,12 +418,12 @@ const $:$ = ((el) => {
         return el;
     };
     
-    $.currencyTranser = (currencyType,formatNumber) => { // 更新方法 2022/06/24
-        if(currencyType !== undefined){
-            const currencyOptionalObj = currencyType === '' ? {} : { style: 'currency', currency: currencyType }
-            return new Intl.NumberFormat(currencyType === '' ? 'TWN' : currencyType,currencyOptionalObj).format(formatNumber)
+    $.currencyTranser = (formatNumber,currencyType) => { // 更新方法 2022/06/24
+        if($.typeOf(formatNumber,'Number')){
+            const currencyOptionalObj = !currencyType ? {} : { style: 'currency', currency: currencyType }
+            return new Intl.NumberFormat(!currencyType ? 'TWN' : currencyType,currencyOptionalObj).format(formatNumber)
         } else {
-            $.console('error','First argument currency type is must.')
+            $.console('error','First argument formatNumber type must use number.')
         }
     }
     
@@ -419,7 +474,7 @@ const $:$ = ((el) => {
         // 更新是否格式化 AM 或 PM 2022/03/19
 
         if (format.formatType.match('tt')) {
-            const currentAMorPM: string = $.convert(hour, 'number')! > 11 ? 'PM' : 'AM'
+            const currentAMorPM: string = $.convert<number>(hour, 'number')! > 11 ? 'PM' : 'AM'
             const transHour: string = ($.convert<number>(hour, 'number')! - 12) < 10 ? `0${$.convert<number>(hour, 'number')! - 12}` : $.convert($.convert<number>(hour, 'number')! - 12, 'string')!
             return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
         } else if ($.findObjProperty(format,'customWeekItem')) { // 更新客製化週數命名 2022/07/27
@@ -436,21 +491,12 @@ const $:$ = ((el) => {
         private static baseUrl:string = ''
         private static baseHeaders:{[key:string]:any} = {}
 
-        static async fetchSetting <T>(settingParams:{ 
-            method: requestMethod; 
-            url: string; 
-            headers?: { [key: string]: any; }; 
-            contentType?: string;
-            returnType?: retunType;
-            data?: { [key: string]: any; }; 
-            routeParams?: { [key: string]: any; };
-            queryParams?: { [key: string]:any };
-            timeout?: number;
-            beforePost?: () => void; 
-            successFn?: (data: any) => void; 
-            excuteDone?: () => void; 
-            errorFn?: (err: any) => void; 
-        },usePromise:boolean):Promise<fetchClassReturnType<T> | undefined> { 
+        static async fetchSetting <T>(
+            settingParams:fetchClassSettingParmasType,
+            usePromise:boolean
+        ):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined 
+        > { 
             // 更新類 ajax 方法 2021/09/11
             // 更新類 ajax 方法內容 2021/10/21
             //#region 參數設定
@@ -462,6 +508,8 @@ const $:$ = ((el) => {
              * @param {object} routeParams 追加 routeParams 路由參數 2022/05/01
              * @param {object} queryParams 追加 queryParams 路由參數 2022/11/21
              * @param {string} contentType
+             * @param {boolean} useFormData 追加 useFormData 是否使用 form 表屬性 2022/04/22
+             * @param {boolean} useXMLHttpRequest 追加 useXMLHttpRequest 是否使用 XMLHttpRequest 2022/04/22
              * @param {number} timeout 追加 timeout 逾時請求處理參數 (單位毫秒 Ex:1000 = 1秒) 2023/03/08
              * @param {string} retunType 追加 retunType 回傳轉譯 2022/08/26
              * @param {Function} beforePost <= 回呼函式
@@ -472,7 +520,7 @@ const $:$ = ((el) => {
             //#endregion
     
             const settings:{ [key: string]: any } = {};
-            const { method, headers, contentType, returnType, data,routeParams,queryParams, timeout,beforePost,successFn,excuteDone,errorFn } = settingParams;
+            const { method, headers, contentType, useFormData, useXMLHttpRequest, returnType, data,routeParams,queryParams, timeout,beforePost,successFn,excuteDone,errorFn } = settingParams;
     
             settings.method = method;
             settingParams.url = this.baseUrl ? `${this.baseUrl}${settingParams.url}` : settingParams.url;
@@ -488,6 +536,8 @@ const $:$ = ((el) => {
                 $.console('error','Property name method is required in obejct parameters.');
                 return
             }
+
+            settingParams.useFormData = useFormData ? true : false
     
             if(routeParams){
                 const [keyName] = $.objDetails(routeParams, 'keys') as string[]
@@ -504,30 +554,62 @@ const $:$ = ((el) => {
             }
     
             if (data) {
-                settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { 'Content-Type': contentType || 'application/json' }
-                settings.body = $.convert(data, 'stringify')
+                if(!useFormData){
+                    settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { 'Content-Type': contentType || 'application/json' }
+                    settings.body = $.convert(data, 'stringify')
+                } else {
+                    settings.body = this.convertFormData(data)
+                }
             }
     
             if ((($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 || headers) && data) {
                 settings.headers = ($.objDetails(this.baseHeaders, 'keys') as string[]).length > 0 ? this.baseHeaders : { ...headers }
-                settings.body = $.convert(data, 'stringify')
+                settings.body = useFormData ? this.convertFormData(data) : $.convert(data, 'stringify')
             };
 
-            if(!usePromise){
-                if (beforePost){
-                    beforePost!.call(beforePost);
+            if (!usePromise && !useXMLHttpRequest) {
+                if (beforePost) {
+                  beforePost.call(beforePost)
                 };
-        
-                if(!successFn){
-                    $.console('error','Function Name successFn is required in obejct parameters.');
-                    return
+      
+                if (!successFn) {
+                  $.console('error', 'Function Name successFn is required in obejct parameters.')
+                  return
                 };
-        
-                if(!errorFn){
-                    $.console('error','Function Name errorFn is required in obejct parameters.');
-                    return
+      
+                if (!errorFn) {
+                  $.console('error', 'Function Name errorFn is required in obejct parameters.')
+                  return
                 };
-            }
+              }
+      
+              if(useXMLHttpRequest){
+                if (successFn) {
+                  $.console('error', "successFn not necessary parameters.")
+                  return
+                };
+      
+                if (errorFn) {
+                  $.console('error', "errorFn not necessary parameters.")
+                  return
+                };
+      
+                if(usePromise){
+                  return this.XMLHttpRequest<T>({
+                    url: settingParams.url,
+                    method: settings.method,
+                    headers: settings.headers,
+                    data: settings.body
+                  })
+                }
+      
+                return this.XMLHttpRequest<T>({
+                  url: settingParams.url,
+                  method: settings.method,
+                  headers: settings.headers,
+                  data: settings.body
+                })
+              }
 
             const abController = new AbortController()
 
@@ -604,6 +686,54 @@ const $:$ = ((el) => {
             }
         };
 
+        private static XMLHttpRequest<T>(setting:{ // 更新方法 XMLHttpRequest 2023/04/22
+            url: string,
+            method: string,
+            headers: {[key:string]:any},
+            data: XMLHttpRequestBodyInit
+        }):xhrReturnMethodType<T> {
+            const xhr = new XMLHttpRequest()
+
+            xhr.open(setting.method,setting.url,true)
+
+            if(setting?.headers) $.each(($.objDetails(setting?.headers,'entries') as string[][]),([key,value]) => xhr.setRequestHeader(key,value))
+
+            return {
+                xhrResponseResult: (callBack:(result:T) => void) => {
+                    xhr.onreadystatechange = () => {
+                        if(xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status <= 399) {
+                            try {
+                                const result:T = JSON.parse(xhr.responseText)
+                                callBack.call(callBack,result)
+                            } catch(err) {
+                                $.console('error',err)
+                            }
+                        } 
+                        
+                        if (xhr.status >= 400){
+                            $.console('error',xhr.statusText)
+                        }
+                    }
+                },
+                xhrUploadProgress: (callBack:(p:number) => void) => {
+                    xhr.upload.onprogress = (event:ProgressEvent<EventTarget>) => {
+                        if(event.lengthComputable){
+                            const uploadPercent = 100 * event.loaded / event.total
+                            callBack.call(callBack,uploadPercent)
+                        }
+                    }
+                },
+                xhrRequestStart: () => xhr.send(setting?.data || undefined)
+            }
+        }
+        private static convertFormData(formDataObj:{[key:string]:any}) {
+            const formData = new FormData()
+
+            $.each($.objDetails(formDataObj, 'entries') as string[][],([key, value]) => formData.append(key === 'uploadFile' ? 'FileList' : key, value))
+        
+            return formData;
+        }
+
         static createBase({ baseUrl,baseHeaders }:{ baseUrl:string,baseHeaders:{ [key: string]: any }}) { // 更新 fetch 物件組態設定方法 2022/03/24
             //#region
             /** 參數設定
@@ -619,32 +749,54 @@ const $:$ = ((el) => {
     class FetchPromisClass extends FetchClass {
         
         // 更新 Promise 導出 get 方法 2022/05/01
-        static get = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
+        static get = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        > => this.fetchSetting<T>({ method: 'get',url ,...setting },true)
         
         // 更新 Promise 導出 post 方法 2022/05/01
-        static post = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
+        static post = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        > => this.fetchSetting<T>({ method: 'post',url ,...setting },true)
         
         // 更新 Promise 導出 patch 方法 2022/05/01
-        static patch = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
+        static patch = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        > => this.fetchSetting<T>({ method: 'patch',url ,...setting },true)
         
         // 更新 Promise 導出 put 方法 2022/05/01
-        static put = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
+        static put = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        > => this.fetchSetting<T>({ method: 'put',url ,...setting },true)
         
         // 更新 Promise 導出 delete 方法 2022/05/01
-        static delete = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
+        static delete = <T>(url: string, setting: fetchPromiseClassSettingParmasType):Promise<
+            fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+        > => this.fetchSetting<T>({ method: 'delete',url ,...setting },true)
     }
     
-    ($.fetch as any) = <T>(settingParams:fetchClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchClass.fetchSetting<T>(settingParams,false) // 更新 FetchClass 類方法導出 2022/03/24
+    ($.fetch as any) = <T>(settingParams:fetchClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchClass.fetchSetting<T>(settingParams,false) // 更新 FetchClass 類方法導出 2022/03/24
 
-    $.fetch!.get = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.get<T>(url,settingParams);
+    $.fetch!.get = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchPromisClass.get<T>(url,settingParams);
 
-    $.fetch!.post = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.post<T>(url,settingParams);
+    $.fetch!.post = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchPromisClass.post<T>(url,settingParams);
 
-    $.fetch!.patch = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.patch<T>(url,settingParams);
+    $.fetch!.patch = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchPromisClass.patch<T>(url,settingParams);
 
-    $.fetch!.put = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.put<T>(url,settingParams);
+    $.fetch!.put = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchPromisClass.put<T>(url,settingParams);
 
-    $.fetch!.delete = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<fetchClassReturnType<T> | undefined> => FetchPromisClass.delete<T>(url,settingParams);
+    $.fetch!.delete = <T>(url:string,settingParams:fetchPromiseClassSettingParmasType):Promise<
+        fetchClassReturnType<T> | xhrReturnMethodType<T> | undefined
+    > => FetchPromisClass.delete<T>(url,settingParams);
 
     $.fetch!.createBase = (paramters:{ // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
         baseUrl:string,
@@ -660,6 +812,10 @@ const $:$ = ((el) => {
 
 // Use in ESModule global.d.ts
 // declare global {
+//     interface JSON {
+//         deepCopy<T>(obj:T):T
+//     }
+
 //     interface Math { 
 //         toFixedNum(setting:{ value:string | number,toFloatPos:number }):(number | undefined)
 //     }
@@ -707,6 +863,12 @@ const $:$ = ((el) => {
 //         toMap(obj:{[key:string]:any}):Map<string,any>
 //     }
 // }
+
+interface JSON {
+    deepCopy<T>(obj:T):T
+}
+
+JSON.deepCopy = obj => $.convert<{[key:string]:any}>($.convert<string>(obj,'stringify'),'json')! as typeof obj // 更新方法 2023/04/22
 
 interface Math {
     toFixedNum(setting:{ value:string | number,toFloatPos:number }):(number | undefined)

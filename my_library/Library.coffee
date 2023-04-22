@@ -1,4 +1,4 @@
-# © CopyRight 2021-08 - 2023-03 Alex Chen. Library language - coffeescript ver 1.5.7
+# © CopyRight 2021-08 - 2023-04 Alex Chen. Library language - coffeescript ver 1.5.8
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -353,12 +353,12 @@ $ = ((el) ->
                 return
         newEl
 
-    $.currencyTranser = (currencyType, formatNumber) -> # 更新方法 2022/06/24
-        if currencyType
-            currencyOptionalObj = if currencyType is '' then {} else { style: 'currency', currency: currencyType }
-            new Intl.NumberFormat((if currencyType is '' then 'TWN' else currencyType), currencyOptionalObj).format formatNumber
+    $.currencyTranser = (formatNumber,currencyType) -> # 更新方法 2022/06/24
+        if $.typeOf formatNumber,'Number'
+            currencyOptionalObj = if not currencyType then {} else { style: 'currency', currency: currencyType }
+            new Intl.NumberFormat((if not currencyType then 'TWN' else currencyType), currencyOptionalObj).format formatNumber
         else
-            $.console 'error', 'First argument currency type is must.'
+            $.console 'error', 'First argument formatNumber type must use number.'
             return
     
     $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方法 2021/12/01
@@ -407,7 +407,7 @@ $ = ((el) ->
 
         @fetchSetting:(settingParams, usePromise) -> 
             settings = {}
-            { method, headers, contentType, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
+            { method, headers, contentType, useFormData, useXMLHttpRequest, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
             settings.method = method
             settingParams.url = if @baseUrl then "#{@baseUrl}#{settingParams.url}" else settingParams.url
 
@@ -436,14 +436,17 @@ $ = ((el) ->
                 settings.headers = { 'Content-Type': contentType || 'application/json' }
 
             if data
-                settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': contentType or 'application/json' }
-                settings.body = $.convert data, 'stringify'
+                if !useFormData
+                    settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': contentType or 'application/json' }
+                    settings.body = $.convert data, 'stringify'
+                else
+                    settings.body = @convertFormData data
 
             if (($.objDetails @baseHeaders, 'keys').length > 0 or headers) and data
                 settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { headers... }
-                settings.body = $.convert data, 'stringify'
+                settings.body =  if useFormData then @convertFormData data else $.convert data, 'stringify'
 
-            if !usePromise
+            if !usePromise and !useXMLHttpRequest
                 if beforePost
                     beforePost.call beforePost
 
@@ -454,6 +457,29 @@ $ = ((el) ->
                 if !errorFn
                     $.console 'error', 'Function Name errorFn is required in obejct parameters.'
                     return
+
+            if useXMLHttpRequest
+                if successFn
+                    $.console 'error', 'Function Name successFn is required in obejct parameters.'
+                    return
+
+                if errorFn
+                    $.console 'error', 'Function Name errorFn is required in obejct parameters.'
+                    return
+
+                return @XMLHttpRequest({
+                    url: settingParams.url,
+                    method: settings.method,
+                    headers: settings.headers,
+                    data: settings.body
+                }) if usePromise
+
+                return @XMLHttpRequest({
+                    url: settingParams.url,
+                    method: settings.method,
+                    headers: settings.headers,
+                    data: settings.body
+                })
             
             abController = new AbortController()
 
@@ -529,6 +555,55 @@ $ = ((el) ->
                     errorFn.call errorFn, JSON.parse err.message
                     return
 
+        @XMLHttpRequest:(setting) -> # 更新方法 XMLHttpRequest 2023/04/22
+            xhr = new XMLHttpRequest()
+
+            xhr.open setting.method,setting.url,true
+
+            if setting?.headers
+                $.each($.objDetails(setting?.headers,'entries'),([key,value]) -> 
+                    xhr.setRequestHeader key,value
+                    return
+                )
+
+            {
+                xhrResponseResult:(callBack) -> 
+                    xhr.onreadystatechange = () -> 
+                        if xhr.readyState is xhr.DONE and xhr.status >= 200 && xhr.status <= 399
+                            try
+                                result = JSON.parse xhr.responseText
+                                callBack.call callBack,result
+                            catch err
+                                $.error 'error',err
+                        
+                        if xhr.status >= 400
+                            $.error 'error',xhr.statusText
+                            return
+                    return
+                ,
+                xhrUploadProgress:(callBack) -> 
+                    xhr.upload.onprogress = (event) -> 
+                        if event.lengthComputable
+                            uploadPercent = 100 * event.loaded / event.total
+                            callBack.call(callBack,uploadPercent)
+                            return
+                    return
+                ,
+                xhrRequestStart:() -> 
+                    xhr.send(setting?.data || undefined)
+                    return
+            }
+
+        @convertFormData = (formDataObj) -> # 更新方法 2023/04/22
+            formData = new FormData()
+
+            $.each($.objDetails(formDataObj, 'entries'),([key, value]) -> 
+                formData.append (if key is 'uploadFile' then 'FileList' else key), value
+                return
+            )
+        
+            formData
+
         @createBase:({ baseUrl, baseHeaders }) -> # 更新 fetch 物件組態設定方法 2022/03/24
             @baseUrl = baseUrl
             @baseHeaders = baseHeaders
@@ -550,35 +625,37 @@ $ = ((el) ->
         # 更新 Promise 導出 delete 方法 2022/05/01
         @delete:(url, setting) -> this.fetchSetting({ method: 'delete', url, setting... }, true)
     
-    $.fetch = (settingParams = { # 更新 FetchClass 類方法導出 2022/03/24
-        method: ''
-        url: ''
-        headers: {}
-        contentType: ''
-        data: {}
-        returnType: '',
-        routeParams: {},
-        queryParams: {},
-        beforePost: undefined
-        successFn: undefined
-        excuteDone: undefined
-        errorFn: undefined
-    }) -> FetchClass.fetchSetting settingParams, false
+        $.fetch = (settingParams = { # 更新 FetchClass 類方法導出 2022/03/24
+            method: ''
+            url: ''
+            headers: {}
+            contentType: '',
+            useFormData: false,
+            useXMLHttpRequest: false,
+            data: {}
+            returnType: '',
+            routeParams: {},
+            queryParams: {},
+            beforePost: undefined
+            successFn: undefined
+            excuteDone: undefined
+            errorFn: undefined
+        }) -> FetchClass.fetchSetting settingParams, false
 
-    $.fetch.get = (url, settingParams = { headers: {} }) -> FetchPromisClass.get url, settingParams
+        $.fetch.get = (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false,routeParams: {},queryParams: {} }) -> FetchPromisClass.get url, settingParams
 
-    $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.post url, settingParams
+        $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.post url, settingParams
 
-    $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.patch url, settingParams
+        $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.patch url, settingParams
 
-    $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.put url, settingParams
+        $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.put url, settingParams
 
-    $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', routeParams: {}, queryParams: {} }) -> FetchPromisClass.delete url, settingParams
+        $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.delete url, settingParams
 
-    $.fetch.createBase = (paramters = { # 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
-        baseUrl: ''
-        baseHeaders: {}
-    }) -> FetchClass.createBase paramters
+        $.fetch.createBase = (paramters = { # 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+            baseUrl: ''
+            baseHeaders: {}
+        }) -> FetchClass.createBase paramters
     
     $
 )((el) -> 
@@ -587,6 +664,9 @@ $ = ((el) ->
     then document.querySelectorAll el 
     else document.querySelector el
 )
+
+JSON.deepCopy = (obj) -> 
+    $.convert $.convert(obj,'stringify'),'json' # 更新方法 2023/04/23
 
 Math.toFixedNum = (setting = { value,toFloatPos }) -> # 更新方法 2023/02/07
   if !setting or !$.findObjProperty setting,'value' || !$.findObjProperty setting,'toFloatPos'

@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-03 Alex Chen. Library language - javascript ver 1.5.7
-// Work Environment Javascript ES6 or latest、eslint 8.35.0
+// © CopyRight 2021-08 - 2023-04 Alex Chen. Library language - javascript ver 1.5.8
+// Work Environment Javascript ES6 or latest、eslint 8.39.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -217,12 +217,12 @@ const $ = ((el) => {
     return el
   }
 
-  $.currencyTranser = (currencyType, formatNumber) => { // 更新方法 2022/06/24
-    if (currencyType !== undefined) {
-      const currencyOptionalObj = currencyType === '' ? {} : { style: 'currency', currency: currencyType }
-      return new Intl.NumberFormat(currencyType === '' ? 'TWN' : currencyType, currencyOptionalObj).format(formatNumber)
+  $.currencyTranser = (formatNumber,currencyType) => { // 更新方法 2022/06/24
+    if ($.typeOf(formatNumber,'Number')) {
+      const currencyOptionalObj = !currencyType ? {} : { style: 'currency', currency: currencyType }
+      return new Intl.NumberFormat(!currencyType ? 'TWN' : currencyType, currencyOptionalObj).format(formatNumber)
     } else {
-      $.console('error', 'First argument currency type is must.')
+      $.console('error', 'First argument formatNumber type must use number.')
     }
   }
 
@@ -303,6 +303,8 @@ const $ = ((el) => {
          * @param {number} timeout 追加 timeout 逾時請求處理參數 (單位毫秒 Ex:1000 = 1秒) 2023/03/08
          * @param {string} contentType
          * @param {string} returnType 追加 retunType 回傳轉譯 2022/08/26
+         * @param {boolean} useFormData 追加 useFormData 是否使用 form 表屬性 2022/04/22
+         * @param {boolean} useXMLHttpRequest 追加 useXMLHttpRequest 是否使用 XMLHttpRequest 2022/04/22
          * @param {Function} beforePost <= 回呼函式
          * @param {Function} successFn <= 回呼函式
          * @param {Function} excuteDone <= 回調函式 追加方法 2022/03/14
@@ -311,7 +313,7 @@ const $ = ((el) => {
         // #endregion
 
         const settings = {}
-        const { method, headers, contentType, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
+        const { method, headers, contentType, useFormData, useXMLHttpRequest,returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
 
         settings.method = method
         settingParams.url = FetchClass.#baseUrl ? `${FetchClass.#baseUrl}${settingParams.url}` : settingParams.url
@@ -328,6 +330,8 @@ const $ = ((el) => {
           return
         }
 
+        settingParams.useFormData = useFormData ? true : false
+
         if (routeParams) {
           const [keyName] = $.objDetails(routeParams, 'keys')
           settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
@@ -343,16 +347,20 @@ const $ = ((el) => {
         }
 
         if (data) {
-          settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': contentType || 'application/json' }
-          settings.body = $.convert(data, 'stringify')
+          if(!useFormData){
+            settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': contentType || 'application/json' }
+            settings.body = $.convert(data, 'stringify')
+          } else {
+            settings.body = this.convertFormData(data)
+          }
         }
 
         if (($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || headers) && data) {
           settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { ...headers }
-          settings.body = $.convert(data, 'stringify')
+          settings.body = useFormData ? this.convertFormData(data) : $.convert(data, 'stringify')
         };
 
-        if (!usePromise) {
+        if (!usePromise && !useXMLHttpRequest) {
           if (beforePost) {
             beforePost.call(beforePost)
           };
@@ -366,6 +374,34 @@ const $ = ((el) => {
             $.console('error', 'Function Name errorFn is required in obejct parameters.')
             return
           };
+        }
+
+        if(useXMLHttpRequest){
+          if (successFn) {
+            $.console('error', "successFn not necessary parameters.")
+            return
+          };
+
+          if (errorFn) {
+            $.console('error', "errorFn not necessary parameters.")
+            return
+          };
+
+          if(usePromise){
+            return this.XMLHttpRequest({
+              url: settingParams.url,
+              method: settings.method,
+              headers: settings.headers,
+              data: settings.body
+            })
+          }
+
+          return this.XMLHttpRequest({
+            url: settingParams.url,
+            method: settings.method,
+            headers: settings.headers,
+            data: settings.body
+          })
         }
 
         const abController = new AbortController()
@@ -442,6 +478,50 @@ const $ = ((el) => {
         }
       }
 
+      this.XMLHttpRequest = (setting) => { // 更新方法 XMLHttpRequest 2023/04/22
+        const xhr = new XMLHttpRequest()
+
+        xhr.open(setting.method,setting.url,true)
+
+        if(setting?.headers) $.each($.objDetails(setting?.headers,'entries'),([key,value]) => xhr.setRequestHeader(key,value))
+
+        return {
+          xhrResponseResult: (callBack) => {
+            xhr.onreadystatechange = () => {
+              if(xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status <= 399) {
+                try {
+                  const result = JSON.parse(xhr.responseText)
+                  callBack.call(callBack,result)
+                } catch(err) {
+                  $.error('error',err)
+                }
+              } 
+              
+              if (xhr.status >= 400){
+                $.error('error',xhr.statusText)
+              }
+            }
+          },
+          xhrUploadProgress: (callBack) => {
+             xhr.upload.onprogress = (pr) => {
+              if(pr.lengthComputable){
+                const uploadPercent = 100 * pr.loaded / pr.total
+                callBack.call(callBack,uploadPercent)
+              }
+            }
+          },
+          xhrRequestStart: () => xhr.send(setting?.data || undefined)
+        }
+      }
+
+      this.convertFormData = (formDataObj) => { // 更新方法 2023/04/22
+        const formData = new FormData()
+
+        $.each($.objDetails(formDataObj, 'entries'),([key, value]) => formData.append(key === 'uploadFile' ? 'FileList' : key, value))
+    
+        return formData;
+      }
+
       this.createBase = ({ baseUrl, baseHeaders }) => { // 更新 fetch 物件組態設定方法 2022/03/24
         // #region
         /** 參數設定
@@ -479,6 +559,8 @@ const $ = ((el) => {
     url: '',
     headers: {},
     contentType: '',
+    useFormData: false,
+    useXMLHttpRequest: false,
     returnType: '',
     routeParams: {},
     queryParams: {},
@@ -489,15 +571,15 @@ const $ = ((el) => {
     errorFn: undefined
   }) => FetchClass.fetchSetting(settingParams, false)
 
-  $.fetch.get = (url, settingParams = { headers: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.get(url, settingParams)
+  $.fetch.get = (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false,routeParams: {},queryParams: {} }) => FetchPromisClass.get(url, settingParams)
 
-  $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.post(url, settingParams)
+  $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.post(url, settingParams)
 
-  $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.patch(url, settingParams)
+  $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.patch(url, settingParams)
 
-  $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.put(url, settingParams)
+  $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.put(url, settingParams)
 
-  $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '',routeParams: {},queryParams: {} }) => FetchPromisClass.delete(url, settingParams)
+  $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.delete(url, settingParams)
 
   $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
     baseUrl: '',
@@ -510,6 +592,8 @@ const $ = ((el) => {
 // Origin class extends method
 // Use in node js you can use to import prototype extends like import './Library.js'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
+JSON.deepCopy = obj => $.convert($.convert(obj,'stringify'),'json') // 更新方法 2023/04/23
+
 Math.toFixedNum = (setting = { value,toFloatPos }) => { // 更新方法 2023/02/07
   if(!setting || !$.findObjProperty(setting,'value') || !$.findObjProperty(setting,'toFloatPos')){
     $.console('error','Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }')
