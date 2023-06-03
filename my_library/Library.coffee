@@ -1,4 +1,4 @@
-# © CopyRight 2021-08 - 2023-04 Alex Chen. Library language - coffeescript ver 1.5.8
+# © CopyRight 2021-08 - 2023-06 Alex Chen. Library language - Coffeescript ver 1.5.9
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -304,6 +304,8 @@ $ = ((el) ->
         else
             Object[method](obj)
     
+    $.isObjectTheSame = (objI, objII) -> $.convert(objI, 'stringify') is $.convert(objII, 'stringify') # 更新方法 2023/05/31
+
     $.useBase64 = (method,str) -> if method is 'encode' then btoa str else atob str # 更新方法 2021/11/24
     
     $.useSHA = (shaType,str) -> # 更新方法 2021/11/24
@@ -311,6 +313,24 @@ $ = ((el) ->
         hashBuffer = await window.crypto.subtle.digest shaType, (new TextEncoder().encode str);
         return Array.from(new Uint8Array hashBuffer).map((b) -> (b.toString 16).padStart 2, '0').join '';
     
+    $.useUnicode = (str, method) -> # 更新方法 2023/05/31
+        if method is 'encode'
+            $.createArray({ type: 'fake', item: { random: str.length } }, (num) ->
+                code = str.charCodeAt(num)
+                code16 = code.toString(16)
+
+                if code < 0xf
+                    "\\u000#{code16.toUpperCase()}"
+                else if code < 0xff
+                    "\\u00#{code16.toUpperCase()}"
+                else if code < 0xfff
+                    "\\u0#{code16.toUpperCase()}"
+                else
+                    "\\u#{code16.toUpperCase()}"
+            ).join ''
+        else
+            eval "#{str}"
+
     $.createArray = ({ type, item }, repack) -> # 更新方法 2022/03/14
         if type is 'fake'
             if 'random' of item and $.typeOf item.random, 'Number' and repack and $.typeOf repack, 'Function'
@@ -353,10 +373,10 @@ $ = ((el) ->
                 return
         newEl
 
-    $.currencyTranser = (formatNumber,currencyType) -> # 更新方法 2022/06/24
+    $.currencyTranser = (formatNumber,currencyType,withCurrencyStyle) -> # 更新方法 2022/06/24
         if $.typeOf formatNumber,'Number'
-            currencyOptionalObj = if not currencyType then {} else { style: 'currency', currency: currencyType }
-            new Intl.NumberFormat((if not currencyType then 'TWN' else currencyType), currencyOptionalObj).format formatNumber
+            currencyOptionalObj = if not withCurrencyStyle then {} else { style: 'currency', currency: currencyType }
+            new Intl.NumberFormat((currencyType or 'TWN'), currencyOptionalObj).format formatNumber
         else
             $.console 'error', 'First argument formatNumber type must use number.'
             return
@@ -380,7 +400,7 @@ $ = ((el) ->
             format.customWeekItem.pop()
 
         localCountryTime = (if $.findObjProperty format,'localCountryTime' then format.localCountryTime else 8) * 60 * 60 * 1000
-        dateStr = new Date (+new Date format.formatDate + localCountryTime).toJSON()
+        dateStr = new Date ((if $.typeOf format.formatDate, 'Number' then format.formatDate else +new Date format.formatDate) + localCountryTime).toJSON()
         dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').split('.')[0].split '-'
         [yearTemp, month, date, hour, minute, second] = dateSplit
 
@@ -420,6 +440,8 @@ $ = ((el) ->
             else
                 $.console('error', 'Property name method is required in obejct parameters.')
                 return
+
+            settingParams.useFormData = !!useFormData
 
             if routeParams
                 [keyName] = $.objDetails routeParams, 'keys'
@@ -611,51 +633,53 @@ $ = ((el) ->
 
     class FetchPromisClass extends FetchClass
         # 更新 Promise 導出 get 方法 2022/05/01
-        @get:(url, setting) -> this.fetchSetting { method: 'get', url, setting... }, true
+        @get:(url, setting) -> await this.fetchSetting { method: 'get', url, setting... }, true
 
         # 更新 Promise 導出 post 方法 2022/05/01
-        @post:(url, setting) -> this.fetchSetting { method: 'post', url, setting... }, true
+        @post:(url, setting) -> await this.fetchSetting { method: 'post', url, setting... }, true
 
         # 更新 Promise 導出 patch 方法 2022/05/01
-        @patch:(url, setting) -> this.fetchSetting({ method: 'patch', url, setting... }, true)
+        @patch:(url, setting) -> await this.fetchSetting({ method: 'patch', url, setting... }, true)
 
         # 更新 Promise 導出 put 方法 2022/05/01
-        @put:(url, setting) -> this.fetchSetting({ method: 'put', url, setting... }, true)
+        @put:(url, setting) -> await this.fetchSetting({ method: 'put', url, setting... }, true)
 
         # 更新 Promise 導出 delete 方法 2022/05/01
-        @delete:(url, setting) -> this.fetchSetting({ method: 'delete', url, setting... }, true)
+        @delete:(url, setting) -> await this.fetchSetting({ method: 'delete', url, setting... }, true)
     
-        $.fetch = (settingParams = { # 更新 FetchClass 類方法導出 2022/03/24
-            method: ''
-            url: ''
-            headers: {}
-            contentType: '',
-            useFormData: false,
-            useXMLHttpRequest: false,
-            data: {}
-            returnType: '',
-            routeParams: {},
-            queryParams: {},
-            beforePost: undefined
-            successFn: undefined
-            excuteDone: undefined
-            errorFn: undefined
-        }) -> FetchClass.fetchSetting settingParams, false
+    fetchGroup = (settingParams = { # 更新 FetchClass 類方法導出 2022/03/24
+        method: ''
+        url: ''
+        headers: {}
+        contentType: '',
+        useFormData: false,
+        useXMLHttpRequest: false,
+        data: {}
+        returnType: '',
+        routeParams: {},
+        queryParams: {},
+        beforePost: undefined
+        successFn: undefined
+        excuteDone: undefined
+        errorFn: undefined
+    }) -> FetchClass.fetchSetting settingParams, false
 
-        $.fetch.get = (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false,routeParams: {},queryParams: {} }) -> FetchPromisClass.get url, settingParams
+    fetchGroup.get = (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false,routeParams: {},queryParams: {} }) -> await FetchPromisClass.get url, settingParams
 
-        $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.post url, settingParams
+    fetchGroup.post = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> await FetchPromisClass.post url, settingParams
 
-        $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.patch url, settingParams
+    fetchGroup.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> await FetchPromisClass.patch url, settingParams
 
-        $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.put url, settingParams
+    fetchGroup.put = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> await FetchPromisClass.put url, settingParams
 
-        $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> FetchPromisClass.delete url, settingParams
+    fetchGroup.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) -> await FetchPromisClass.delete url, settingParams
 
-        $.fetch.createBase = (paramters = { # 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
-            baseUrl: ''
-            baseHeaders: {}
-        }) -> FetchClass.createBase paramters
+    fetchGroup.createBase = (paramters = { # 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+        baseUrl: ''
+        baseHeaders: {}
+    }) -> FetchClass.createBase paramters
+
+    $.fetch = fetchGroup
     
     $
 )((el) -> 
@@ -700,6 +724,11 @@ String.prototype.format = (formatStr, values...) -> # 更新方法 2022/06/24
       $.console 'error', "Can't not find else aguments."
   else
     $.console 'error', 'First paramter must use type string,if use string must like this ex：abc {0} efg {1}.'
+
+String.toChartCode = (str) -> 
+    $.createArray({ type: 'fake', item: { random: str.length } }, (index) -> 
+        str.charCodeAt index
+    ) # 更新方法 2023/05/31
 
 Date.prototype.calculateDay = (format) ->
   # 更新方法內容與回傳內容 2021/09/22

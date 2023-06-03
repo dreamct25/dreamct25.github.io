@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-04 Alex Chen. Library language - javascript ver 1.5.8
-// Work Environment Javascript ES6 or latest、eslint 8.39.0
+// © CopyRight 2021-08 - 2023-06 Alex Chen. Library language - Javascript ver 1.5.9
+// Work Environment Javascript ES6 or latest、ESlint 8.42.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -16,15 +16,15 @@
 const $ = ((el) => {
   const $ = target => {
     const self = el.call(el, target) || target
-    self.texts = (txt) => txt ? self.textContent = txt : self.textContent
-    self.html = (dom) => dom ? self.innerHTML = dom : self.innerHTML
+    self.texts = (txt) => { if (txt) { self.textContent = txt } else { return self.textContent } }
+    self.html = (dom) => { if (dom) { self.innerHTML = dom } else { return self.innerHTML } }
     self.addClass = (classText) => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
     self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
     self.toggleClass = (classText) => self.classList.toggle(classText) // 更新方法 2021/09/20
     self.on = (eventType, fn) => { self[['on', eventType].join('')] = () => fn.call(fn, self) } // 更新方法 2021/09/20
     self.listener = (eventType, fn) => self.addEventListener(eventType, fn)
     self.removeListener = (eventType, fn) => self.removeEventListener(eventType, fn) // 更新方法 2022/01/04
-    self.val = (valTemp) => valTemp ? self.value = valTemp : self.value
+    self.val = (valTemp) => { if (valTemp) { self.value = valTemp } else { return self.value } }
     self.attr = (props, val) => val ? self.setAttribute(props, val) : self.getAttribute(props)
     self.props = (props, val) => val ? self[props] = val : self[props] // 更新方法 2021/08/31
     self.sibling = (num) => self[num] // 更新方法 2021/08/31
@@ -154,11 +154,33 @@ const $ = ((el) => {
   $.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
   $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/09/12
   $.objDetails = (obj, method) => !method || !$.includes(['keys', 'values', 'entries'], method) ? $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") : Object[method](obj) // 更新方法 2021/09/12
-  $.useBase64 = (method,str) => method === 'encode' ? btoa(str) : atob(str) // 更新方法 2021/11/24
-  $.useSHA = async (shaType,str) => { // 更新方法 2021/11/24
-      // Cryptoing only working in https of production or http of development environment
-      const hashBuffer = await window.crypto.subtle.digest(shaType, new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  $.isObjectTheSame = (objI, objII) => $.convert(objI, 'stringify') === $.convert(objII, 'stringify') // 更新方法 2023/05/31
+  $.useBase64 = (method, str) => method === 'encode' ? btoa(str) : atob(str) // 更新方法 2021/11/24
+  $.useSHA = async (shaType, str) => { // 更新方法 2021/11/24
+    // Cryptoing only working in https of production or http of development environment
+    const hashBuffer = await window.crypto.subtle.digest(shaType, new TextEncoder().encode(str))
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('')
+  }
+  $.useUnicode = (str, method) => { // 更新方法 2023/05/31
+    if (method === 'encode') {
+      return $.createArray({ type: 'fake', item: { random: str.length } }, (num) => {
+        const code = str.charCodeAt(num)
+        const code16 = code.toString(16)
+
+        if (code < 0xf) {
+          return `\\u000${code16.toUpperCase()}`
+        } else if (code < 0xff) {
+          return `\\u00${code16.toUpperCase()}`
+        } else if (code < 0xfff) {
+          return `\\u0${code16.toUpperCase()}`
+        } else {
+          return `\\u${code16.toUpperCase()}`
+        }
+      }).join('')
+    } else {
+      // eslint-disable-next-line no-eval
+      return eval(`'${str}'`)
+    }
   }
   $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
     // #region 參數設定
@@ -184,7 +206,7 @@ const $ = ((el) => {
     if (!val || !type || !$.includes(['string', 'number', 'float', 'boolean', 'json', 'stringify'], type)) {
       $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
       return
-    } else if ($.typeOf(val,'Object') && $.includes(['string', 'number', 'float', 'boolean'], type)) {
+    } else if ($.typeOf(val, 'Object') && $.includes(['string', 'number', 'float', 'boolean'], type)) {
       $.console('error', `Convert value can't be object when use convert type ${type}.`)
       return
     }
@@ -217,10 +239,10 @@ const $ = ((el) => {
     return el
   }
 
-  $.currencyTranser = (formatNumber,currencyType) => { // 更新方法 2022/06/24
-    if ($.typeOf(formatNumber,'Number')) {
-      const currencyOptionalObj = !currencyType ? {} : { style: 'currency', currency: currencyType }
-      return new Intl.NumberFormat(!currencyType ? 'TWN' : currencyType, currencyOptionalObj).format(formatNumber)
+  $.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
+    if ($.typeOf(formatNumber, 'Number')) {
+      const currencyOptionalObj = !withCurrencyStyle ? {} : { style: 'currency', currency: currencyType }
+      return new Intl.NumberFormat(currencyType || 'TWN', currencyOptionalObj).format(formatNumber)
     } else {
       $.console('error', 'First argument formatNumber type must use number.')
     }
@@ -231,7 +253,7 @@ const $ = ((el) => {
     /**
      * @param {object}
      * {
-     *   formatDate: Date || string,
+     *   formatDate: Date || string || number,
      *   formatType:string, <= 取日期時間格式 yyyy-MM-dd HH:mm:ss 等方式
      *   toROCYear:boolean <= 輸出民國年，可選參數
      *   localCountryTime:number <= localCountryTime 根據時區格式化，預設為 GMT+8，可選參數
@@ -242,7 +264,7 @@ const $ = ((el) => {
      */
     // #endregion
 
-    if (!($.findObjProperty(format,'formatDate') || $.findObjProperty(format,'formatType'))) {
+    if (!($.findObjProperty(format, 'formatDate') || $.findObjProperty(format, 'formatType'))) {
       $.console('error', 'Please enter an object and use formatType property in the object.')
       return
     }
@@ -261,26 +283,26 @@ const $ = ((el) => {
       format.customWeekItem = [format.customWeekItem[format.customWeekItem.length - 1], ...format.customWeekItem].removeLast()
     }
 
-    const localCountryTime = ($.findObjProperty(format,'localCountryTime') ? format.localCountryTime : 8) * 60 * 60 * 1000
-    const dateStr = new Date(+new Date(format.formatDate) + localCountryTime).toJSON()
-    const dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').split('.')[0].split('-')
-    const [yearTemp, month, date, hour, minute, second] = dateSplit
+    const localCountryTime = ($.findObjProperty(format, 'localCountryTime') ? format.localCountryTime : 8) * 60 * 60 * 1000
+    const dateStr = new Date(($.typeOf(format.formatDate, 'Number') ? format.formatDate : +new Date(format.formatDate)) + localCountryTime).toJSON()
+    const dateSplit = dateStr.replace(/T/g, '-').replace(/:/g, '-').replace(/\./g, '-').replace(/Z/g, '').split('-')
+    const [yearTemp, month, date, hour, minute, second, milliSecond] = dateSplit
 
     const year = format?.toROCYear ? (parseInt(yearTemp) - 1911).toString() : yearTemp // 更新方法 2023/03/08
 
-    if ($.findObjProperty(format,'toDateFullNumber')) return $.convert(dateSplit.join(''), 'number')
+    if ($.findObjProperty(format, 'toDateFullNumber')) return $.convert(dateSplit.join(''), 'number')
 
     if (format.formatType.match('tt')) {
       const currentAMorPM = $.convert(hour, 'number') > 11 ? 'PM' : 'AM'
       const transHour = ($.convert(hour, 'number') - 12) < 10 ? `0${$.convert(hour, 'number') - 12}` : $.convert($.convert(hour, 'number') - 12, 'string')
-      return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
+      return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/ms/g, milliSecond).replace(/tt/g, currentAMorPM)
     } else if ($.findObjProperty(format, 'customWeekItem')) {
       return {
-        fullDateTime: format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second),
+        fullDateTime: format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second).replace(/ms/g, milliSecond),
         getWeekName: format.customWeekItem[new Date(+new Date(format.formatDate)).getDay()]
       }
     } else {
-      return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
+      return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second).replace(/ms/g, milliSecond)
     }
   }
 
@@ -313,7 +335,7 @@ const $ = ((el) => {
         // #endregion
 
         const settings = {}
-        const { method, headers, contentType, useFormData, useXMLHttpRequest,returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
+        const { method, headers, contentType, useFormData, useXMLHttpRequest, returnType, data, routeParams, queryParams, timeout, beforePost, successFn, excuteDone, errorFn } = settingParams
 
         settings.method = method
         settingParams.url = FetchClass.#baseUrl ? `${FetchClass.#baseUrl}${settingParams.url}` : settingParams.url
@@ -330,15 +352,15 @@ const $ = ((el) => {
           return
         }
 
-        settingParams.useFormData = useFormData ? true : false
+        settingParams.useFormData = !!useFormData
 
         if (routeParams) {
           const [keyName] = $.objDetails(routeParams, 'keys')
           settingParams.url = `${settingParams.url}/${routeParams[keyName]}`
         }
 
-        if(queryParams){
-          const querys = $.maps(Object.entries(queryParams),([key,value]) => `${key}=${value}`).join('&')
+        if (queryParams) {
+          const querys = $.maps(Object.entries(queryParams), ([key, value]) => `${key}=${value}`).join('&')
           settingParams.url = `${settingParams.url}?${querys}`
         }
 
@@ -347,7 +369,7 @@ const $ = ((el) => {
         }
 
         if (data) {
-          if(!useFormData){
+          if (!useFormData) {
             settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': contentType || 'application/json' }
             settings.body = $.convert(data, 'stringify')
           } else {
@@ -376,18 +398,18 @@ const $ = ((el) => {
           };
         }
 
-        if(useXMLHttpRequest){
+        if (useXMLHttpRequest) {
           if (successFn) {
-            $.console('error', "successFn not necessary parameters.")
+            $.console('error', 'successFn not necessary parameters.')
             return
           };
 
           if (errorFn) {
-            $.console('error', "errorFn not necessary parameters.")
+            $.console('error', 'errorFn not necessary parameters.')
             return
           };
 
-          if(usePromise){
+          if (usePromise) {
             return this.XMLHttpRequest({
               url: settingParams.url,
               method: settings.method,
@@ -406,11 +428,11 @@ const $ = ((el) => {
 
         const abController = new AbortController()
 
-        if(timeout){ // 更新 Request timeout 逾時請求處理 2023/03/08
-          setTimeout(() => abController.abort(),timeout)
+        if (timeout) { // 更新 Request timeout 逾時請求處理 2023/03/08
+          setTimeout(() => abController.abort(), timeout)
         }
 
-        const res = await fetch(settingParams.url, timeout ? { ...settings, signal:abController.signal } : settings);
+        const res = await fetch(settingParams.url, timeout ? { ...settings, signal: abController.signal } : settings)
 
         if (usePromise) {
           // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
@@ -481,32 +503,32 @@ const $ = ((el) => {
       this.XMLHttpRequest = (setting) => { // 更新方法 XMLHttpRequest 2023/04/22
         const xhr = new XMLHttpRequest()
 
-        xhr.open(setting.method,setting.url,true)
+        xhr.open(setting.method, setting.url, true)
 
-        if(setting?.headers) $.each($.objDetails(setting?.headers,'entries'),([key,value]) => xhr.setRequestHeader(key,value))
+        if (setting?.headers) $.each($.objDetails(setting?.headers, 'entries'), ([key, value]) => xhr.setRequestHeader(key, value))
 
         return {
           xhrResponseResult: (callBack) => {
             xhr.onreadystatechange = () => {
-              if(xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status <= 399) {
+              if (xhr.readyState === xhr.DONE && xhr.status >= 200 && xhr.status <= 399) {
                 try {
                   const result = JSON.parse(xhr.responseText)
-                  callBack.call(callBack,result)
-                } catch(err) {
-                  $.error('error',err)
+                  callBack.call(callBack, result)
+                } catch (err) {
+                  $.error('error', err)
                 }
-              } 
-              
-              if (xhr.status >= 400){
-                $.error('error',xhr.statusText)
+              }
+
+              if (xhr.status >= 400) {
+                $.error('error', xhr.statusText)
               }
             }
           },
           xhrUploadProgress: (callBack) => {
-             xhr.upload.onprogress = (pr) => {
-              if(pr.lengthComputable){
+            xhr.upload.onprogress = (pr) => {
+              if (pr.lengthComputable) {
                 const uploadPercent = 100 * pr.loaded / pr.total
-                callBack.call(callBack,uploadPercent)
+                callBack.call(callBack, uploadPercent)
               }
             }
           },
@@ -517,9 +539,9 @@ const $ = ((el) => {
       this.convertFormData = (formDataObj) => { // 更新方法 2023/04/22
         const formData = new FormData()
 
-        $.each($.objDetails(formDataObj, 'entries'),([key, value]) => formData.append(key === 'uploadFile' ? 'FileList' : key, value))
-    
-        return formData;
+        $.each($.objDetails(formDataObj, 'entries'), ([key, value]) => formData.append(key === 'uploadFile' ? 'FileList' : key, value))
+
+        return formData
       }
 
       this.createBase = ({ baseUrl, baseHeaders }) => { // 更新 fetch 物件組態設定方法 2022/03/24
@@ -538,23 +560,23 @@ const $ = ((el) => {
   class FetchPromisClass extends FetchClass {
     static {
       // 更新 Promise 導出 get 方法 2022/05/01
-      this.get = (url, setting) => this.fetchSetting({ method: 'get', url, ...setting }, true)
+      this.get = async (url, setting) => await this.fetchSetting({ method: 'get', url, ...setting }, true)
 
       // 更新 Promise 導出 post 方法 2022/05/01
-      this.post = (url, setting) => this.fetchSetting({ method: 'post', url, ...setting }, true)
+      this.post = async (url, setting) => await this.fetchSetting({ method: 'post', url, ...setting }, true)
 
       // 更新 Promise 導出 patch 方法 2022/05/01
-      this.patch = (url, setting) => this.fetchSetting({ method: 'patch', url, ...setting }, true)
+      this.patch = async (url, setting) => await this.fetchSetting({ method: 'patch', url, ...setting }, true)
 
       // 更新 Promise 導出 put 方法 2022/05/01
-      this.put = (url, setting) => this.fetchSetting({ method: 'put', url, ...setting }, true)
+      this.put = async (url, setting) => await this.fetchSetting({ method: 'put', url, ...setting }, true)
 
       // 更新 Promise 導出 delete 方法 2022/05/01
-      this.delete = (url, setting) => this.fetchSetting({ method: 'delete', url, ...setting }, true)
+      this.delete = async (url, setting) => await this.fetchSetting({ method: 'delete', url, ...setting }, true)
     }
   }
 
-  $.fetch = (settingParams = { // 更新 FetchClass 類方法導出 2022/03/24
+  const fetchGroup = (settingParams = { // 更新 FetchClass 類方法導出 2022/03/24
     method: '',
     url: '',
     headers: {},
@@ -571,20 +593,22 @@ const $ = ((el) => {
     errorFn: undefined
   }) => FetchClass.fetchSetting(settingParams, false)
 
-  $.fetch.get = (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false,routeParams: {},queryParams: {} }) => FetchPromisClass.get(url, settingParams)
+  fetchGroup.get = async (url, settingParams = { headers: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {}, queryParams: {} }) => await FetchPromisClass.get(url, settingParams)
 
-  $.fetch.post = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.post(url, settingParams)
+  fetchGroup.post = async (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {}, queryParams: {} }) => await FetchPromisClass.post(url, settingParams)
 
-  $.fetch.patch = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.patch(url, settingParams)
+  fetchGroup.patch = async (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {}, queryParams: {} }) => await FetchPromisClass.patch(url, settingParams)
 
-  $.fetch.put = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.put(url, settingParams)
+  fetchGroup.put = async (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {}, queryParams: {} }) => await FetchPromisClass.put(url, settingParams)
 
-  $.fetch.delete = (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {},queryParams: {} }) => FetchPromisClass.delete(url, settingParams)
+  fetchGroup.delete = async (url, settingParams = { headers: {}, data: {}, returnType: '', useFormData: false, useXMLHttpRequest: false, routeParams: {}, queryParams: {} }) => await FetchPromisClass.delete(url, settingParams)
 
-  $.fetch.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
+  fetchGroup.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
     baseUrl: '',
     baseHeaders: {}
   }) => FetchClass.createBase(paramters)
+
+  $.fetch = fetchGroup
 
   return $
 })((el) => typeof el === 'object' ? el : document.querySelectorAll(el).length > 1 ? document.querySelectorAll(el) : document.querySelector(el)) // 更新元素指向 2021/08/31
@@ -592,27 +616,27 @@ const $ = ((el) => {
 // Origin class extends method
 // Use in node js you can use to import prototype extends like import './Library.js'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
-JSON.deepCopy = obj => $.convert($.convert(obj,'stringify'),'json') // 更新方法 2023/04/23
+JSON.deepCopy = obj => $.convert($.convert(obj, 'stringify'), 'json') // 更新方法 2023/04/23
 
-Math.toFixedNum = (setting = { value,toFloatPos }) => { // 更新方法 2023/02/07
-  if(!setting || !$.findObjProperty(setting,'value') || !$.findObjProperty(setting,'toFloatPos')){
-    $.console('error','Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }')
+Math.toFixedNum = (setting = { value: '' | 0, toFloatPos: 0 }) => { // 更新方法 2023/02/07
+  if (!setting || !$.findObjProperty(setting, 'value') || !$.findObjProperty(setting, 'toFloatPos')) {
+    $.console('error', 'Please use object and with key value pair. ex: { value:100.1,toFloatPos:1 }')
     return
   }
 
-  if(!$.typeOf(setting.toFloatPos,'Number')){
-    $.console('error','toFloatPos key must use number.')
+  if (!$.typeOf(setting.toFloatPos, 'Number')) {
+    $.console('error', 'toFloatPos key must use number.')
     return
   }
-  
-  return $.typeOf(setting.value,'String') ? Number(parseFloat(setting.value).toFixed(setting.toFloatPos)) : Number(setting.value.toFixed(setting.toFloatPos))
+
+  return $.typeOf(setting.value, 'String') ? Number(parseFloat(setting.value).toFixed(setting.toFloatPos)) : Number(setting.value.toFixed(setting.toFloatPos))
 }
 
 String.prototype.appendText = function (txt) { return this.toString() + txt } // 更新方法 2022/06/24
 
-String.prototype.appendDirection = function(direction,pos,txt){ return this[direction === 'left' ? 'padStart' : 'padEnd'](pos,txt) } // 更新方法 2023/02/07
+String.prototype.appendDirection = function (direction, pos, txt) { return this[direction === 'left' ? 'padStart' : 'padEnd'](pos, txt) } // 更新方法 2023/02/07
 
-String.prototype.range = function(startPos,endPos){ return this.toString().slice(startPos,endPos) } // 更新方法 2022/11/21
+String.prototype.range = function (startPos, endPos) { return this.toString().slice(startPos, endPos) } // 更新方法 2022/11/21
 
 String.prototype.format = function (formatStr, ...values) { // 更新方法 2022/06/24
   if ($.typeOf(formatStr, 'String') && $.includes(formatStr, '{') && $.includes(formatStr, '}')) {
@@ -634,6 +658,8 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
     $.console('error', 'First paramter must use type string,if use string must like this ex：abc {0} efg {1}.')
   }
 }
+
+String.toChartCode = (str) => $.createArray({ type: 'fake', item: { random: str.length } }, (index) => str.charCodeAt(index)) // 更新方法 2023/05/31
 
 Date.prototype.calculateDay = function (format) {
   // 更新方法內容與回傳內容 2021/09/22
@@ -664,10 +690,10 @@ Date.prototype.calculateDay = function (format) {
   }[format.method]
 }
 
-Date.prototype.getLocalTimeZone = function(){ return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
+Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
 
 Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
-    return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error','Lost one parameter in function.') // 更新方法 2021/03/23
+  return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error', 'Lost one parameter in function.') // 更新方法 2021/03/23
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
