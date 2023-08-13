@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-06 Alex Chen. Library language - Typescript ver 1.5.9
-// Work Environment Typescript v5.1.3、ESlint v8.42.0
+// © CopyRight 2021-08 - 2023-08 Alex Chen. Library Language - Typescript Ver 1.6.0
+// Work Environment Typescript v5.1.6、eslint v8.47.0
 //
 /* eslint-disable no-return-assign */
 /* eslint-disable promise/param-names */
@@ -9,6 +9,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/method-signature-style */
+/* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -79,42 +80,42 @@ interface xhrReturnMethodType<T> {
 
 interface fetchGroupType {
   <T, useXMLReq = false>(settingParams: fetchClassSettingParmasType): Promise<useXMLReq extends false ? undefined : xhrReturnMethodType<T>>
-  get: <T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType) => Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  post: <T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType) => Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  patch: <T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType) => Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  put: <T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType) => Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  delete: <T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType) => Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  createBase: (paramters: { baseUrl: string, baseHeaders: Record<string, any> }) => void
+  get<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  post<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  patch<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  put<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  delete<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  createBase(paramters: { baseUrl: string, baseHeaders: Record<string, any> }): void
 }
 
 interface Self extends HTMLElement, $ {
-  texts: (txt?: string) => string | null | undefined
-  html: (dom?: string) => string | undefined
-  addClass: (classText: string) => any
-  removeClass: (classText: string) => any
-  toggleClass: (classText: string) => boolean
-  on: (eventType: string, fn: (self: any, t: Event) => void) => void
-  listener: (eventType: string, fn: (event: any) => void) => void
-  removeListener: (eventType: string, fn: (event: any) => void) => void
-  val: (valTemp?: string) => string | undefined
-  attr: (props: string, val?: any) => string | void | null
-  props: (props: string, val?: any) => any
-  sibling: (num: number) => HTMLElement
-  child: (num: number) => HTMLElement
-  childFirst: () => Element | null
-  childLast: () => Element | null
-  parent: () => ParentNode | null
-  appendDom: (el: HTMLElement) => void
-  removeDom: () => void
-  removeChildDom: () => void
-  appendDomText: (el: Text) => void
-  easyAppendDom: (orderBy: string, domStr: string) => void
-  styles: (method: stylesMethod, cssType: string, cssParameter: string) => Self | undefined
-  getDomStyles: (conditionProps: string[]) => Record<string, any>
-  getDomPos: () => { x: number, y: number, top: number, left: number, right: number, bottom: number, width: number, height: number }
-  scrollToTop: (scrollSetting: { scrollTop: number, duration: number }) => void
-  useWillMount: (willMountCallBack: (target: HTMLDocument) => void) => void
-  useMounted: (useMountedCallBack: (target: HTMLDocument) => void) => void
+  texts(txt?: string): string | null | undefined
+  html(dom?: string): string | undefined
+  addClass(classText: string): any
+  removeClass(classText: string): any
+  toggleClass(classText: string): boolean
+  on(eventType: string, fn: (self: any, t: Event) => void): void
+  listener(eventType: string, fn: (event: any) => void): void
+  removeListener(eventType: string, fn: (event: any) => void): void
+  val(valTemp?: string): string | undefined
+  attr(props: string, val?: any): string | void | null
+  props(props: string, val?: any): any
+  sibling(num: number): HTMLElement
+  child(num: number): HTMLElement
+  childFirst(): Element | null
+  childLast(): Element | null
+  parent(): ParentNode | null
+  appendDom(el: HTMLElement): void
+  removeDom(): void
+  removeChildDom(): void
+  appendDomText(el: Text): void
+  easyAppendDom(orderBy: string, domStr: string): void
+  styles(method: stylesMethod, cssType: string, cssParameter: string): Self | undefined
+  getDomStyles(conditionProps: string[]): Record<string, any>
+  getDomPos(): { x: number, y: number, top: number, left: number, right: number, bottom: number, width: number, height: number }
+  scrollToTop(scrollSetting: { scrollTop: number, duration: number }): void
+  useWillMount(willMountCallBack: (target: HTMLDocument) => void): void
+  useMounted(useMountedCallBack: (target: HTMLDocument) => void): void
 }
 
 // declare $
@@ -332,10 +333,9 @@ const $: $ = ((el) => {
           return `\\u${code16.toUpperCase()}`
         }
       })!.join('')
-    } else {
-      /* eslint-disable no-eval */
-      return eval(`'${str}'`)
     }
+
+    return str.replace(/\\u(\d{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
   }
   $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
     // #region 參數設定
@@ -808,9 +808,13 @@ const $: $ = ((el) => {
 //   }
 
 //   interface Date {
-//     calculateDay(format: { day: number, method: string }):(Date | undefined)
+//     calculateFullDateTime(year?: number, month?: number, day?: number, hour?: number, minute?: number, second?: number):(Date | undefined)
 //     toOptionTimeZoneForISO(timeZone: number):(string | void)
 //     getLocalTimeZone(): number
+//   }
+
+//   interface DateConstructor {
+//     formatCountingTime(format: { formatTimesTemp: number, formatType: string }): string
 //   }
 
 //   interface Array<T> {
@@ -836,7 +840,7 @@ const $: $ = ((el) => {
 //     deleteValue(value: T): boolean
 //     isValueInSet(value: T): boolean
 //     removeAll(): void
-//     toArray(): T[]
+//     toArray<T>(): T[]
 //   }
 
 //   interface Object { // 更新方法 2022/08/02
@@ -911,38 +915,55 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
 String.toChartCode = (str) => $.createArray({ type: 'fake', item: { random: str.length } }, (index) => str.charCodeAt(index))! // 更新方法 2023/05/31
 
 interface Date {
-    calculateDay(format:{ day: number, method: string }):(Date | undefined)
+    calculateFullDateTime(year?: number, month?: number, day?: number, hour?: number, minute?: number, second?: number):(Date | undefined)
     toOptionTimeZoneForISO(timeZone: number):(string | void)
     getLocalTimeZone():number
 }
 
-Date.prototype.calculateDay = function (format) {
+Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute, second) {
   // 更新方法內容與回傳內容 2021/09/22
   // 更新方法 2021/12/01
   // 改變回傳物件 2022/03/23
+  // 改寫完整調適日期方式 2023/08/13
+
+  const currentFullDateTime = this
+  const calFullDateTime = new Date(currentFullDateTime)
+
+  if (year) calFullDateTime.setFullYear(currentFullDateTime.getFullYear() + year)
+  if (month) calFullDateTime.setMonth(currentFullDateTime.getMonth() + month)
+  if (day) calFullDateTime.setDate(currentFullDateTime.getDate() + day)
+  if (hour) calFullDateTime.setHours(currentFullDateTime.getHours() + hour)
+  if (minute) calFullDateTime.setMinutes(currentFullDateTime.getMinutes() + minute)
+  if (second) calFullDateTime.setSeconds(currentFullDateTime.getSeconds() + second)
+
+  return calFullDateTime
+}
+
+interface DateConstructor { // 更新方法 2023/08/13
+  formatCountingTime(format: { formatTimesTemp: number, formatType: string }): string
+}
+
+Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
+  // 更新方法 2023/08/13
 
   // #region 參數設定
   /**
-     * @param {object} { day: number,method:string }
-     * @returns {string}
-     */
+   * @param {object} { formatTimesTemp: number,formatType:string ex:dd HH:mm:ss }
+   * @returns {string}
+   */
   // #endregion
 
-  if (!format || !('day' in format && 'method' in format)) {
-    $.console('error', 'Please enter an object and use day and method property in the object.')
-    return
-  } else if (typeof format.day !== 'number') {
-    $.console('error', 'day property must use type number.')
-    return
-  } else if (!$.includes(['addDay', 'reduceDay'], format.method)) {
-    $.console('error', "Please enter method type 'addDay' or 'reduceDay'.")
-    return
-  }
+  const addZero: (num: number) => string = num => num < 10 ? `0${num}` : `${num}`
+  const timeRange = Math.abs(formatTimesTemp)
+  const day = timeRange / (24 * 60 * 60 * 1000)
+  const dayFix = Math.floor(day)
+  const hour = (day - dayFix) * 24
+  const hourFix = Math.floor(hour)
+  const minute = (hour - hourFix) * 60
+  const minuteFix = Math.floor((hour - hourFix) * 60)
+  const secondesFix = Math.floor((minute - minuteFix) * 60)
 
-  return {
-    addDay: new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
-    reduceDay: new Date(+this - (format.day * 24 * 60 * 60 * 1000))
-  }[format.method]
+  return formatType.replace(/dd/g, addZero(dayFix)).replace(/HH/g, addZero(hourFix)).replace(/mm/g, addZero(minuteFix)).replace(/ss/g, addZero(secondesFix))
 }
 
 Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
@@ -952,12 +973,12 @@ Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
 }
 
 interface Array<T> { // 更新方法 2022/03/23
-    append(item: any):void
-    appendFirst(item: any):any[]
-    remove(pos: number):any[]
-    range(startPos: number, endPos: number):any[]
-    removeFirst():any[]
-    removeLast():any[]
+  append(item: T): void
+  appendFirst(item: T): T[]
+  remove(pos: number): T[]
+  range(startPos: number, endPos: number): T[]
+  removeFirst(): T[]
+  removeLast(): T[]
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
@@ -973,12 +994,12 @@ Array.prototype.removeFirst = function () { this.shift(); return this } // 更�
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
 
 interface Map<K,V> { // 更新方法 2022/08/02
-    append(keyName:string,value:any):void
-    getValue(keyName:string):any
-    deleteKeyValue(keyName:string):boolean
-    removeAll():void
-    isKeyInMap(keyName:string):boolean
-    toObject():{[key:string]:any}
+  append(keyName: K, value: V): void
+  getValue(keyName: K): any
+  deleteKeyValue(keyName: K): boolean
+  removeAll(): void
+  isKeyInMap(keyName: K): boolean
+  toObject(): Record<string, any>
 }
 
 Map.prototype.append = function (keyName, value) { this.set(keyName, value) } // 更新方法 2022/08/02
@@ -994,11 +1015,11 @@ Map.prototype.isKeyInMap = function (keyName) { return this.has(keyName) } // �
 Map.prototype.toObject = function () { return Object.fromEntries(this) } // 更新方法 2022/08/02
 
 interface Set<T> { // 更新方法 2022/08/02
-    append(value:any):void
-    deleteValue(value:any):boolean
-    isValueInSet(value:any):boolean
-    removeAll():void
-    toArray():any[]
+  append(value: T): void
+  deleteValue(value: T): boolean
+  isValueInSet(value: T): boolean
+  removeAll(): void
+  toArray<T>(): T[]
 }
 
 Set.prototype.append = function (value) { this.add(value) } // 更新方法 2022/08/02

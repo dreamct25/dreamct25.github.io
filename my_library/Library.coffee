@@ -1,4 +1,5 @@
-# © CopyRight 2021-08 - 2023-06 Alex Chen. Library language - Coffeescript ver 1.5.9
+# © CopyRight 2021-08 - 2023-08 Alex Chen. Library Language - Coffeescript Ver 1.6.0
+# Work Environment CoffeesSript only
 
 $ = ((el) -> 
     $ = (target) -> 
@@ -329,7 +330,7 @@ $ = ((el) ->
                     "\\u#{code16.toUpperCase()}"
             ).join ''
         else
-            eval "#{str}"
+            str.replace /\\u(\d{4})/g, (_, code) -> String.fromCharCode(parseInt(code, 16))
 
     $.createArray = ({ type, item }, repack) -> # 更新方法 2022/03/14
         if type is 'fake'
@@ -730,26 +731,41 @@ String.toChartCode = (str) ->
         str.charCodeAt index
     ) # 更新方法 2023/05/31
 
-Date.prototype.calculateDay = (format) ->
+Date.prototype.calculateFullDateTime = (year, month, day, hour, minute, second) ->
   # 更新方法內容與回傳內容 2021/09/22
   # 更新方法 2021/12/01
   # 改變回傳物件 2022/03/23
+  # 改寫完整調適日期方式 2023/08/13
 
-  if !format or !('day' of format and 'method' of format)
-    $.console 'error', 'Please enter an object and use day and method property in the object.'
-    return
-  else if typeof format.day isnt 'number'
-    $.console 'error', 'day property must use type number.'
-    return
-  else if !$.includes ['addDay', 'reduceDay'], format.method
-    $.console 'error', "Please enter method type 'addDay' or 'reduceDay'."
-    return
+  currentFullDateTime = this
+  calFullDateTime = new Date(currentFullDateTime)
 
-  {
-    addDay: new Date +this + (format.day * 24 * 60 * 60 * 1000)
-    reduceDay: new Date +this - (format.day * 24 * 60 * 60 * 1000)
-  }[format.method]
+  if year then calFullDateTime.setFullYear currentFullDateTime.getFullYear() + year
+  if month then calFullDateTime.setMonth currentFullDateTime.getMonth() + month
+  if day then calFullDateTime.setDate currentFullDateTime.getDate() + day
+  if hour then calFullDateTime.setHours currentFullDateTime.getHours() + hour
+  if minute then calFullDateTime.setMinutes currentFullDateTime.getMinutes() + minute
+  if second then calFullDateTime.setSeconds currentFullDateTime.getSeconds() + second
 
+  calFullDateTime
+
+Date.formatCountingTime = ({ formatTimesTemp, formatType }) ->
+  # 更新方法 2023/08/13
+
+  addZero = (num) -> if num < 10 then "0#{num}" else "#{num}"
+
+  timeRange = Math.abs(formatTimesTemp)
+  day = timeRange / (24 * 60 * 60 * 1000)
+  dayFix = Math.floor(day)
+  hour = (day - dayFix) * 24
+  hourFix = Math.floor(hour)
+  minute = (hour - hourFix) * 60
+  minuteFix = Math.floor((hour - hourFix) * 60)
+  secondesFix = Math.floor((minute - minuteFix) * 60)
+
+  formatType.replace(/dd/g, addZero(dayFix)).replace(/HH/g, addZero(hourFix)).replace(/mm/g, addZero(minuteFix)).replace(/ss/g, addZero(secondesFix))
+
+  
 Date.prototype.getLocalTimeZone = () -> Math.abs this.getTimezoneOffset() / 60 # 更新方法 2023/02/07
 
 Date.prototype.toOptionTimeZoneForISO = (timeZone) ->

@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-06 Alex Chen. Library language - Javascript ver 1.5.9
-// Work Environment Javascript ES6 or latest、ESlint 8.42.0
+// © CopyRight 2021-08 - 2023-08 Alex Chen. Library Language - Javascript Ver 1.6.0
+// Work Environment Javascript ES6 or latest、eslint v8.47.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -9,8 +9,8 @@
 
 /* eslint-disable no-return-assign */
 /* eslint-disable no-prototype-builtins */
-/* eslint-disable promise/param-names */
 /* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable promise/param-names */
 /* eslint-disable no-async-promise-executor */
 'use strict'
 const $ = ((el) => {
@@ -43,7 +43,7 @@ const $ = ((el) => {
       if (!$.includes(['set', 'remove'], method)) {
         $.console('error', "First parameter method must use string and keyword is 'set' or 'remove'.")
         return
-      };
+      }
       method === 'set' ? self.style.setProperty(cssType, cssParameter) : self.style.removeProperty(cssType)
       return self
     }
@@ -52,16 +52,15 @@ const $ = ((el) => {
       const cssProperty = {}
       if (typeof conditionProps !== 'object') {
         $.console('error', 'Parameter must use array.')
-        return
       } else {
         if (conditionProps.length === 0) {
           $.console('error', 'Parameter must use array,and css property must in array with string.')
-          return
         } else {
           $.each(conditionProps, item => cssProperty[item] = getComputedStyle(self).getPropertyValue(item))
           return cssProperty
         }
-      };
+      }
+      return cssProperty
     }
 
     self.getDomPos = () => ({ // 更新方法 2022/03/23
@@ -177,10 +176,9 @@ const $ = ((el) => {
           return `\\u${code16.toUpperCase()}`
         }
       }).join('')
-    } else {
-      // eslint-disable-next-line no-eval
-      return eval(`'${str}'`)
     }
+
+    return str.replace(/\\u(\d{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
   }
   $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
     // #region 參數設定
@@ -380,34 +378,34 @@ const $ = ((el) => {
         if (($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || headers) && data) {
           settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { ...headers }
           settings.body = useFormData ? this.convertFormData(data) : $.convert(data, 'stringify')
-        };
+        }
 
         if (!usePromise && !useXMLHttpRequest) {
           if (beforePost) {
             beforePost.call(beforePost)
-          };
+          }
 
           if (!successFn) {
             $.console('error', 'Function Name successFn is required in obejct parameters.')
             return
-          };
+          }
 
           if (!errorFn) {
             $.console('error', 'Function Name errorFn is required in obejct parameters.')
             return
-          };
+          }
         }
 
         if (useXMLHttpRequest) {
           if (successFn) {
             $.console('error', 'successFn not necessary parameters.')
             return
-          };
+          }
 
           if (errorFn) {
             $.console('error', 'errorFn not necessary parameters.')
             return
-          };
+          }
 
           if (usePromise) {
             return this.XMLHttpRequest({
@@ -461,7 +459,7 @@ const $ = ((el) => {
                 type: res.type,
                 url: res.url
               })
-            };
+            }
           })
         } else {
           // 更新 Request 成功與錯誤回傳內容 2022/03/14
@@ -493,10 +491,10 @@ const $ = ((el) => {
                 type: res.type,
                 url: res.url
               }))
-            };
+            }
           } catch (err) {
             errorFn.call(errorFn, JSON.parse(err.message))
-          };
+          }
         }
       }
 
@@ -661,39 +659,52 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
 
 String.toChartCode = (str) => $.createArray({ type: 'fake', item: { random: str.length } }, (index) => str.charCodeAt(index)) // 更新方法 2023/05/31
 
-Date.prototype.calculateDay = function (format) {
+Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute, second) {
   // 更新方法內容與回傳內容 2021/09/22
   // 更新方法 2021/12/01
   // 改變回傳物件 2022/03/23
+  // 改寫完整調適日期方式 2023/08/13
 
-  // #region 參數設定
-  /**
-   * @param {object} { day: number,method:string }
-   * @returns {string}
-   */
-  // #endregion
+  const currentFullDateTime = this
+  const calFullDateTime = new Date(currentFullDateTime)
 
-  if (!format || !('day' in format && 'method' in format)) {
-    $.console('error', 'Please enter an object and use day and method property in the object.')
-    return
-  } else if (typeof format.day !== 'number') {
-    $.console('error', 'day property must use type number.')
-    return
-  } else if (!$.includes(['addDay', 'reduceDay'], format.method)) {
-    $.console('error', "Please enter method type 'addDay' or 'reduceDay'.")
-    return
-  };
+  if (year) calFullDateTime.setFullYear(currentFullDateTime.getFullYear() + year)
+  if (month) calFullDateTime.setMonth(currentFullDateTime.getMonth() + month)
+  if (day) calFullDateTime.setDate(currentFullDateTime.getDate() + day)
+  if (hour) calFullDateTime.setHours(currentFullDateTime.getHours() + hour)
+  if (minute) calFullDateTime.setMinutes(currentFullDateTime.getMinutes() + minute)
+  if (second) calFullDateTime.setSeconds(currentFullDateTime.getSeconds() + second)
 
-  return {
-    addDay: new Date(+this + (format.day * 24 * 60 * 60 * 1000)),
-    reduceDay: new Date(+this - (format.day * 24 * 60 * 60 * 1000))
-  }[format.method]
+  return calFullDateTime
 }
 
 Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
 
 Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
   return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error', 'Lost one parameter in function.') // 更新方法 2021/03/23
+}
+
+Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
+  // 更新方法 2023/08/13
+
+  // #region 參數設定
+  /**
+   * @param {object} { formatTimesTemp: number,formatType:string ex:dd HH:mm:ss }
+   * @returns {string}
+   */
+  // #endregion
+
+  const addZero = num => num < 10 ? `0${num}` : `${num}`
+  const timeRange = Math.abs(formatTimesTemp)
+  const day = timeRange / (24 * 60 * 60 * 1000)
+  const dayFix = Math.floor(day)
+  const hour = (day - dayFix) * 24
+  const hourFix = Math.floor(hour)
+  const minute = (hour - hourFix) * 60
+  const minuteFix = Math.floor((hour - hourFix) * 60)
+  const secondesFix = Math.floor((minute - minuteFix) * 60)
+
+  return formatType.replace(/dd/g, addZero(dayFix)).replace(/HH/g, addZero(hourFix)).replace(/mm/g, addZero(minuteFix)).replace(/ss/g, addZero(secondesFix))
 }
 
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
