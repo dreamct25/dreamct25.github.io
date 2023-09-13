@@ -3,10 +3,10 @@
 
 $ = (target) -> 
     self = if typeof target is "string" 
-              if (document.querySelectorAll el).length > 1 
-                  document.querySelectorAll el 
+              if (document.querySelectorAll target).length > 1 
+                  document.querySelectorAll target 
               else
-                  document.querySelector el
+                  document.querySelector target
            else
                 target
 
