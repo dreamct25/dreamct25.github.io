@@ -2,7 +2,7 @@
 # Work Environment CoffeesSript Only
 
 $ = (target) -> 
-    self = if typeof targe is "string" 
+    self = if typeof target is "string" 
               if (document.querySelectorAll target).length > 1 
                   document.querySelectorAll target 
               else
