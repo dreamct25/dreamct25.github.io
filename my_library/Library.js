@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-09 Alex Chen. Library Language - Javascript Ver 1.6.1
-// Work Environment Javascript ES6 or latest、ESlint v8.49.0
+// © CopyRight 2021-08 - 2023-10 Alex Chen. Library Language - Javascript Ver 1.6.2
+// Work Environment Javascript ES6 or latest、ESlint v8.51.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -615,7 +615,38 @@ $.fetch = fetchGroup
 // Origin class extends method
 // Use in node js you can use to import prototype extends like import './Library.js'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
-JSON.deepCopy = obj => $.convert($.convert(obj, 'stringify'), 'json') // 更新方法 2023/04/23
+JSON.deepCopy = (obj, weakMap = new WeakMap()) => {
+  // 更新方法 2023/04/22
+  // 提高深拷貝多樣性 2023/10/14
+  if (
+    obj === null ||
+    typeof obj !== 'object' ||
+    obj instanceof RegExp ||
+    obj instanceof Date ||
+    obj instanceof Function
+  ) return obj
+
+  if (weakMap.has(obj)) return weakMap.get(obj)
+
+  if (Array.isArray(obj)) {
+    let arrCopy = []
+
+    weakMap.set(obj, arrCopy)
+
+    arrCopy = $.createArray({ type: 'fake', item: { random: obj.length } }, index => JSON.deepCopy(obj[index], weakMap))
+
+    return arrCopy
+  }
+
+  const objCopy = {}
+  weakMap.set(obj, objCopy)
+
+  $.objDetails(obj, 'keys').forEach(key => {
+    if ($.findObjProperty(obj, key)) objCopy[key] = JSON.deepCopy(obj[key], weakMap)
+  })
+
+  return objCopy
+}
 
 Math.toFixedNum = (setting = { value: '' | 0, toFloatPos: 0 }) => { // 更新方法 2023/02/07
   if (!setting || !$.findObjProperty(setting, 'value') || !$.findObjProperty(setting, 'toFloatPos')) {

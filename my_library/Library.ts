@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-09 Alex Chen. Library Language - Typescript Ver 1.6.1
-// Work Environment Typescript v5.2.2、ESlint v8.49.0
+// © CopyRight 2021-08 - 2023-10 Alex Chen. Library Language - Typescript Ver 1.6.2
+// Work Environment Typescript v5.2.2、ESlint v8.51.0
 //
 /* eslint-disable no-return-assign */
 /* eslint-disable promise/param-names */
@@ -90,7 +90,7 @@ interface fetchGroupType {
   createBase(paramters: { baseUrl: string, baseHeaders: Record<string, any> }): void
 }
 
-interface Self extends HTMLElement {
+export interface Self extends HTMLElement {
   texts(txt?: string): string | null | undefined
   html(dom?: string): string | undefined
   addClass(classText: string): any
@@ -155,14 +155,23 @@ declare interface $ { // 更新 2022/06/29
   useSHA(shaType: SHAType, str: string): Promise<string>
   useUnicode(str: string, codeType: codeType): string
   rebuildObject<R extends Record<string, any>, T extends Record<string, any>>(obj: T, callback: (keyName: keyof T, value: any) => [keyof T, any]): R
-  formatDateTime(format: {
+  formatDateTime<T>(format: {
     formatDate: string | globalThis.Date | number
     formatType: string
     toROCYear?: boolean
-    localCountryTime?: number | undefined
-    toDateFullNumber?: boolean | undefined
+    localCountryTime?: number
+    toDateFullNumber?: boolean
     customWeekItem?: any[]
-  }): string | number | undefined | { fullDateTime: string, getWeekName: any }
+  } & T): T extends { 
+    formatDate: string | Date | number
+    formatType: string,
+    customWeekItem: any[] 
+  } ? { fullDateTime: string, getWeekName: any } : 
+  T extends { 
+    formatDate: string | Date | number
+    formatType: string,
+    toDateFullNumber: boolean
+  } ? number : string
   fetch: fetchGroupType
 }
 
@@ -437,7 +446,7 @@ $.formatDateTime = format => { // 更新方法 2021/12/01
 
   if (!($.findObjProperty(format, 'formatDate') || $.findObjProperty(format, 'formatType'))) {
     $.console('error', 'Please enter an object and use formatType property in the object.')
-    return undefined
+    return undefined as any
   }
 
   if ($.findObjProperty(format, 'customWeekItem')) {
@@ -789,76 +798,100 @@ $.fetch = fetchGroup
 // Use in ESModule you can use to import prototype extends like import './Library.ts'
 /* eslint no-extend-native: ["off", { "exceptions": ["Object"] }] */
 
-// Use in ESModule global.d.ts
-// declare global {
-//   interface JSON {
-//     deepCopy<T>(obj: T): T
-//   }
+declare global {
+  interface JSON {
+    deepCopy<T>(obj: T, weakMap: WeakMap<WeakKey, any>): T
+  }
 
-//   interface Math {
-//     toFixedNum(setting: { value: string | number, toFloatPos: number }):(number | undefined)
-//   }
+  interface Math {
+    toFixedNum(setting: { value: string | number, toFloatPos: number }):(number | undefined)
+  }
 
-//   interface String {
-//     format(formatStr: string, value: any[]):(string | undefined)
-//     appendText(txt: string): string
-//     appendDirection(direction: padDirection, pos: number, txt: string): string
-//     range(startPos: number, endPos: number): string
-//   }
+  interface String {
+    format(formatStr: string, value: any[]):(string | undefined)
+    appendText(txt: string): string
+    appendDirection(direction: padDirection, pos: number, txt: string): string
+    range(startPos: number, endPos: number): string
+  }
 
-//   interface StringConstructor {
-//     toChartCode(str: string): number[]
-//   }
+  interface StringConstructor {
+    toChartCode(str: string): number[]
+  }
 
-//   interface Date {
-//     calculateFullDateTime(year?: number, month?: number, day?: number, hour?: number, minute?: number, second?: number):(Date | undefined)
-//     toOptionTimeZoneForISO(timeZone: number):(string | void)
-//     getLocalTimeZone(): number
-//   }
+  interface Date {
+    calculateFullDateTime(year?: number, month?: number, day?: number, hour?: number, minute?: number, second?: number):(Date | undefined)
+    toOptionTimeZoneForISO(timeZone: number):(string | void)
+    getLocalTimeZone(): number
+  }
 
-//   interface DateConstructor {
-//     formatCountingTime(format: { formatTimesTemp: number, formatType: string }): string
-//   }
+  interface DateConstructor { // 更新方法 2023/08/13
+    formatCountingTime(format: { formatTimesTemp: number, formatType: string }): string
+  }
 
-//   interface Array<T> {
-//     append(item: T): void
-//     appendFirst(item: T): T[]
-//     remove(pos: number): T[]
-//     range(startPos: number, endPos: number): T[]
-//     removeFirst(): T[]
-//     removeLast(): T[]
-//   }
+  interface Array<T> { // 更新方法 2022/03/23
+    append(item: T): void
+    appendFirst(item: T): T[]
+    remove(pos: number): T[]
+    range(startPos: number, endPos: number): T[]
+    removeFirst(): T[]
+    removeLast(): T[]
+  }
 
-//   interface Map<K, V> {
-//     append(keyName: K, value: V): void
-//     getValue(keyName: K): any
-//     deleteKeyValue(keyName: K): boolean
-//     removeAll(): void
-//     isKeyInMap(keyName: K): boolean
-//     toObject(): Record<string, any>
-//   }
+  interface Map<K, V> { // 更新方法 2022/08/02
+    append(keyName: K, value: V): void
+    getValue(keyName: K): any
+    deleteKeyValue(keyName: K): boolean
+    removeAll(): void
+    isKeyInMap(keyName: K): boolean
+    toObject(): Record<string, any>
+  }
 
-//   interface Set<T> {
-//     append(value: T): void
-//     deleteValue(value: T): boolean
-//     isValueInSet(value: T): boolean
-//     removeAll(): void
-//     toArray<T>(): T[]
-//   }
+  interface Set<T> { // 更新方法 2022/08/02
+    append(value: T): void
+    deleteValue(value: T): boolean
+    isValueInSet(value: T): boolean
+    removeAll(): void
+    toArray<T>(): T[]
+  }
 
-//   interface Object { // 更新方法 2022/08/02
-//     toMap(obj: Record<string, any>): Map<string, any>
-//   }
-// }
-
-interface JSON {
-  deepCopy<T>(obj: T): T
+  interface Object { // 更新方法 2022/08/02
+    toMap(obj: Record<string, any>): Map<string, any>
+  }
 }
 
-JSON.deepCopy = obj => $.convert<Record<string, any>>($.convert<string>(obj, 'stringify'), 'json')! as typeof obj // 更新方法 2023/04/22
+JSON.deepCopy = (obj, weakMap = new WeakMap()) => {
+  // 更新方法 2023/04/22
+  // 提高深拷貝多樣性 2023/10/14
+  if (
+    obj === null ||
+    typeof obj !== 'object' ||
+    obj instanceof RegExp ||
+    obj instanceof Date ||
+    obj instanceof Function
+  ) return obj
 
-interface Math {
-  toFixedNum(setting:{ value:string | number,toFloatPos:number }):(number | undefined)
+  if ((weakMap as WeakMap<WeakKey, any>).has(obj)) return (weakMap as WeakMap<WeakKey, any>).get(obj)
+
+  if (Array.isArray(obj)) {
+    let arrCopy: any[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/semi
+    (weakMap as WeakMap<WeakKey, any>).set(obj, arrCopy);
+
+    arrCopy = $.createArray({ type: 'fake', item: { random: obj.length } }, index => JSON.deepCopy(obj[index], (weakMap as WeakMap<WeakKey, any>)))!
+
+    return arrCopy
+  }
+
+  const objCopy: Record<string, any> = {};
+  // eslint-disable-next-line @typescript-eslint/semi
+  (weakMap as WeakMap<WeakKey, any>).set(obj, objCopy);
+
+  $.objDetails(obj, 'keys').forEach(key => {
+    if ($.findObjProperty(obj, key as string)) objCopy[key as string] = JSON.deepCopy((obj as Record<string, any>)[key as string], (weakMap as WeakMap<WeakKey, any>))
+  })
+
+  return objCopy
 }
 
 Math.toFixedNum = setting => { // 更新方法 2023/02/07
@@ -873,17 +906,6 @@ Math.toFixedNum = setting => { // 更新方法 2023/02/07
   }
 
   return $.typeOf(setting.value, 'String') ? Number(parseFloat(setting.value as string).toFixed(setting.toFloatPos)) : Number((setting.value as number).toFixed(setting.toFloatPos))
-}
-
-interface String {
-    format(formatStr:string,value:any[]):(string | undefined)
-    appendText(txt:string):string
-    appendDirection(direction:padDirection,pos:number,txt:string):string
-    range(startPos:number,endPos:number):string
-}
-
-interface StringConstructor {
-  toChartCode(str:string):number[]
 }
 
 String.prototype.appendText = function (txt) { return this.toString() + txt } // 更新方法 2022/06/24
@@ -917,12 +939,6 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
 
 String.toChartCode = (str) => $.createArray({ type: 'fake', item: { random: str.length } }, (index) => str.charCodeAt(index))! // 更新方法 2023/05/31
 
-interface Date {
-  calculateFullDateTime(year?: number, month?: number, day?: number, hour?: number, minute?: number, second?: number):(Date | undefined)
-  toOptionTimeZoneForISO(timeZone: number):(string | void)
-  getLocalTimeZone(): number
-}
-
 Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute, second) {
   // 更新方法內容與回傳內容 2021/09/22
   // 更新方法 2021/12/01
@@ -940,10 +956,6 @@ Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute,
   if (second) calFullDateTime.setSeconds(currentFullDateTime.getSeconds() + second)
 
   return calFullDateTime
-}
-
-interface DateConstructor { // 更新方法 2023/08/13
-  formatCountingTime(format: { formatTimesTemp: number, formatType: string }): string
 }
 
 Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
@@ -975,15 +987,6 @@ Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
   return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error', 'Lost one parameter in function.') // 更新方法 2021/03/23
 }
 
-interface Array<T> { // 更新方法 2022/03/23
-  append(item: T): void
-  appendFirst(item: T): T[]
-  remove(pos: number): T[]
-  range(startPos: number, endPos: number): T[]
-  removeFirst(): T[]
-  removeLast(): T[]
-}
-
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
 
 Array.prototype.appendFirst = function (item) { this.unshift(item); return this } // 更新方法 2021/03/23
@@ -995,15 +998,6 @@ Array.prototype.range = function (startPos, endPos) { return this.slice(startPos
 Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
-
-interface Map<K,V> { // 更新方法 2022/08/02
-  append(keyName: K, value: V): void
-  getValue(keyName: K): any
-  deleteKeyValue(keyName: K): boolean
-  removeAll(): void
-  isKeyInMap(keyName: K): boolean
-  toObject(): Record<string, any>
-}
 
 Map.prototype.append = function (keyName, value) { this.set(keyName, value) } // 更新方法 2022/08/02
 
@@ -1017,14 +1011,6 @@ Map.prototype.isKeyInMap = function (keyName) { return this.has(keyName) } // �
 
 Map.prototype.toObject = function () { return Object.fromEntries(this) } // 更新方法 2022/08/02
 
-interface Set<T> { // 更新方法 2022/08/02
-  append(value: T): void
-  deleteValue(value: T): boolean
-  isValueInSet(value: T): boolean
-  removeAll(): void
-  toArray<T>(): T[]
-}
-
 Set.prototype.append = function (value) { this.add(value) } // 更新方法 2022/08/02
 
 Set.prototype.deleteValue = function (value) { return this.delete(value) } // 更新方法 2022/08/02
@@ -1034,9 +1020,5 @@ Set.prototype.isValueInSet = function (value) { return this.has(value) } // 更�
 Set.prototype.removeAll = function () { this.clear() } // 更新方法 2022/08/02
 
 Set.prototype.toArray = function () { return [...this] } // 更新方法 2022/08/02
-
-interface Object { // 更新方法 2022/08/02
-  toMap(obj: Record<string, any>): Map<string, any>
-}
 
 Object.prototype.toMap = function (obj) { return new Map(Object.entries(obj)) } // 更新方法 2022/08/02

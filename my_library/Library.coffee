@@ -1,5 +1,5 @@
-# © CopyRight 2021-08 - 2023-09 Alex Chen. Library Language - Coffeescript Ver 1.6.1
-# Work Environment CoffeesSript Only
+# © CopyRight 2021-08 - 2023-10 Alex Chen. Library Language - Coffeescript Ver 1.6.2
+# Work Environment CoffeesSript only
 
 $ = (target) -> 
     self = if typeof target is "string" 
@@ -692,8 +692,37 @@ fetchGroup.createBase = (paramters = { # 更新 FetchClass 類方法導出，為
 
 $.fetch = fetchGroup
 
-JSON.deepCopy = (obj) -> 
-    $.convert $.convert(obj,'stringify'),'json' # 更新方法 2023/04/23
+JSON.deepCopy = (obj, weakMap = new WeakMap()) -> 
+    # 更新方法 2023/04/23
+    # 提高深拷貝多樣性 2023/10/14
+    if obj is null or \
+       typeof obj != 'object' or \
+       obejct instanceof RegExp or \
+       obj instanceof Date or \
+       obj instanceof Function
+       obj
+
+    if weakMap.has obj 
+       weakMap.get obj
+    
+    if Array.isArray obj
+       arrCopy = []
+       weakMap.set obj, arrCopy
+
+       arrCopy = $.createArray { type: 'fake', item: { random: obj.length } }, (index) -> 
+                    JSON.deepCopy obj[index], weakMap
+       arrCopy
+    
+    objCopy = {}
+    weakMap.set obj, objCopy
+
+    $.objDetails(obj,'keys').forEach((key) -> 
+        if $.findObjProperty obj, key
+            objCopy[key] = JSON.deepCopy obj[key], weakMap
+            return
+    )
+
+    objCopy
 
 Math.toFixedNum = (setting = { value,toFloatPos }) -> # 更新方法 2023/02/07
   if !setting or !$.findObjProperty setting,'value' || !$.findObjProperty setting,'toFloatPos'
