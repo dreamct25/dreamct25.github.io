@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-10 Alex Chen. Library Language - Javascript Ver 1.6.2
-// Work Environment Javascript ES6 or latest、ESlint v8.51.0
+// CopyRight © 2021-08 - 2023-11 Alex Chen. Library Language - Javascript Ver 1.6.3
+// Work Environment Javascript ES6 or latest、ESlint v8.54.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -179,6 +179,24 @@ $.useUnicode = (str, method) => { // 更新方法 2023/05/31
   }
 
   return str.replace(/\\u(\d{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
+}
+$.jwtDeocde = (token) => { // 更新方法 2023/11/30
+  if (token) {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const result = decodeURIComponent(
+      $.maps(
+        $.useBase64('decode', base64).split(''),
+        char => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`
+      ).join('')
+    )
+
+    return JSON.parse(result)
+  }
+
+  $.console('error', 'please typing token at first paramters .')
+
+  return undefined
 }
 $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
   // #region 參數設定

@@ -1,5 +1,5 @@
-// © CopyRight 2021-08 - 2023-10 Alex Chen. Library Language - Typescript Ver 1.6.2
-// Work Environment Typescript v5.2.2、ESlint v8.51.0
+// CopyRight © 2021-08 - 2023-11 Alex Chen. Library Language - Typescript Ver 1.6.3
+// Work Environment Typescript v5.3.2、ESlint v8.54.0
 //
 /* eslint-disable no-return-assign */
 /* eslint-disable promise/param-names */
@@ -57,10 +57,10 @@ interface fetchClassSettingParmasType<ResponesResult = undefined> {
   routeParams?: Record<string, any>
   queryParams?: Record<string, any>
   timeout?: number
-  beforePost?(): void
-  successFn?(data: fetchClassReturnType<ResponesResult>): void
-  excuteDone?(): void
-  errorFn?(err: fetchClassReturnType<undefined>): void
+  beforePost?: () => void
+  successFn?: (data: fetchClassReturnType<ResponesResult>) => void
+  excuteDone?: () => void
+  errorFn?: (err: fetchClassReturnType<undefined>) => void
 }
 
 interface fetchPromiseClassSettingParmasType {
@@ -154,6 +154,7 @@ declare interface $ { // 更新 2022/06/29
   useBase64(method: codeType, str: string): string
   useSHA(shaType: SHAType, str: string): Promise<string>
   useUnicode(str: string, codeType: codeType): string
+  jwtDeocde<R>(token: string): R
   rebuildObject<R extends Record<string, any>, T extends Record<string, any>>(obj: T, callback: (keyName: keyof T, value: any) => [keyof T, any]): R
   formatDateTime<T>(format: {
     formatDate: string | globalThis.Date | number
@@ -162,16 +163,16 @@ declare interface $ { // 更新 2022/06/29
     localCountryTime?: number
     toDateFullNumber?: boolean
     customWeekItem?: any[]
-  } & T): T extends { 
+  } & T): T extends {
     formatDate: string | Date | number
-    formatType: string,
-    customWeekItem: any[] 
-  } ? { fullDateTime: string, getWeekName: any } : 
-  T extends { 
-    formatDate: string | Date | number
-    formatType: string,
-    toDateFullNumber: boolean
-  } ? number : string
+    formatType: string
+    customWeekItem: any[]
+  } ? { fullDateTime: string, getWeekName: any } :
+    T extends {
+      formatDate: string | Date | number
+      formatType: string
+      toDateFullNumber: boolean
+    } ? number : string
   fetch: fetchGroupType
 }
 
@@ -347,6 +348,24 @@ $.useUnicode = (str, method) => { // 更新方法 2023/05/31
   }
 
   return str.replace(/\\u(\d{4})/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
+}
+$.jwtDeocde = (token) => { // 更新方法 2023/11/30
+  if (token) {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const result = decodeURIComponent(
+      $.maps(
+        $.useBase64('decode', base64).split(''),
+        char => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`
+      ).join('')
+    )
+
+    return JSON.parse(result)
+  }
+
+  $.console('error', 'please typing token at first paramters .')
+
+  return undefined
 }
 $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
   // #region 參數設定
