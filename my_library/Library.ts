@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2023-11 Alex Chen. Library Language - Typescript Ver 1.6.3
-// Work Environment Typescript v5.3.2、ESlint v8.54.0
+// CopyRight © 2021-08 - 2024-02 Alex Chen. Library Language - Typescript Ver 1.6.4
+// Work Environment Typescript v5.3.3、ESlint v8.56.0
 //
 /* eslint-disable no-return-assign */
 /* eslint-disable promise/param-names */
@@ -823,7 +823,7 @@ declare global {
   }
 
   interface Math {
-    toFixedNum(setting: { value: string | number, toFloatPos: number }):(number | undefined)
+    toFixedNum(setting: { value: string | number, toFloatPos: number }): (number | undefined)
   }
 
   interface String {
@@ -854,6 +854,8 @@ declare global {
     range(startPos: number, endPos: number): T[]
     removeFirst(): T[]
     removeLast(): T[]
+    first(): T
+    firstOrDefault(): T | undefined
   }
 
   interface Map<K, V> { // 更新方法 2022/08/02
@@ -889,25 +891,25 @@ JSON.deepCopy = (obj, weakMap = new WeakMap()) => {
     obj instanceof Function
   ) return obj
 
-  if ((weakMap as WeakMap<WeakKey, any>).has(obj)) return (weakMap as WeakMap<WeakKey, any>).get(obj)
+  if ((weakMap).has(obj)) return (weakMap).get(obj)
 
   if (Array.isArray(obj)) {
     let arrCopy: any[] = [];
 
     // eslint-disable-next-line @typescript-eslint/semi
-    (weakMap as WeakMap<WeakKey, any>).set(obj, arrCopy);
+    (weakMap).set(obj, arrCopy);
 
-    arrCopy = $.createArray({ type: 'fake', item: { random: obj.length } }, index => JSON.deepCopy(obj[index], (weakMap as WeakMap<WeakKey, any>)))!
+    arrCopy = $.createArray({ type: 'fake', item: { random: obj.length } }, index => JSON.deepCopy(obj[index], (weakMap)))!
 
     return arrCopy
   }
 
   const objCopy: Record<string, any> = {};
   // eslint-disable-next-line @typescript-eslint/semi
-  (weakMap as WeakMap<WeakKey, any>).set(obj, objCopy);
+  (weakMap).set(obj, objCopy);
 
   $.objDetails(obj, 'keys').forEach(key => {
-    if ($.findObjProperty(obj, key as string)) objCopy[key as string] = JSON.deepCopy((obj as Record<string, any>)[key as string], (weakMap as WeakMap<WeakKey, any>))
+    if ($.findObjProperty(obj, key as string)) objCopy[key as string] = JSON.deepCopy((obj as Record<string, any>)[key as string], (weakMap))
   })
 
   return objCopy
@@ -1017,6 +1019,10 @@ Array.prototype.range = function (startPos, endPos) { return this.slice(startPos
 Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
+
+Array.prototype.first = function () { return this.range(0, 1)[0] } // 更新方法 2024/02/08
+
+Array.prototype.firstOrDefault = function () { return this.range(0, 1).length > 0 ? this.range(0, 1)[0] : undefined } // 更新方法 2024/02/08
 
 Map.prototype.append = function (keyName, value) { this.set(keyName, value) } // 更新方法 2022/08/02
 

@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2023-11 Alex Chen. Library Language - Coffeescript Ver 1.6.3
+# CopyRight © 2021-08 - 2024-02 Alex Chen. Library Language - Coffeescript Ver 1.6.4
 # Work Environment CoffeesSript only
 
 $ = (target) -> 
@@ -831,6 +831,10 @@ Array.prototype.remove = (pos) -> this.splice(pos, 1); this # 更新方法 2021/
 Array.prototype.removeFirst = () -> this.shift(); this # 更新方法 2021/03/23
 
 Array.prototype.removeLast = () -> this.pop(); this # 更新方法 2021/03/23
+
+Array.prototype.first = () -> this.range(0, 1)[0]  # 更新方法 2024/02/08
+
+Array.prototype.firstOrDefault = () -> if this.range(0, 1).length > 0 then this.range(0, 1)[0] else undefined  # 更新方法 2024/02/08
 
 Map.prototype.append = (keyName, value) -> this.set(keyName, value) # 更新方法 2022/08/02
 

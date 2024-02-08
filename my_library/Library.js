@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2023-11 Alex Chen. Library Language - Javascript Ver 1.6.3
-// Work Environment Javascript ES6 or latest、ESlint v8.54.0
+// CopyRight © 2021-08 - 2024-02 Alex Chen. Library Language - Javascript Ver 1.6.4
+// Work Environment Javascript ES6 or latest、ESlint v8.56.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -768,6 +768,10 @@ Array.prototype.remove = function (pos) { this.splice(pos, 1); return this } // 
 Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
 
 Array.prototype.removeLast = function () { this.pop(); return this } // 更新方法 2021/03/23
+
+Array.prototype.first = function () { return this.range(0, 1)[0] } // 更新方法 2024/02/08
+
+Array.prototype.firstOrDefault = function () { return this.range(0, 1).length > 0 ? this.range(0, 1)[0] : undefined } // 更新方法 2024/02/08
 
 Map.prototype.append = function (keyName, value) { this.set(keyName, value) } // 更新方法 2022/08/02
 
