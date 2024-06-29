@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2024-02 Alex Chen. Library Language - Coffeescript Ver 1.6.4
+# CopyRight © 2021-08 - 2024-06 Alex Chen. Library Language - Coffeescript Ver 1.6.5
 # Work Environment CoffeesSript only
 
 $ = (target) -> 
@@ -11,13 +11,13 @@ $ = (target) ->
                 target
 
     self.texts = (txt) -> 
-        if txt 
+        if txt is not undefined
             self.textContent = txt
             return
         else self.textContent
 
     self.html = (dom) -> 
-        if dom 
+        if dom is not undefined
             self.innerHTML = dom 
             return
         else self.innerHTML
@@ -50,13 +50,13 @@ $ = (target) ->
         return
 
     self.val = (valTemp) -> 
-        if valTemp
+        if valTemp is not undefined
             self.value = valTemp
             return 
         else self.value
 
     self.attr = (props, val) -> 
-        if val 
+        if val is not undefined
             self.setAttribute props, val
             return 
         else self.getAttribute props
@@ -312,6 +312,16 @@ $.objDetails = (obj, method) -> # 更新方法 2021/09/12
 
 $.isObjectTheSame = (objI, objII) -> $.convert(objI, 'stringify') is $.convert(objII, 'stringify') # 更新方法 2023/05/31
 
+$.useSleep = (sleepTime) -> # 更新方法 2024/06/29
+    await new Promise((resolve) -> 
+        setTimeout(() -> 
+            resolve()
+            return
+        ,sleepTime)
+        return
+    )
+    return
+
 $.useBase64 = (method,str) -> if method is 'encode' then btoa str else atob str # 更新方法 2021/11/24
 
 $.useSHA = (shaType,str) -> # 更新方法 2021/11/24
@@ -410,7 +420,7 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方�
         $.console 'error', 'Please enter an object and use formatType property in the object.'
         return
 
-    if $.findObjProperty format, 'customWeekItem'
+    if format?.customWeekItem
         if !$.typeOf format.customWeekItem is 'Array'
             $.console 'error', 'customWeekItem property Must use array.'
             return
@@ -438,7 +448,7 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方�
         transHour = if (($.convert hour, 'number') - 12) < 10 then "0#{($.convert hour, 'number') - 12}" else $.convert (($.convert hour, 'number') - 12), 'string'
         return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/tt/g, currentAMorPM)
     
-    if $.findObjProperty format, 'customWeekItem'
+    if $format?.customWeekItem
         return {
             fullDateTime: format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second)
             getWeekName: format.customWeekItem[new Date(+new Date format.formatDate).getDay()]
@@ -786,15 +796,14 @@ Date.prototype.calculateFullDateTime = (year, month, day, hour, minute, second) 
   # 改變回傳物件 2022/03/23
   # 改寫完整調適日期方式 2023/08/13
 
-  currentFullDateTime = this
-  calFullDateTime = new Date(currentFullDateTime)
+  calFullDateTime = new Date(this)
 
-  if year then calFullDateTime.setFullYear currentFullDateTime.getFullYear() + year
-  if month then calFullDateTime.setMonth currentFullDateTime.getMonth() + month
-  if day then calFullDateTime.setDate currentFullDateTime.getDate() + day
-  if hour then calFullDateTime.setHours currentFullDateTime.getHours() + hour
-  if minute then calFullDateTime.setMinutes currentFullDateTime.getMinutes() + minute
-  if second then calFullDateTime.setSeconds currentFullDateTime.getSeconds() + second
+  if year then calFullDateTime.setFullYear this.getFullYear() + year
+  if month then calFullDateTime.setMonth this.getMonth() + month
+  if day then calFullDateTime.setDate this.getDate() + day
+  if hour then calFullDateTime.setHours this.getHours() + hour
+  if minute then calFullDateTime.setMinutes this.getMinutes() + minute
+  if second then calFullDateTime.setSeconds this.getSeconds() + second
 
   calFullDateTime
 
@@ -817,8 +826,12 @@ Date.formatCountingTime = ({ formatTimesTemp, formatType }) ->
   
 Date.prototype.getLocalTimeZone = () -> Math.abs this.getTimezoneOffset() / 60 # 更新方法 2023/02/07
 
-Date.prototype.toOptionTimeZoneForISO = (timeZone) ->
-  new Date +this + (timeZone * 60 * 60 * 1000).toISOString() # 更新方法 2021/03/23
+Date.prototype.toOptionTimeZoneForISO = (timeZone) -> # 更新方法 2021/03/23
+  if timeZone 
+    new Date +this + (timeZone * 60 * 60 * 1000).toISOString() 
+  else
+    $.console('error', 'Lost one parameter in function.')
+    return
 
 Array.prototype.append = (item) -> this.push(item) # 更新方法 2021/03/23
 
@@ -831,10 +844,6 @@ Array.prototype.remove = (pos) -> this.splice(pos, 1); this # 更新方法 2021/
 Array.prototype.removeFirst = () -> this.shift(); this # 更新方法 2021/03/23
 
 Array.prototype.removeLast = () -> this.pop(); this # 更新方法 2021/03/23
-
-Array.prototype.first = () -> this.range(0, 1)[0]  # 更新方法 2024/02/08
-
-Array.prototype.firstOrDefault = () -> if this.range(0, 1).length > 0 then this.range(0, 1)[0] else undefined  # 更新方法 2024/02/08
 
 Map.prototype.append = (keyName, value) -> this.set(keyName, value) # 更新方法 2022/08/02
 

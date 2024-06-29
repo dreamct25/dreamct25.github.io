@@ -1,5 +1,9 @@
-// CopyRight © 2021-08 - 2024-02 Alex Chen. Library Language - Javascript Ver 1.6.4
-// Work Environment Javascript ES6 or latest、ESlint v8.56.0
+// CopyRight © 2021-08 - 2024-06 Alex Chen. Library Language - Javascript Ver 1.6.5
+// Work Environment Javascript ES6 or latest、ESlint v8.57.0
+//
+/* eslint-disable no-return-assign */
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable no-async-promise-executor */
 //
 // Use in CommonJS
 // module.exports = $
@@ -7,36 +11,30 @@
 // Use in ESModule
 // export default $
 
-/* eslint-disable no-return-assign */
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable promise/param-names */
-/* eslint-disable no-async-promise-executor */
-
 'use strict'
 const $ = target => {
   const self = typeof target === 'string' ? document.querySelectorAll(target).length > 1 ? document.querySelectorAll(target) : document.querySelector(target) : target
-  self.texts = (txt) => { if (txt) { self.textContent = txt } else { return self.textContent } }
-  self.html = (dom) => { if (dom) { self.innerHTML = dom } else { return self.innerHTML } }
+  self.texts = (txt) => { if (txt !== undefined) { self.textContent = txt } else { return self.textContent } }
+  self.html = (dom) => { if (dom !== undefined) { self.innerHTML = dom } else { return self.innerHTML } }
   self.addClass = (classText) => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.toggleClass = (classText) => self.classList.toggle(classText) // 更新方法 2021/09/20
-  self.on = (eventType, fn) => { self[['on', eventType].join('')] = () => fn.call(fn, self) } // 更新方法 2021/09/20
-  self.listener = (eventType, fn) => self.addEventListener(eventType, fn)
-  self.removeListener = (eventType, fn) => self.removeEventListener(eventType, fn) // 更新方法 2022/01/04
-  self.val = (valTemp) => { if (valTemp) { self.value = valTemp } else { return self.value } }
-  self.attr = (props, val) => val ? self.setAttribute(props, val) : self.getAttribute(props)
+  self.on = (eventType, fn) => { self[['on', eventType].join('')] = () => { fn.call(fn, self) } } // 更新方法 2021/09/20
+  self.listener = (eventType, fn) => { self.addEventListener(eventType, fn) }
+  self.removeListener = (eventType, fn) => { self.removeEventListener(eventType, fn) } // 更新方法 2022/01/04
+  self.val = (valTemp) => { if (valTemp !== undefined) { self.value = valTemp } else { return self.value } }
+  self.attr = (props, val) => val !== undefined ? self.setAttribute(props, val) : self.getAttribute(props)
   self.props = (props, val) => val ? self[props] = val : self[props] // 更新方法 2021/08/31
   self.sibling = (num) => self[num] // 更新方法 2021/08/31
   self.child = (num) => self.children[num] // 更新方法 2021/08/31
   self.childFirst = () => self.firstElementChild // 更新方法 2021/08/31
   self.childLast = () => self.lastElementChild // 更新方法 2021/08/31
   self.parent = () => self.parentNode // 更新方法 2021/08/31
-  self.appendDom = (el) => self.append(el) // 更新方法 2021/09/12
-  self.removeDom = () => self.remove() // 更新方法 2021/09/12
-  self.removeChildDom = () => self.replaceChildren() // 更新方法 2021/10/25
+  self.appendDom = (el) => { self.append(el) } // 更新方法 2021/09/12
+  self.removeDom = () => { self.remove() } // 更新方法 2021/09/12
+  self.removeChildDom = () => { self.replaceChildren() } // 更新方法 2021/10/25
   self.appendDomText = (el) => self.appendChild(el) // 更新方法 2021/09/12
-  self.easyAppendDom = (orderBy, domStr) => self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) // 更新方法 2021/11/25
+  self.easyAppendDom = (orderBy, domStr) => { self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) } // 更新方法 2021/11/25
   self.styles = (method, cssType, cssParameter) => {
     // 更新方法 2021/10/26
     // 更新方法 2022/03/12 變形為可鏈式寫法
@@ -105,7 +103,7 @@ const $ = target => {
   self.useWillMount = willMountCallBack => { // 更新方法 2022/03/19
     if (typeof self === 'object') {
       if ($.typeOf(self, 'HTMLDocument')) {
-        self.listener('readystatechange', ({ target }) => target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target))
+        self.listener('readystatechange', ({ target }) => { target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target) })
       } else {
         $.console('error', 'UseWillMount hook just use when selector document.')
       }
@@ -117,7 +115,7 @@ const $ = target => {
   self.useMounted = useMountedCallBack => { // 更新方法 2022/03/19
     if (typeof self === 'object') {
       if ($.typeOf(self, 'HTMLDocument')) {
-        self.listener('readystatechange', ({ target }) => target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target))
+        self.listener('readystatechange', ({ target }) => { target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target) })
       } else {
         $.console('error', 'UseMounted Hook just use when selector document.')
       }
@@ -130,7 +128,7 @@ const $ = target => {
 }
 
 // public function
-$.each = (item, callBack) => item.forEach((items, index) => callBack.call(callBack, items, index))
+$.each = (item, callBack) => { item.forEach((items, index) => { callBack.call(callBack, items, index) }) }
 $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, items, index))
 $.filter = (item, callBack) => item.filter((items) => callBack.call(callBack, items))
 $.find = (item, callBack) => item.find(items => callBack.call(callBack, items)) // 更新方法 2022/03/12
@@ -138,22 +136,23 @@ $.sort = (item, callBack) => item.sort((a, b) => callBack.call(callBack, a, b))
 $.indexOf = (item, x) => item.indexOf(x)
 $.includes = (item, x) => item.includes(x)
 $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items))
-$.findObjProperty = (obj, propertyName) => obj.hasOwnProperty(propertyName) // 更新方法 2022/03/23
+$.findObjProperty = (obj, propertyName) => Object.prototype.hasOwnProperty.call(obj, propertyName) // 更新方法 2022/03/23
 $.sum = (item, callBack, initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b), initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b))
-$.mergeArray = (item, mergeItem, callBack) => callBack ? item.concat(mergeItem) : callBack.call(callBack, item.concat(mergeItem)) // 更新方法 2022/03/23
+$.mergeArray = (item, mergeItem, callBack) => callBack ? callBack.call(callBack, item.concat(mergeItem)) : item.concat(mergeItem) // 更新方法 2022/03/23
 $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name // 更新方法 2021/10/26
 $.console = (type, ...item) => console[type](...item) // 更新方法 2021/10/26
-$.localData = (action, keyName, item) => action === 'get' ? ($.convert(localStorage.getItem(keyName), 'json') || []) : localStorage.setItem(keyName, $.convert(item, 'stringify')) // 更新方法 2021/11/29
+$.localData = (action, keyName, item) => { if (action === 'get') { return ($.convert(localStorage.getItem(keyName), 'json') || []) } else { localStorage.setItem(keyName, $.convert(item, 'stringify')) } } // 更新方法 2021/11/29
 $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
 $.createCustomEvent = (eventName, setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName, { detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
-$.registerCustomEvent = (eventName, fn) => window.addEventListener(eventName, fn) // 更新方法 2022/07/13
+$.registerCustomEvent = (eventName, fn) => { window.addEventListener(eventName, fn) } // 更新方法 2022/07/13
 $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
-$.removeCustomEvent = (eventName, fn) => window.removeEventListener(eventName, fn) // 更新方法 2022/07/13
-$.createPromise = (callBack) => new Promise((resovle, reject) => callBack.call(callBack, resovle, reject)) // 更新方法 2022/07/14
-$.createPromiseAll = (...paramaters) => Promise.all(paramaters) // 更新方法 2022/07/14
+$.removeCustomEvent = (eventName, fn) => { window.removeEventListener(eventName, fn) } // 更新方法 2022/07/13
+$.createPromise = async (callBack) => await new Promise((resolve, reject) => { callBack.call(callBack, resolve, reject) }) // 更新方法 2022/07/14
+$.createPromiseAll = async (...paramaters) => await Promise.all(paramaters) // 更新方法 2022/07/14
 $.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/09/12
-$.objDetails = (obj, method) => method && $.includes(['keys', 'values', 'entries'], method) ? Object[method](obj) : $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") // 更新方法 2021/09/12
+$.objDetails = (obj, method) => { if (method && $.includes(['keys', 'values', 'entries'], method)) { return Object[method](obj) } else { $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") } } // 更新方法 2021/09/12
 $.isObjectTheSame = (objI, objII) => $.convert(objI, 'stringify') === $.convert(objII, 'stringify') // 更新方法 2023/05/31
+$.useSleep = async sleepTime => { await new Promise((resolve) => setTimeout(() => { resolve() }, sleepTime)) } // 更新方法 2024/06/29
 $.useBase64 = (method, str) => method === 'encode' ? btoa(str) : atob(str) // 更新方法 2021/11/24
 $.useSHA = async (shaType, str) => { // 更新方法 2021/11/24
   // Cryptoing only working in https of production or http of development environment
@@ -285,7 +284,7 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) => { // 更新�
     return
   }
 
-  if ($.findObjProperty(format, 'customWeekItem')) {
+  if (format?.customWeekItem) {
     if (!($.typeOf(format.customWeekItem) === 'Array')) {
       $.console('error', 'customWeekItem property Must use array.')
       return
@@ -314,7 +313,7 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) => { // 更新�
     return format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, transHour).replace(/mm/g, minute).replace(/ss/g, second).replace(/ms/g, milliSecond).replace(/tt/g, currentAMorPM)
   }
 
-  if ($.findObjProperty(format, 'customWeekItem')) {
+  if (format?.customWeekItem) {
     return {
       fullDateTime: format.formatType.replace(/yyyy/g, year).replace(/MM/g, month).replace(/dd/g, date).replace(/HH/g, hour).replace(/mm/g, minute).replace(/ss/g, second).replace(/ms/g, milliSecond),
       getWeekName: format.customWeekItem[new Date(+new Date(format.formatDate)).getDay()]
@@ -449,7 +448,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
       const abController = new AbortController()
 
       if (timeout) { // 更新 Request timeout 逾時請求處理 2023/03/08
-        setTimeout(() => abController.abort(), timeout)
+        setTimeout(() => { abController.abort() }, timeout)
       }
 
       const res = await fetch(settingParams.url, timeout ? { ...settings, signal: abController.signal } : settings)
@@ -525,7 +524,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 
       xhr.open(setting.method, setting.url, true)
 
-      if (setting?.headers) $.each($.objDetails(setting?.headers, 'entries'), ([key, value]) => xhr.setRequestHeader(key, value))
+      if (setting?.headers) $.each($.objDetails(setting?.headers, 'entries'), ([key, value]) => { xhr.setRequestHeader(key, value) })
 
       return {
         xhrResponseResult: (callBack) => {
@@ -552,14 +551,14 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
             }
           }
         },
-        xhrRequestStart: () => xhr.send(setting?.data || undefined)
+        xhrRequestStart: () => { xhr.send(setting?.data || undefined) }
       }
     }
 
     this.convertFormData = (formDataObj) => { // 更新方法 2023/04/22
       const formData = new FormData()
 
-      $.each($.objDetails(formDataObj, 'entries'), ([key, value]) => formData.append(key === 'uploadFile' ? 'FileList' : key, value))
+      $.each($.objDetails(formDataObj, 'entries'), ([key, value]) => { formData.append(key === 'uploadFile' ? 'FileList' : key, value) })
 
       return formData
     }
@@ -626,7 +625,7 @@ fetchGroup.delete = async (url, settingParams = { headers: {}, data: {}, returnT
 fetchGroup.createBase = (paramters = { // 更新 FetchClass 類方法導出，為 fetch 基礎組態設定 2022/03/24
   baseUrl: '',
   baseHeaders: {}
-}) => FetchClass.createBase(paramters)
+}) => { FetchClass.createBase(paramters) }
 
 $.fetch = fetchGroup
 
@@ -715,15 +714,14 @@ Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute,
   // 改變回傳物件 2022/03/23
   // 改寫完整調適日期方式 2023/08/13
 
-  const currentFullDateTime = this
-  const calFullDateTime = new Date(currentFullDateTime)
+  const calFullDateTime = new Date(this)
 
-  if (year) calFullDateTime.setFullYear(currentFullDateTime.getFullYear() + year)
-  if (month) calFullDateTime.setMonth(currentFullDateTime.getMonth() + month)
-  if (day) calFullDateTime.setDate(currentFullDateTime.getDate() + day)
-  if (hour) calFullDateTime.setHours(currentFullDateTime.getHours() + hour)
-  if (minute) calFullDateTime.setMinutes(currentFullDateTime.getMinutes() + minute)
-  if (second) calFullDateTime.setSeconds(currentFullDateTime.getSeconds() + second)
+  if (year) calFullDateTime.setFullYear(this.getFullYear() + year)
+  if (month) calFullDateTime.setMonth(this.getMonth() + month)
+  if (day) calFullDateTime.setDate(this.getDate() + day)
+  if (hour) calFullDateTime.setHours(this.getHours() + hour)
+  if (minute) calFullDateTime.setMinutes(this.getMinutes() + minute)
+  if (second) calFullDateTime.setSeconds(this.getSeconds() + second)
 
   return calFullDateTime
 }
@@ -731,7 +729,7 @@ Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute,
 Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
 
 Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
-  return timeZone ? new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() : $.console('error', 'Lost one parameter in function.') // 更新方法 2021/03/23
+  if (timeZone) { return new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() } else { $.console('error', 'Lost one parameter in function.') } // 更新方法 2021/03/23
 }
 
 Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
