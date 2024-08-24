@@ -1,4 +1,4 @@
-// CopyRight © 2021-08 - 2024-06 Alex Chen. Library Language - Javascript Ver 1.6.5
+// CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Javascript Ver 1.6.6
 // Work Environment Javascript ES6 or latest、ESlint v8.57.0
 //
 /* eslint-disable no-return-assign */
@@ -64,22 +64,23 @@ const $ = target => {
   self.getDomPos = () => ({ // 更新方法 2022/03/23
     x: self.props('offsetLeft'),
     y: self.props('offsetTop') - window.scrollY,
-    top: self.props('offsetTop') - window.scrollY,
+    top: self.props('offsetTop'),
     left: self.props('offsetLeft'),
     right: self.props('offsetLeft') + self.props('offsetWidth'),
-    bottom: (self.props('offsetTop') + self.props('offsetHeight')) - window.scrollY,
+    bottom: ((self.props('offsetTop') + self.props('offsetHeight'))) - window.scrollY,
     width: self.props('offsetWidth'),
     height: self.props('offsetHeight')
   })
 
-  self.scrollToTop = (scrollSetting = { scrollTop: 0, duration: 0 }) => { // 更新方法 2021/10/26
+  self.scrollToPos = (scrollSetting = { direction: 'top' || 'left', scrollPos: 0, duration: 0 }) => { // 更新方法 2024/08/24
     let animateScroll
-    const [keyI, keyII] = Object.keys(scrollSetting)
-    const startPos = self[keyI]
-    const changePos = scrollSetting[keyI] - startPos
+    const [keyI, keyII, keyIII] = Object.keys(scrollSetting)
+    const direction = `scroll${scrollSetting[keyI] === 'top' ? 'Top' : 'Left'}`
+    const startPos = self[direction]
+    const changePos = scrollSetting[keyII] - startPos
     const startTimeStamp = +new Date()
 
-    const animationSettings = (animationSetting = { currentTime: 0, startVal: 0, changeVal: 0, animateDuration: 0 }) => {
+    const animationSettings = animationSetting => {
       const { currentTime, startVal, changeVal, animateDuration } = animationSetting
       let currentTimeTemp = currentTime
       currentTimeTemp /= animateDuration / 2
@@ -90,13 +91,14 @@ const $ = target => {
 
     (animateScroll = () => {
       const currentTimeStamp = +new Date() - startTimeStamp
-      self.scrollTop = Number(animationSettings({
+      self[direction] = Number(animationSettings({
         currentTime: currentTimeStamp,
         startVal: startPos,
         changeVal: changePos,
-        animateDuration: scrollSetting[keyII]
+        animateDuration: scrollSetting[keyIII]
       }))
-      currentTimeStamp < scrollSetting[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = scrollSetting[keyI]
+
+      currentTimeStamp < scrollSetting[keyIII] ? requestAnimationFrame(animateScroll) : self[direction] = scrollSetting[keyII]
     })()
   }
 
@@ -183,14 +185,19 @@ $.jwtDeocde = (token) => { // 更新方法 2023/11/30
   if (token) {
     const base64Url = token.split('.')[1]
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    const result = decodeURIComponent(
-      $.maps(
-        $.useBase64('decode', base64).split(''),
-        char => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`
-      ).join('')
+
+    // 更新方法 2024/08/24 提高編碼相容性
+    const binaryString = $.useBase64('decode', base64)
+    const bytes = new Uint8Array(binaryString.length)
+
+    $.each(
+      $.createArray({ type: 'fake', item: { random: binaryString.length } }, num => num)
+      , num => {
+        bytes[num] = binaryString.charCodeAt(num)
+      }
     )
 
-    return JSON.parse(result)
+    return JSON.parse(new TextDecoder('utf-8').decode(bytes))
   }
 
   $.console('error', 'please typing token at first paramters .')
@@ -384,7 +391,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
       }
 
       if ($.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 || (headers && $.objDetails(headers, 'keys').length > 0)) {
-        settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : { 'Content-Type': 'application/json', ...headers }
+        settings.headers = $.objDetails(FetchClass.#baseHeaders, 'keys').length > 0 ? FetchClass.#baseHeaders : ['get', 'delete'].includes(settingParams.method) ? headers : { 'Content-Type': 'application/json', ...headers }
       }
 
       if (data) {
@@ -469,53 +476,59 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
               url: res.url,
               data: result
             })
-          } else {
-            reject({
-              bodyUsed: res.bodyUsed,
-              headers: res.headers,
-              ok: res.ok,
-              redirected: res.redirected,
-              status: res.status,
-              statusText: res.statusText,
-              type: res.type,
-              url: res.url
-            })
+
+            return
           }
+
+          const result = await res[returnTypeUse]()
+
+          resolve({
+            bodyUsed: res.bodyUsed,
+            headers: res.headers,
+            ok: res.ok,
+            redirected: res.redirected,
+            status: res.status,
+            statusText: res.statusText,
+            type: res.type,
+            url: res.url,
+            data: result
+          })
         })
-      } else {
-        // 更新 Request 成功與錯誤回傳內容 2022/03/14
-        try {
-          if (res.status >= 200 && res.status < 400) {
-            const result = await res[returnTypeUse]()
+      }
+      // 更新 Request 成功與錯誤回傳內容 2022/03/14
+      try {
+        if (res.status >= 200 && res.status < 400) {
+          const result = await res[returnTypeUse]()
 
-            successFn.call(successFn, {
-              bodyUsed: res.bodyUsed,
-              headers: res.headers,
-              ok: res.ok,
-              redirected: res.redirected,
-              status: res.status,
-              statusText: res.statusText,
-              type: res.type,
-              url: res.url,
-              data: result
-            })
+          successFn.call(successFn, {
+            bodyUsed: res.bodyUsed,
+            headers: res.headers,
+            ok: res.ok,
+            redirected: res.redirected,
+            status: res.status,
+            statusText: res.statusText,
+            type: res.type,
+            url: res.url,
+            data: result
+          })
 
-            excuteDone && excuteDone.call(excuteDone)
-          } else {
-            throw new Error(JSON.stringify({
-              bodyUsed: res.bodyUsed,
-              headers: res.headers,
-              ok: res.ok,
-              redirected: res.redirected,
-              status: res.status,
-              statusText: res.statusText,
-              type: res.type,
-              url: res.url
-            }))
-          }
-        } catch (err) {
-          errorFn.call(errorFn, JSON.parse(err.message))
+          excuteDone && excuteDone.call(excuteDone)
+
+          return
         }
+
+        throw new Error(JSON.stringify({
+          bodyUsed: res.bodyUsed,
+          headers: res.headers,
+          ok: res.ok,
+          redirected: res.redirected,
+          status: res.status,
+          statusText: res.statusText,
+          type: res.type,
+          url: res.url
+        }))
+      } catch (err) {
+        errorFn?.call(errorFn, JSON.parse(err.message))
       }
     }
 
@@ -579,19 +592,19 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 class FetchPromisClass extends FetchClass {
   static {
     // 更新 Promise 導出 get 方法 2022/05/01
-    this.get = async (url, setting) => await this.fetchSetting({ method: 'get', url, ...setting }, true)
+    this.get = async (url, setting) => await this.fetchSetting({ method: 'get', url, ...setting || {} }, true)
 
     // 更新 Promise 導出 post 方法 2022/05/01
-    this.post = async (url, setting) => await this.fetchSetting({ method: 'post', url, ...setting }, true)
+    this.post = async (url, setting) => await this.fetchSetting({ method: 'post', url, ...setting || {} }, true)
 
     // 更新 Promise 導出 patch 方法 2022/05/01
-    this.patch = async (url, setting) => await this.fetchSetting({ method: 'patch', url, ...setting }, true)
+    this.patch = async (url, setting) => await this.fetchSetting({ method: 'patch', url, ...setting || {} }, true)
 
     // 更新 Promise 導出 put 方法 2022/05/01
-    this.put = async (url, setting) => await this.fetchSetting({ method: 'put', url, ...setting }, true)
+    this.put = async (url, setting) => await this.fetchSetting({ method: 'put', url, ...setting || {} }, true)
 
     // 更新 Promise 導出 delete 方法 2022/05/01
-    this.delete = async (url, setting) => await this.fetchSetting({ method: 'delete', url, ...setting }, true)
+    this.delete = async (url, setting) => await this.fetchSetting({ method: 'delete', url, ...setting || {} }, true)
   }
 }
 

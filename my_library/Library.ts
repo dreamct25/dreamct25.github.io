@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2024-06 Alex Chen. Library Language - Typescript Ver 1.6.5
-// Work Environment Typescript v5.5.2、ESlint v8.57.0
+// CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Typescript Ver 1.6.6
+// Work Environment Typescript v5.5.4、ESlint v8.57.0
 //
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -11,7 +11,6 @@
 //
 // Use in ESModule
 // export default $
-
 
 // String tips when use method
 type objDetailsMethod = 'keys' | 'values' | 'entries'
@@ -78,10 +77,10 @@ interface xhrReturnMethodType<T> {
 interface fetchGroupType {
   <T, useXMLReq = false>(settingParams: fetchClassSettingParmasType<T>): Promise<useXMLReq extends false ? undefined : xhrReturnMethodType<T>>
   get<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  post<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  patch<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  put<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
-  delete<T, useXMLReq = false>(url: string, settingParams: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  post<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  patch<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  put<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
+  delete<T, useXMLReq = false>(url: string, settingParams?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>>
   createBase(paramters: { baseUrl: string, baseHeaders: Record<string, any> }): void
 }
 
@@ -110,7 +109,7 @@ export interface Self extends HTMLElement {
   styles(method: stylesMethod, cssType: string, cssParameter: string): Self | undefined
   getDomStyles(conditionProps: string[]): Record<string, any>
   getDomPos(): { x: number, y: number, top: number, left: number, right: number, bottom: number, width: number, height: number }
-  scrollToTop(scrollSetting: { scrollTop: number, duration: number }): void
+  scrollToPos(scrollSetting: { direction: 'top' | 'left', scrollPos: number, duration: number }): void
   useWillMount(willMountCallBack: (target: HTMLDocument) => void): void
   useMounted(useMountedCallBack: (target: HTMLDocument) => void): void
 }
@@ -215,7 +214,7 @@ const $: $ = (target) => {
       if (conditionProps.length === 0) {
         $.console('error', 'Parameter must use array,and css property must in array with string.')
       } else {
-        $.each<string>(conditionProps, item => cssProperty[item] = getComputedStyle(self as HTMLElement).getPropertyValue(item))
+        $.each<string>(conditionProps, item => cssProperty[item] = getComputedStyle(self as unknown as HTMLElement).getPropertyValue(item))
         return cssProperty
       }
     }
@@ -233,11 +232,12 @@ const $: $ = (target) => {
     height: self.props('offsetHeight')
   })
 
-  self.scrollToTop = (scrollSetting) => { // 更新方法 2021/10/26
+  self.scrollToPos = (scrollSetting) => { // 更新方法 2024/08/24
     let animateScroll: FrameRequestCallback
-    const [keyI, keyII]: string[] = Object.keys(scrollSetting)
-    const startPos: number = (self as Record<string, any>)[keyI]
-    const changePos: number = (scrollSetting as Record<string, any>)[keyI] - startPos
+    const [keyI, keyII, keyIII] = Object.keys(scrollSetting) as ['direction', 'scrollPos', 'duration']
+    const direction: 'scrollTop' | 'scrollLeft' = `scroll${scrollSetting[keyI] === 'top' ? 'Top' : 'Left'}`
+    const startPos: number = self[direction]
+    const changePos: number = scrollSetting[keyII] - startPos
     const startTimeStamp: number = +new Date()
 
     const animationSettings: (animationSetting: {
@@ -256,13 +256,14 @@ const $: $ = (target) => {
 
     (animateScroll = () => {
       const currentTimeStamp: number = +new Date() - startTimeStamp
-      self.scrollTop = Number(animationSettings({
+      self[direction] = Number(animationSettings({
         currentTime: currentTimeStamp,
         startVal: startPos,
         changeVal: changePos,
-        animateDuration: (scrollSetting as Record<string, any>)[keyII]
+        animateDuration: scrollSetting[keyIII]
       }))
-      currentTimeStamp < (scrollSetting as Record<string, any>)[keyII] ? requestAnimationFrame(animateScroll) : self.scrollTop = (scrollSetting as Record<string, any>)[keyI]
+
+      currentTimeStamp < scrollSetting[keyIII] ? requestAnimationFrame(animateScroll) : self[direction] = scrollSetting[keyII]
     })()
   }
 
@@ -351,14 +352,19 @@ $.jwtDeocde = (token) => { // 更新方法 2023/11/30
   if (token) {
     const base64Url = token.split('.')[1]
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-    const result = decodeURIComponent(
-      $.maps(
-        $.useBase64('decode', base64).split(''),
-        char => `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`
-      ).join('')
+
+    // 更新方法 2024/08/24 提高編碼相容性
+    const binaryString = $.useBase64('decode', base64)
+    const bytes = new Uint8Array(binaryString.length)
+
+    $.each(
+      $.createArray({ type: 'fake', item: { random: binaryString.length } }, num => num)
+      , num => {
+        bytes[num] = binaryString.charCodeAt(num)
+      }
     )
 
-    return JSON.parse(result)
+    return JSON.parse(new TextDecoder('utf-8').decode(bytes))
   }
 
   $.console('error', 'please typing token at first paramters .')
@@ -438,7 +444,7 @@ $.createDom = (tag, props) => { // 更新方法 2021/09/12
 
 $.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
   if ($.typeOf(formatNumber, 'Number')) {
-    const currencyOptionalObj = !withCurrencyStyle ? {} : { style: 'currency', currency: currencyType }
+    const currencyOptionalObj: Intl.NumberFormatOptions = !withCurrencyStyle ? {} : { style: 'currency', currency: currencyType }
     return new Intl.NumberFormat(currencyType || 'TWN', currencyOptionalObj).format(formatNumber)
   } else {
     $.console('error', 'First argument formatNumber type must use number.')
@@ -573,7 +579,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
     }
 
     if (($.objDetails(this.baseHeaders, 'keys')).length > 0 || (headers && $.objDetails(headers, 'keys').length > 0)) {
-      settings.headers = $.objDetails(this.baseHeaders, 'keys').length > 0 ? this.baseHeaders : { 'Content-Type': 'application/json', ...headers }
+      settings.headers = $.objDetails(this.baseHeaders, 'keys').length > 0 ? this.baseHeaders : ['get', 'delete'].includes(settingParams.method) ? headers : { 'Content-Type': 'application/json', ...headers }
     }
 
     if (data) {
@@ -643,6 +649,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
     const res = await fetch(settingParams.url, timeout ? { ...settings, signal: abController.signal } : settings)
 
     if (usePromise) {
+      // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
       // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
       return await new Promise<fetchClassReturnType<T>>(async (resolve, reject) => {
         if (res.status >= 200 && res.status < 400) {
@@ -659,56 +666,62 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
             url: res.url,
             data: result
           } as fetchClassReturnType<T>)
-        } else {
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject({
-            bodyUsed: res.bodyUsed,
-            headers: res.headers,
-            ok: res.ok,
-            redirected: res.redirected,
-            status: res.status,
-            statusText: res.statusText,
-            type: res.type,
-            url: res.url
-          })
-        };
+
+          return
+        }
+
+        const result: T = await (res as Record<string, any>)[returnTypeUse]()
+        // eslint-disable-next-line prefer-promise-reject-errors
+        resolve({
+          bodyUsed: res.bodyUsed,
+          headers: res.headers,
+          ok: res.ok,
+          redirected: res.redirected,
+          status: res.status,
+          statusText: res.statusText,
+          type: res.type,
+          url: res.url,
+          data: result
+        } as fetchClassReturnType<T>)
       })
-    } else {
-      // 更新 Request 成功與錯誤回傳內容 2022/03/14
-      try {
-        if (res.status >= 200 && res.status < 400) {
-          const result: T = await (res as Record<string, any>)[returnTypeUse]()
-
-          successFn?.call(successFn, {
-            bodyUsed: res.bodyUsed,
-            headers: res.headers,
-            ok: res.ok,
-            redirected: res.redirected,
-            status: res.status,
-            statusText: res.statusText,
-            type: res.type,
-            url: res.url,
-            data: result
-          } as fetchClassReturnType<T>)
-
-          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-          excuteDone && excuteDone.call(excuteDone)
-        } else {
-          throw new Error(JSON.stringify({
-            bodyUsed: res.bodyUsed,
-            headers: res.headers,
-            ok: res.ok,
-            redirected: res.redirected,
-            status: res.status,
-            statusText: res.statusText,
-            type: res.type,
-            url: res.url
-          }))
-        };
-      } catch (err: any) {
-        errorFn?.call(errorFn, JSON.parse((err as Error).message))
-      };
     }
+
+    // 更新 Request 成功與錯誤回傳內容 2022/03/14
+    try {
+      if (res.status >= 200 && res.status < 400) {
+        const result: T = await (res as Record<string, any>)[returnTypeUse]()
+
+        successFn?.call(successFn, {
+          bodyUsed: res.bodyUsed,
+          headers: res.headers,
+          ok: res.ok,
+          redirected: res.redirected,
+          status: res.status,
+          statusText: res.statusText,
+          type: res.type,
+          url: res.url,
+          data: result
+        } as fetchClassReturnType<T>)
+
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+        excuteDone && excuteDone.call(excuteDone)
+
+        return
+      }
+
+      throw new Error(JSON.stringify({
+        bodyUsed: res.bodyUsed,
+        headers: res.headers,
+        ok: res.ok,
+        redirected: res.redirected,
+        status: res.status,
+        statusText: res.statusText,
+        type: res.type,
+        url: res.url
+      }))
+    } catch (err: any) {
+      errorFn?.call(errorFn, JSON.parse((err as Error).message))
+    };
   };
 
   private static XMLHttpRequest<T>(setting: { // 更新方法 XMLHttpRequest 2023/04/22
@@ -775,23 +788,23 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 class FetchPromisClass extends FetchClass {
   // 更新 Promise 導出 get 方法 2022/05/01
   static get = async <T, useXMLReq>(url: string, setting?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
-    await this.fetchSetting<T, useXMLReq>({ method: 'get', url, ...setting }, true)
+    await this.fetchSetting<T, useXMLReq>({ method: 'get', url, ...setting ?? {} }, true)
 
   // 更新 Promise 導出 post 方法 2022/05/01
-  static post = async <T, useXMLReq>(url: string, setting: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
-    await this.fetchSetting<T, useXMLReq>({ method: 'post', url, ...setting }, true)
+  static post = async <T, useXMLReq>(url: string, setting?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
+    await this.fetchSetting<T, useXMLReq>({ method: 'post', url, ...setting ?? {} }, true)
 
   // 更新 Promise 導出 patch 方法 2022/05/01
-  static patch = async <T, useXMLReq>(url: string, setting: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
-    await this.fetchSetting<T, useXMLReq>({ method: 'patch', url, ...setting }, true)
+  static patch = async <T, useXMLReq>(url: string, setting?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
+    await this.fetchSetting<T, useXMLReq>({ method: 'patch', url, ...setting ?? {} }, true)
 
   // 更新 Promise 導出 put 方法 2022/05/01
-  static put = async <T, useXMLReq>(url: string, setting: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
-    await this.fetchSetting<T, useXMLReq>({ method: 'put', url, ...setting }, true)
+  static put = async <T, useXMLReq>(url: string, setting?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
+    await this.fetchSetting<T, useXMLReq>({ method: 'put', url, ...setting ?? {} }, true)
 
   // 更新 Promise 導出 delete 方法 2022/05/01
-  static delete = async <T, useXMLReq>(url: string, setting: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
-    await this.fetchSetting<T, useXMLReq>({ method: 'delete', url, ...setting }, true)
+  static delete = async <T, useXMLReq>(url: string, setting?: fetchPromiseClassSettingParmasType): Promise<useXMLReq extends false ? fetchClassReturnType<T> : xhrReturnMethodType<T>> =>
+    await this.fetchSetting<T, useXMLReq>({ method: 'delete', url, ...setting ?? {} }, true)
 }
 
 const fetchGroup: fetchGroupType = async (settingParams) => await FetchClass.fetchSetting(settingParams, false) // 更新 FetchClass 類方法導出 2022/03/24
@@ -894,8 +907,7 @@ JSON.deepCopy = (obj, weakMap = new WeakMap()) => {
   if (Array.isArray(obj)) {
     let arrCopy: any[] = [];
 
-    // eslint-disable-next-line @typescript-eslint/semi
-    (weakMap as WeakMap<WeakKey, any>).set(obj, arrCopy);
+    (weakMap as WeakMap<WeakKey, any>).set(obj, arrCopy)
 
     arrCopy = $.createArray({ type: 'fake', item: { random: obj.length } }, index => JSON.deepCopy(obj[index], (weakMap as WeakMap<WeakKey, any>)))
 
@@ -903,8 +915,8 @@ JSON.deepCopy = (obj, weakMap = new WeakMap()) => {
   }
 
   const objCopy: Record<string, any> = {};
-  // eslint-disable-next-line @typescript-eslint/semi
-  (weakMap as WeakMap<WeakKey, any>).set(obj, objCopy);
+
+  (weakMap as WeakMap<WeakKey, any>).set(obj, objCopy)
 
   $.objDetails(obj, 'keys').forEach(key => {
     if ($.findObjProperty(obj, key as string)) objCopy[key as string] = JSON.deepCopy((obj as Record<string, any>)[key as string], (weakMap as WeakMap<WeakKey, any>))

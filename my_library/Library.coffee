@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2024-06 Alex Chen. Library Language - Coffeescript Ver 1.6.5
+# CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Coffeescript Ver 1.6.6
 # Work Environment CoffeesSript only
 
 $ = (target) -> 
@@ -137,13 +137,15 @@ $ = (target) ->
         height: self.props 'offsetHeight'
     })
 
-    self.scrollToTop = (scrollSetting = { # 更新方法 2021/10/26
-        scrollTop: 0
+    self.scrollToPos = (scrollSetting = { # 更新方法 2021/10/26
+        direction: 'top' or 'left'
+        scrollPos: 0
         duration: 0 
     }) -> 
-        [keyI, keyII] = Object.keys(scrollSetting)
-        startPos = self[keyI]
-        changePos = scrollSetting[keyI] - startPos
+        [keyI, keyII, keyIII] = Object.keys(scrollSetting)
+        direction = "scroll#{if scrollSetting[keyI] is 'top' then 'Top' else 'Left'}"
+        startPos = self[direction]
+        changePos = scrollSetting[keyII] - startPos
         startTimeStamp = +new Date()
 
         animationSettings = (animationSetting = { 
@@ -165,15 +167,18 @@ $ = (target) ->
                 currentTime: currentTimeStamp
                 startVal: startPos
                 changeVal: changePos
-                animateDuration: scrollSetting[keyII]
+                animateDuration: scrollSetting[keyIII]
             }))
-            if currentTimeStamp < scrollSetting[keyII]
+
+            if currentTimeStamp < scrollSetting[keyIII]
                 requestAnimationFrame(animateScroll)
                 return
             else 
-                self.scrollTop = scrollSetting[keyI]
+                self[direction] = scrollSetting[keyII]
                 return
         )()
+
+        return
 
     self.useWillMount = (willMountCallBack) -> # 更新方法 2022/03/19
         if typeof self is 'object'
@@ -351,14 +356,19 @@ $.jwtDeocde = (token) -> # 更新方法 2023/11/30
   if token
     base64Url = token.split('.')[1]
     base64 = base64Url.replace /-/g, '+'.replace /_/g, '/'
-    result = decodeURIComponent(
-      $.maps(
-        $.useBase64('decode', base64).split(''),
-        (char) -> "%#{"00#{char.charCodeAt(0).toString 16}".slice -2}"
-      ).join ''
+    
+    # 更新方法 2024/08/24 提高編碼相容性
+    binaryString = $.useBase64 'decode', base64
+    bytes = new Uint8Array binaryString.length
+
+    $.each(
+      $.createArray({ type: 'fake', item: { random: binaryString.length } }, (num) -> num)
+      , (num) ->
+        bytes[num] = binaryString.charCodeAt(num)
+        return
     )
 
-    return JSON.parse result
+    return JSON.parse new TextDecoder('utf-8').decode(bytes)
 
   $.console 'error', 'please typing token at first paramters .'
 
@@ -491,7 +501,7 @@ class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
             settingParams.url = "#{settingParams.url}?#{querys}"
 
         if ($.objDetails @baseHeaders, 'keys').length > 0 or (headers and ($.objDetails headers, 'keys').length > 0)
-            settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else { 'Content-Type': 'application/json', headers... }
+            settings.headers = if ($.objDetails @baseHeaders, 'keys').length > 0 then @baseHeaders else if ['get', 'delete'].includes(settingParams.method) then headers else { 'Content-Type': 'application/json', headers... }
 
         if !headers and data
             settings.headers = { 'Content-Type': contentType || 'application/json' }
@@ -554,7 +564,7 @@ class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
 
         if usePromise 
         # 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
-            new Promise (resolve, reject) -> 
+            return new Promise (resolve, reject) -> 
                 if res.status >= 200 and res.status < 400
                     result = await res[returnTypeUse]()
                     resolve({
@@ -568,53 +578,59 @@ class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
                         url: res.url
                         data: result
                     })
-                    return
-                else
-                    reject({
-                        bodyUsed: res.bodyUsed
-                        headers: res.headers
-                        ok: res.ok
-                        redirected: res.redirected
-                        status: res.status
-                        statusText: res.statusText
-                        type: res.type
-                        url: res.url
-                    })
-                    return
-        else
-            # 更新 Request 成功與錯誤回傳內容 2022/03/14
-            try
-                if res.status >= 200 && res.status < 400
-                    result = await res[returnTypeUse]()
 
-                    successFn.call successFn, {
-                        bodyUsed: res.bodyUsed
-                        headers: res.headers
-                        ok: res.ok
-                        redirected: res.redirected
-                        status: res.status
-                        statusText: res.statusText
-                        type: res.type
-                        url: res.url
-                        data: result
-                    }
-
-                    excuteDone and excuteDone.call excuteDone
                     return
-                else
-                    throw new Error JSON.stringify({
-                        bodyUsed: res.bodyUsed
-                        headers: res.headers
-                        ok: res.ok
-                        redirected: res.redirected
-                        status: res.status
-                        statusText: res.statusText
-                        type: res.type
-                        url: res.url
-                    })
-            catch err
-                errorFn.call errorFn, JSON.parse err.message
+
+                result = await res[returnTypeUse]()
+                    
+                resolve({
+                    bodyUsed: res.bodyUsed
+                    headers: res.headers
+                    ok: res.ok
+                    redirected: res.redirected
+                    status: res.status
+                    statusText: res.statusText
+                    type: res.type
+                    url: res.url
+                    data: result
+                })
+
                 return
+
+        # 更新 Request 成功與錯誤回傳內容 2022/03/14
+        try
+            if res.status >= 200 && res.status < 400
+                result = await res[returnTypeUse]()
+
+                successFn.call successFn, {
+                    bodyUsed: res.bodyUsed
+                    headers: res.headers
+                    ok: res.ok
+                    redirected: res.redirected
+                    status: res.status
+                    statusText: res.statusText
+                    type: res.type
+                    url: res.url
+                    data: result
+                }
+
+                excuteDone and excuteDone.call excuteDone
+
+                return
+
+            throw new Error JSON.stringify({
+                bodyUsed: res.bodyUsed
+                headers: res.headers
+                ok: res.ok
+                redirected: res.redirected
+                status: res.status
+                statusText: res.statusText
+                type: res.type
+                url: res.url
+            })
+        catch err
+            errorFn.call errorFn, JSON.parse err.message
+            return
 
     @XMLHttpRequest:(setting) -> # 更新方法 XMLHttpRequest 2023/04/22
         xhr = new XMLHttpRequest()
@@ -672,19 +688,19 @@ class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
 
 class FetchPromisClass extends FetchClass
     # 更新 Promise 導出 get 方法 2022/05/01
-    @get:(url, setting) -> await this.fetchSetting { method: 'get', url, setting... }, true
+    @get:(url, setting) -> await this.fetchSetting { method: 'get', url, (setting or {})... }, true
 
     # 更新 Promise 導出 post 方法 2022/05/01
-    @post:(url, setting) -> await this.fetchSetting { method: 'post', url, setting... }, true
+    @post:(url, setting) -> await this.fetchSetting { method: 'post', url, (setting or {})... }, true
 
     # 更新 Promise 導出 patch 方法 2022/05/01
-    @patch:(url, setting) -> await this.fetchSetting({ method: 'patch', url, setting... }, true)
+    @patch:(url, setting) -> await this.fetchSetting({ method: 'patch', url, (setting or {})... }, true)
 
     # 更新 Promise 導出 put 方法 2022/05/01
-    @put:(url, setting) -> await this.fetchSetting({ method: 'put', url, setting... }, true)
+    @put:(url, setting) -> await this.fetchSetting({ method: 'put', url, (setting or {})... }, true)
 
     # 更新 Promise 導出 delete 方法 2022/05/01
-    @delete:(url, setting) -> await this.fetchSetting({ method: 'delete', url, setting... }, true)
+    @delete:(url, setting) -> await this.fetchSetting({ method: 'delete', url, (setting or {})... }, true)
 
 fetchGroup = (settingParams = { # 更新 FetchClass 類方法導出 2022/03/24
     method: ''
