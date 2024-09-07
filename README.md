@@ -50,6 +50,9 @@
 ### color_converter
  - 多項色彩轉換器
  - [前往畫面](https://dreamct25.github.io/color_converter)
+ ### fashion_shop
+ - Fashion Shop (模擬電商)
+ - [前往畫面](https://dreamct25.github.io/fashion_shop)
 ### count-down
  - 跨年倒數
  - [前往畫面](https://dreamct25.github.io/count-down)
