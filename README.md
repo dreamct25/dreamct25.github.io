@@ -41,6 +41,9 @@
 ### Weather
  - 天氣預報
  - [前往畫面](https://dreamct25.github.io/Weather)
+### almanac
+ - 年曆
+ - [前往畫面](https://dreamct25.github.io/almanac)
 ### blog
  - 個人部落格
  - [前往畫面](https://dreamct25.github.io/blog)
