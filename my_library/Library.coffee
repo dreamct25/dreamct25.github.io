@@ -1,5 +1,5 @@
-# CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Coffeescript Ver 1.6.6
-# Work Environment CoffeesSript only
+# CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - CoffeeScript Ver 1.6.7
+# Work Environment CoffeeScript only
 
 $ = (target) -> 
     self = if typeof target is "string" 
@@ -385,7 +385,7 @@ $.createArray = ({ type, item }, repack) -> # 更新方法 2022/03/14
     else if type is 'new' and !('random' of item)
         Array.from item
 
-$.convert = (val, type) ->  # 更新方法 2021/10/22
+$.convert = (val, type) ->  # 更新方法 2024/12/14
     if !val or !type or !$.includes ['string', 'number', 'float', 'boolean', 'json', 'stringify'], type
         $.console 'error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'."
     else if typeof val is 'object' and $.includes ['string', 'number', 'float', 'boolean'], type
@@ -398,6 +398,7 @@ $.convert = (val, type) ->  # 更新方法 2021/10/22
         boolean: Boolean val
         json: type is 'json' and JSON.parse val
         stringify: type is 'stringify' and JSON.stringify val
+        deepCopy: type is 'deepCopy' and JSON.parse JSON.stringify val
     }
 
     returnItem[type]
@@ -882,5 +883,3 @@ Set.prototype.isValueInSet = (value) -> this.has(value) # 更新方法 2022/08/0
 Set.prototype.removeAll = () -> this.clear() # 更新方法 2022/08/02
 
 Set.prototype.toArray = () -> [this...] # 更新方法 2022/08/02
-
-Object.prototype.toMap = (obj = { a:'',b:'' }) -> new Map Object.entries obj # 更新方法 2022/08/02

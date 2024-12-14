@@ -1,15 +1,15 @@
-// CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Javascript Ver 1.6.6
+// CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - Javascript Ver 1.6.7
 // Work Environment Javascript ES6 or latest、ESlint v8.57.0
-//
-/* eslint-disable no-return-assign */
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable no-async-promise-executor */
 //
 // Use in CommonJS
 // module.exports = $
 //
 // Use in ESModule
 // export default $
+
+/* eslint-disable no-return-assign */
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable no-async-promise-executor */
 
 'use strict'
 const $ = target => {
@@ -224,7 +224,7 @@ $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
   }
 }
 
-$.convert = (val, type) => { // 更新方法 2021/10/22
+$.convert = (val, type) => { // 更新方法 2024/12/14
   if (!val || !type || !$.includes(['string', 'number', 'float', 'boolean', 'json', 'stringify'], type)) {
     $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
     return
@@ -239,7 +239,8 @@ $.convert = (val, type) => { // 更新方法 2021/10/22
     float: parseFloat(val),
     boolean: Boolean(val),
     json: type === 'json' && JSON.parse(val),
-    stringify: type === 'stringify' && JSON.stringify(val)
+    stringify: type === 'stringify' && JSON.stringify(val),
+    deepCopy: type === 'deepCopy' && JSON.parse(JSON.stringify(val))
   }
 
   return returnItem[type]
@@ -805,5 +806,3 @@ Set.prototype.isValueInSet = function (value) { return this.has(value) } // 更�
 Set.prototype.removeAll = function () { this.clear() } // 更新方法 2022/08/02
 
 Set.prototype.toArray = function () { return [...this] } // 更新方法 2022/08/02
-
-Object.prototype.toMap = function (obj) { return new Map(Object.entries(obj)) } // 更新方法 2022/08/02

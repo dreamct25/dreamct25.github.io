@@ -1,6 +1,9 @@
-// CopyRight © 2021-08 - 2024-08 Alex Chen. Library Language - Typescript Ver 1.6.6
+// CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - Typescript Ver 1.6.7
 // Work Environment Typescript v5.5.4、ESlint v8.57.0
 //
+// Use in ESModule
+// export default $
+
 /* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -8,9 +11,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 /* eslint-disable @typescript-eslint/method-signature-style */
-//
-// Use in ESModule
-// export default $
 
 // String tips when use method
 type objDetailsMethod = 'keys' | 'values' | 'entries'
@@ -18,7 +18,7 @@ type createArrayType = 'fake' | 'new'
 type localDataActionType = 'get' | 'set'
 type stylesMethod = 'set' | 'remove'
 type consoleMethod = 'log' | 'dir' | 'error' | 'info' | 'warn' | 'assert' | 'clear' | 'context' | 'count' | 'countReset' | 'debug' | 'dirxml' | 'group' | 'groupCollapsed' | 'groupEnd' | 'memory' | 'profile' | 'profileEnd' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'timeStamp' | 'trace'
-type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify'
+type convertType = 'string' | 'number' | 'float' | 'boolean' | 'json' | 'stringify' | 'deepCopy'
 type requestMethod = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type retunType = 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer' | 'clone'
 type SHAType = 'SHA-1' | 'SHA-256' | 'SHA-384' | 'SHA-512'
@@ -397,8 +397,8 @@ $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
 }
 
 $.convert = (val, type) => {
-  // 更新方法 2021/10/22
   // 更新泛型回傳值 2022/03/19
+  // 更新方法 2024/12/14
   if (!val || !type) {
     $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
     return
@@ -414,13 +414,15 @@ $.convert = (val, type) => {
     boolean: boolean
     json: Record<string, any> | boolean
     stringify: string | boolean
+    deepCopy: any
   } = {
     string: String(val),
     number: parseInt(val),
     float: parseFloat(val),
     boolean: Boolean(val),
     json: type === 'json' && JSON.parse(val),
-    stringify: type === 'stringify' && JSON.stringify(val)
+    stringify: type === 'stringify' && JSON.stringify(val),
+    deepCopy: type === 'deepCopy' && JSON.parse(JSON.stringify(val))
   }
 
   return (returnItem as Record<string, any>)[type]
@@ -594,34 +596,34 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
     if (($.objDetails(this.baseHeaders, 'keys').length > 0 || headers) && data) {
       settings.headers = $.objDetails(this.baseHeaders, 'keys').length > 0 ? this.baseHeaders : { ...headers }
       settings.body = useFormData ? this.convertFormData(data) : $.convert(data, 'stringify')
-    };
+    }
 
     if (!usePromise && !useXMLHttpRequest) {
       if (beforePost) {
         beforePost.call(beforePost)
-      };
+      }
 
       if (!successFn) {
         $.console('error', 'Function Name successFn is required in obejct parameters.')
         return
-      };
+      }
 
       if (!errorFn) {
         $.console('error', 'Function Name errorFn is required in obejct parameters.')
         return
-      };
+      }
     }
 
     if (useXMLHttpRequest) {
       if (successFn) {
         $.console('error', 'successFn not necessary parameters.')
         return
-      };
+      }
 
       if (errorFn) {
         $.console('error', 'errorFn not necessary parameters.')
         return
-      };
+      }
 
       if (usePromise) {
         return this.XMLHttpRequest<T>({
@@ -721,8 +723,8 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
       }))
     } catch (err: any) {
       errorFn?.call(errorFn, JSON.parse((err as Error).message))
-    };
-  };
+    }
+  }
 
   private static XMLHttpRequest<T>(setting: { // 更新方法 XMLHttpRequest 2023/04/22
     url: string
@@ -1054,5 +1056,3 @@ Set.prototype.isValueInSet = function (value) { return this.has(value) } // 更�
 Set.prototype.removeAll = function () { this.clear() } // 更新方法 2022/08/02
 
 Set.prototype.toArray = function () { return [...this] } // 更新方法 2022/08/02
-
-Object.prototype.toMap = function (obj) { return new Map(Object.entries(obj)) } // 更新方法 2022/08/02
