@@ -1,7 +1,7 @@
 # Github Pages
 ![](https://raw.githubusercontent.com/kheireddinebou/kheireddinebou/output/snake.svg)
 - 此倉庫為個人作品發佈頁
-- [個人開發源碼庫點此](https://github.com/dreamct25/develop_rep)
+- [個人作品集開發源碼庫點此](https://github.com/dreamct25/develop_rep)
 ## Collect（作品集）
 ### BMI_Calculator
  - BMI 計算機
