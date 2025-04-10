@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - CoffeeScript Ver 1.6.7
+# CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - CoffeeScript Ver 1.6.8
 # Work Environment CoffeeScript only
 
 $ = (target) -> 
@@ -244,14 +244,16 @@ $.findIndexOfObj = (item, callBack) ->
 $.findObjProperty = (obj, propertyName) -> # 更新方法 2022/03/23
     obj.hasOwnProperty propertyName
 
-$.sum = (item, callBack, initialVal) -> 
+$.sum = (...args) ->  # 更新方法 2025/04/10 調整為通用多載
+    [item, callBack, initialVal] = args
+
     if initialVal
-        item.reduce (a, b) -> 
-            (callBack.call callBack, a, b)
+        item.reduce (a, b, index, arr) -> 
+            callBack.call callBack, a, b, index, arr
         ,initialVal
     else
-        item.reduce (a, b) -> 
-            callBack.call callBack, a, b
+        item.reduce (a, b, index, arr) -> 
+            callBack.call callBack, a, b, index, arr
 
 $.mergeArray = (item, mergeItem, callBack) -> # 更新方法 2022/03/23
     if callBack

@@ -1,4 +1,4 @@
-// CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - Javascript Ver 1.6.7
+// CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - Javascript Ver 1.6.8
 // Work Environment Javascript ES6 or latest、ESlint v8.57.0
 //
 // Use in CommonJS
@@ -139,7 +139,12 @@ $.indexOf = (item, x) => item.indexOf(x)
 $.includes = (item, x) => item.includes(x)
 $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items))
 $.findObjProperty = (obj, propertyName) => Object.prototype.hasOwnProperty.call(obj, propertyName) // 更新方法 2022/03/23
-$.sum = (item, callBack, initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b), initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b))
+$.sum = (...args) => { // 更新方法 2025/04/10 調整為通用多載
+  const [item, callBack, initialVal] = args
+  return initialVal
+    ? item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr), initialVal)
+    : item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr))
+}
 $.mergeArray = (item, mergeItem, callBack) => callBack ? callBack.call(callBack, item.concat(mergeItem)) : item.concat(mergeItem) // 更新方法 2022/03/23
 $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name // 更新方法 2021/10/26
 $.console = (type, ...item) => console[type](...item) // 更新方法 2021/10/26

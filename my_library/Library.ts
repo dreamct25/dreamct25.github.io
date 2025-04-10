@@ -1,4 +1,4 @@
-// CopyRight © 2021-08 - 2024-12 Alex Chen. Library Language - Typescript Ver 1.6.7
+// CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - Typescript Ver 1.6.8
 // Work Environment Typescript v5.5.4、ESlint v8.57.0
 //
 // Use in ESModule
@@ -122,7 +122,8 @@ declare interface $ { // 更新 2022/06/29
   filter<T>(item: T[], callBack: (items: T) => boolean): T[]
   find<T>(item: T[], callBack: (items: T) => T | undefined): T | undefined
   sort<T>(item: T[], callBack: (a: T, b: T) => number): T[]
-  sum<T, R>(item: T[], callBack: (a: T, b: T) => any, initialVal?: any): R
+  sum<T>(item: T[], callBack: (a: T, b: T, index?: number, arr?: T[]) => T): T // 更新 2025/04/10 調整為多載
+  sum<T, I>(item: T[], callBack: (a: I, b: T, index?: number, arr?: T[]) => I, initialVal: I): I // 更新 2025/04/10 調整為多載
   indexOf<T>(item: T, x: string | number): number
   includes<T>(item: T, x: string | number): boolean
   findIndexOfObj<T>(item: T[], callBack: (items: T) => boolean): number
@@ -137,7 +138,7 @@ declare interface $ { // 更新 2022/06/29
   useCustomEvent(eventObj: CustomEvent): void
   removeCustomEvent(eventName: string, fn: () => void): void
   createPromise<T>(callBack: (success: (value: any) => void, error: (reason?: any) => void) => void): Promise<T>
-  createPromiseAll<T>(paramaters: Array<Promise<Awaited<T>>>): Promise<Array<Awaited<T>>>
+  createPromiseAll<T extends readonly unknown[]>(paramaters: T): Promise<{ [K in keyof T]: Awaited<T[K]> }> // 更新 2025/04/10
   createDomText: (text: string) => Text
   objDetails<T, R extends objDetailsMethod, V extends T>(obj: T, method: R): R extends 'keys' ? Array<keyof T> : R extends 'values' ? Array<V[keyof T]> : R extends 'entries' ? [keyof T, V[keyof T]] : undefined
   createArray<R, T, TypeName = createArrayType>({ type, item }: { type: TypeName, item: T | { random: number } }, repack?: ((y: number) => R) | undefined): TypeName extends string ? R[] : undefined
@@ -302,7 +303,12 @@ $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, 
 $.filter = (item, callBack) => item.filter(items => callBack.call(callBack, items))
 $.find = (item, callBack) => item.find(items => callBack.call(callBack, items)) // 更新方法 2022/03/12
 $.sort = (item, callBack) => item.sort((a, b) => callBack.call(callBack, a, b))
-$.sum = (item, callBack, initialVal) => initialVal ? item.reduce((a, b) => callBack.call(callBack, a, b), initialVal) : item.reduce((a, b) => callBack.call(callBack, a, b))
+$.sum = <T>(...args: any[]) => { // 更新方法 2025/04/10 調整為通用多載
+  const [item, callBack, initialVal] = args as [T[], (a: T, b: T, index?: number, arr?: T[]) => T, T]
+  return initialVal
+    ? item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr), initialVal)
+    : item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr))
+}
 $.indexOf = (item, x) => (item as any).indexOf(x)
 $.includes = (item, x) => (item as any).includes(x)
 $.findIndexOfObj = (item, callBack) => item.findIndex(items => callBack.call(callBack, items))
