@@ -1,0 +1,129 @@
+[
+    {
+        "title":"workExperienceGroup.w1Title",
+        "jobTimeStart":"2022-01",
+        "jobTimeEnd":"2022-03",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w1Desc",
+        "useSkills":"React、React-Redux、Redux Saga、Express、Scss、Immer、Axios、JSX、Javascript"
+    }, {
+        "title":"workExperienceGroup.w2Title",
+        "jobTimeStart":"2022-03",
+        "jobTimeEnd":"2022-12",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w2Desc",
+        "useSkills":"React、Material UI、Express、Scss、Axios"
+    }, {
+        "title":"workExperienceGroup.w3Title",
+        "jobTimeStart":"2022-03",
+        "jobTimeEnd":"2022-12",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w3Desc",
+        "useSkills":"React、Material UI、Redux、React-Redux、Express、Axios"
+    }, {
+        "title":"workExperienceGroup.w4Title",
+        "jobTimeStart":"2022-03",
+        "jobTimeEnd":"2022-12",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w4Desc",
+        "useSkills":"React、Material UI、Express、Axios"
+    }, {
+        "title":"workExperienceGroup.w5Title",
+        "jobTimeStart":"2023-02",
+        "jobTimeEnd":"2024-01",
+        "jobRole":"workExperienceGroup.wRoleFullStack",
+        "jobContent":"workExperienceGroup.w5Desc",
+        "useSkills":"React、Material UI、Axios、.Net MVC、MSSQL"
+    }, {
+        "title":"workExperienceGroup.w6Title",
+        "jobTimeStart":"2023-05",
+        "jobTimeEnd":"2024-01",
+        "jobRole":"workExperienceGroup.wRoleBackend",
+        "jobContent":"workExperienceGroup.w6Desc",
+        "useSkills":"Express、Postgres、InfluxDB、Docker"
+    }, {
+        "title":"workExperienceGroup.w7Title",
+        "jobTimeStart":"2023-05",
+        "jobTimeEnd":"2024-01",
+        "jobRole":"workExperienceGroup.wRoleFullStack",
+        "jobContent":"workExperienceGroup.w7Desc",
+        "useSkills":"C#、.NET MVC、JQuery、MSSQL、Express、WebSocket、AWS IIS"
+    }, {
+        "title":"workExperienceGroup.w8Title",
+        "jobTimeStart":"2023-10",
+        "jobTimeEnd":"2024-01",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w8Desc",
+        "useSkills":"React、Redux、Axios、Typescript、Express"
+    }, {
+        "title":"workExperienceGroup.w9Title",
+        "jobTimeStart":"2023-10",
+        "jobTimeEnd":"2024-01",
+        "jobRole":"workExperienceGroup.wRoleOnlyWithCli",
+        "jobContent":"workExperienceGroup.w9Desc",
+        "useSkills":"ESbuild、Vite、React、Vue、Next、Nuxt、Javascript、Typescript、Windows Bat、Linux Bash"
+    }, {
+        "title":"workExperienceGroup.w10Title",
+        "jobTimeStart":"2024-01",
+        "jobTimeEnd":"2024-03",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w10Desc",
+        "useSkills":"Bootstrap、CSS Media Screen、Javascript、JQuery、IIS"
+    }, {
+        "title":"workExperienceGroup.w11Title",
+        "jobTimeStart":"2021-02",
+        "jobTimeEnd":"2021-08",
+        "jobRole":"workExperienceGroup.wRoleOnly",
+        "jobContent":"workExperienceGroup.w11Desc",
+        "useSkills":"JavaScript、jQuery、VB.NET、C#、SQL"
+    }, {
+        "title":"workExperienceGroup.w12Title",
+        "jobTimeStart":"2020-09",
+        "jobTimeEnd":"2020-12",
+        "jobRole":"workExperienceGroup.wRoleOnly",
+        "jobContent":"workExperienceGroup.w12Desc",
+        "useSkills":"JavaScript、jQuery、C#、SQL、NET MVC"
+    }, {
+        "title":"workExperienceGroup.w13Title",
+        "jobTimeStart":"2022-02",
+        "jobTimeEnd":"2022-04",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w13Desc",
+        "useSkills":"React、Redux、React-Redux、Redux-Saga、Immer、Xlsx-js-Styles、Styled-Components、Typescript、Express"
+    }, {
+        "title":"workExperienceGroup.w14Title",
+        "jobTimeStart":"2022-04",
+        "jobTimeEnd":"2023-12",
+        "jobRole":"workExperienceGroup.wRoleFullStack",
+        "jobContent":"workExperienceGroup.w14Desc",
+        "useSkills":"Vue3、Vuex、Axios、Scss、Pug、Electron、Typescript、Express、MySql、Linux Bash、Docker、Docker Compose、WebSocket、Nginx"
+    }, {
+        "title":"workExperienceGroup.w15Title",
+        "jobTimeStart":"2024-06",
+        "jobTimeEnd":"2025-03",
+        "jobRole":"workExperienceGroup.wRoleFullStack",
+        "jobContent":"workExperienceGroup.w15Desc",
+        "useSkills":"Android Studio、Java、Python、MSSQL、Postgresql、Shell"
+    }, {
+        "title":"workExperienceGroup.w16Title",
+        "jobTimeStart":"2024-06",
+        "jobTimeEnd":"2025-03",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w16Desc",
+        "useSkills":"React、Redux、Ionic、Typescript、Vite"
+    }, {
+        "title":"workExperienceGroup.w17Title",
+        "jobTimeStart":"2024-06",
+        "jobTimeEnd":"2025-03",
+        "jobRole":"workExperienceGroup.wRoleBackend",
+        "jobContent":"workExperienceGroup.w17Desc",
+        "useSkills":"Puppeteer、Typescript、Esbuild、pkg"
+    }, {
+        "title":"workExperienceGroup.w18Title",
+        "jobTimeStart":"2025-03",
+        "jobTimeEnd":"2025-06",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w18Desc",
+        "useSkills":"Html、CSS、Javascript、JQuery"
+    }
+]

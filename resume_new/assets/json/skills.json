@@ -1,0 +1,65 @@
+[
+  {
+    "categoryTitle":"skillDescGroup.coreLang",
+    "category":"coreLang",
+    "categorySkill": [
+      "JavaScript","JavaScript ES6+","TypeScript","C#","SQL"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.UILibrary",
+    "category":"UILibrary",
+    "categorySkill": [
+      "Material UI", "Bootstrap4"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.moduleBundler",
+    "category":"moduleBundler",
+    "categorySkill": [
+      "Webpack","Parcel","Vite","Rollup","ESBuild"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.frontend",
+    "category":"frontend",
+    "categorySkill": [
+      "React","Redux","Vue","Vuex","pinia","Svelte","jQuery","Scss","RWD","i18n","i18next",
+      "AJAX","Axios","Json Server",
+      "Electron", "Chrome Extenstion"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.backend",
+    "category":"backend",
+    "categorySkill": [
+      "Node.js","Express.js","WebSocket","RESTful API"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.database",
+    "category":"database",
+    "categorySkill": [
+      "MSSQL","MySQL","Postgres","SQLite"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.encryptionTechnology",
+    "category":"encryptionTechnology",
+    "categorySkill": [
+      "SHA-256", "RSA"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.microService",
+    "category":"microService",
+    "categorySkill": [
+      "Docker", "Docker Compose"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.devTool",
+    "category":"devTool",
+    "categorySkill": [
+      "Visual Studio", "Visual Studio Code"
+    ]
+  }, {
+    "categoryTitle":"skillDescGroup.versionControll",
+    "category":"versionControll",
+    "categorySkill": [
+      "Github", "GitLab"
+    ]
+  }
+]
