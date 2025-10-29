@@ -1,15 +1,15 @@
-// CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - Typescript Ver 1.6.8
-// Work Environment Typescript v5.5.4、ESlint v8.57.0
+// CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - Typescript Ver 1.6.9
+// Work Environment Typescript v5.9.3、ESlint v8.57.1
 //
 // Use in ESModule
 // export default $
 
-/* eslint-disable no-return-assign */
+/* eslint-disable @typescript-eslint/no-invalid-void-type */
 /* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-redeclare */
+/* eslint-disable no-return-assign */
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-invalid-void-type */
+/* eslint-disable @typescript-eslint/no-redeclare */
 /* eslint-disable @typescript-eslint/method-signature-style */
 
 // String tips when use method
@@ -103,7 +103,7 @@ export interface Self extends HTMLElement {
   parent(): ParentNode | null
   appendDom(el: HTMLElement): void
   removeDom(): void
-  removeChildDom(): void
+  removeChildDom(childDom: Node): void
   appendDomText(el: Text): void
   easyAppendDom(orderBy: string, domStr: string): void
   styles(method: stylesMethod, cssType: string, cssParameter: string): Self | undefined
@@ -131,7 +131,7 @@ declare interface $ { // 更新 2022/06/29
   mergeArray<T, M>(item: T[], mergeItem: M[], callBack?: ((items: T[]) => T[])): T[]
   typeOf<T>(item: T, classType?: typeOfClassType | string): string | boolean
   console(type: consoleMethod, ...item: any): undefined
-  localData<T>(action: localDataActionType, keyName: string, item?: string): (T extends undefined ? any : T)
+  localData<T = undefined>(action: localDataActionType, keyName: string, item?: string): T
   getNumberOfDecimal(num: number, digits: number): number
   createCustomEvent(eventName: string, setEventResposeContext?: any): CustomEvent
   registerCustomEvent(eventName: string, fn: () => void): void
@@ -152,6 +152,16 @@ declare interface $ { // 更新 2022/06/29
   useUnicode(str: string, codeType: codeType): string | undefined
   jwtDeocde<R>(token: string): R
   rebuildObject<R extends Record<string, any>, T extends Record<string, any>>(obj: T, callback: (keyName: keyof T, value: any) => [keyof T, any]): R
+  useEventSource<T>(url: string | URL, config?: EventSourceInit): {
+    events: EventSource
+    getStreamResults: (callback: (result: T, event: MessageEvent) => void) => void
+    getStreamError: (callback: (result: MessageEvent) => void) => void
+    closeStream: () => void
+  }
+  /**
+  * This is a super fix type useing be carefully.
+  */
+  typeFix<T, F>(o: F): T
   formatDateTime<T>(format: {
     formatDate: string | globalThis.Date | number
     formatType: string
@@ -184,7 +194,7 @@ const $: $ = (target) => {
   self.removeListener = (eventType, fn) => { self.removeEventListener(eventType, fn) } // 更新方法 2022/01/04
   self.val = (valTemp) => { if (valTemp !== undefined) { (self as unknown as HTMLInputElement).value = valTemp } else { return (self as unknown as HTMLInputElement).value } }
   // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-  self.attr = (props, val) => val !== undefined ? self.setAttribute(props, val) : self.getAttribute(props)
+  self.attr = (props, val) => { val !== undefined ? self.setAttribute(props, val) : self.getAttribute(props) }
   self.props = (props, val) => val ? (self as Record<string, any>)[props] = val : (self as Record<string, any>)[props]
   self.sibling = (num) => (self as unknown as HTMLElement[])[num] // 更新方法 2021/08/31
   self.child = (num) => (self.children as unknown as HTMLElement[])[num] // 更新方法 2021/08/31
@@ -193,7 +203,7 @@ const $: $ = (target) => {
   self.parent = () => self.parentNode // 更新方法 2021/08/31
   self.appendDom = (el) => { self.append(el) } // 更新方法 2021/09/12
   self.removeDom = () => { self.remove() } // 更新方法 2021/09/12
-  self.removeChildDom = () => { self.replaceChildren() } // 更新方法 2021/10/25
+  self.removeChildDom = childDom => { self.removeChild(childDom) } // 更新方法 2025/10/28
   self.appendDomText = (el) => self.appendChild(el) // 更新方法 2021/09/12
   self.easyAppendDom = (orderBy, domStr) => { self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) } // 更新方法 2021/11/25
   self.styles = (method, cssType, cssParameter) => {
@@ -316,7 +326,17 @@ $.findObjProperty = (obj, propertyName) => Object.prototype.hasOwnProperty.call(
 $.mergeArray = (item, mergeItem, callBack) => callBack ? callBack.call(callBack, (item as any).concat(mergeItem)) : (item as any).concat(mergeItem) // 更新方法 2022/03/23
 $.typeOf = (item, classType) => classType ? (item as any).constructor.name === classType : (item as any).constructor.name // 更新方法 2021/10/26
 $.console = (type, ...item) => (console as Record<string, any>)[type](...item) // 更新方法 2021/10/26
-$.localData = (action, keyName, item) => { if (action === 'get') { return ($.convert<any>(localStorage.getItem(keyName), 'json') || []) } else { localStorage.setItem(keyName, $.convert<string>(item, 'stringify')) } } // 更新方法 2021/11/29
+$.localData = (action, keyName, item) => { // 更新方法 2025/10/29
+  if (action === 'get') {
+    try {
+      return ($.convert<any>(localStorage.getItem(keyName), 'json') || [])
+    } catch (e) {
+      return localStorage.getItem(keyName)
+    }
+  }
+
+  localStorage.setItem(keyName, $.convert<string>(item, 'stringify'))
+}
 $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
 $.createCustomEvent = (eventName, setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName, { detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
 $.registerCustomEvent = (eventName, fn) => { window.addEventListener(eventName, fn) } // 更新方法 2022/07/13
@@ -522,6 +542,18 @@ $.formatDateTime = format => { // 更新方法 2021/12/01
 }
 
 $.rebuildObject = (obj, callback) => Object.fromEntries(Object.entries(obj).map(([keyName, value]) => callback.call(callback, keyName, value))) as any // 更新方法內容 2023/09/12
+
+$.typeFix = <T, F>(item: F) => item as unknown as T // 更新方法 2025/10/28
+
+$.useEventSource = (url, config) => { // 更新方法 2025/10/28
+  const events = new EventSource(url, config)
+  return {
+    events,
+    getStreamResults: callback => events.onmessage = event => { callback($.convert<any>(event.data, 'json'), event) },
+    getStreamError: callback => events.onerror = event => { callback(event as any) },
+    closeStream: () => { events.close() }
+  }
+}
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24

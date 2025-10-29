@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - CoffeeScript Ver 1.6.8
+# CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - CoffeeScript Ver 1.6.9
 # Work Environment CoffeeScript only
 
 $ = (target) -> 
@@ -271,12 +271,15 @@ $.console = (type, item...) -> # 更新方法 2021/10/26
     console[type] item...
     return
 
-$.localData = (action, keyName, item) -> # 更新方法 2021/11/29
+$.localData = (action, keyName, item) -> # 更新方法 2025/10/29
     if action is 'get'
-        ($.convert (localStorage.getItem keyName), 'json') || []
-    else 
-        localStorage.setItem keyName, $.convert item, 'stringify' 
-        return
+        try
+            return ($.convert (localStorage.getItem keyName), 'json') || []
+        catch
+            return localStorage.getItem keyName
+    
+    localStorage.setItem keyName, $.convert item, 'stringify' 
+    return
 
 $.getNumberOfDecimal = (num,digits) -> # 更新方法 2022/09/28
     parseInt num.toFixed digits 
@@ -472,6 +475,28 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方�
 $.rebuildObject = (obj, callback) -> # 更新方法內容 2023/09/12
     Object.fromEntries Object.entries(obj).map ([keyName, value]) -> 
         callback.call callback, keyName, value
+
+$.useEventSource = (url, config) -> # 更新方法 2025/10/28
+  events = new EventSource url, config
+  
+  {
+    events,
+    getStreamResults: (callback) -> 
+        events.onmessage = (event) -> 
+            callback($.convert(event.data, 'json'), event)
+            return
+        return        
+    ,
+    getStreamError: (callback) -> 
+        events.onerror = (event) -> 
+            callback(event)
+            return
+        return
+    ,
+    closeStream: () -> 
+        events.close()
+        return
+  }
 
 class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
     @baseUrl = ''

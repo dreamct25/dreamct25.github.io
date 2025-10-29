@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2025-04 Alex Chen. Library Language - Javascript Ver 1.6.8
-// Work Environment Javascript ES6 or latest、ESlint v8.57.0
+// CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - Javascript Ver 1.6.9
+// Work Environment Javascript ES6 or latest、ESlint v8.57.1
 //
 // Use in CommonJS
 // module.exports = $
@@ -7,9 +7,8 @@
 // Use in ESModule
 // export default $
 
-/* eslint-disable no-return-assign */
-/* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable no-async-promise-executor */
+/* eslint-disable no-return-assign */
 
 'use strict'
 const $ = target => {
@@ -32,7 +31,7 @@ const $ = target => {
   self.parent = () => self.parentNode // 更新方法 2021/08/31
   self.appendDom = (el) => { self.append(el) } // 更新方法 2021/09/12
   self.removeDom = () => { self.remove() } // 更新方法 2021/09/12
-  self.removeChildDom = () => { self.replaceChildren() } // 更新方法 2021/10/25
+  self.removeChildDom = (childDom) => { self.removeChild(childDom) } // 更新方法 2021/10/25
   self.appendDomText = (el) => self.appendChild(el) // 更新方法 2021/09/12
   self.easyAppendDom = (orderBy, domStr) => { self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) } // 更新方法 2021/11/25
   self.styles = (method, cssType, cssParameter) => {
@@ -140,15 +139,25 @@ $.includes = (item, x) => item.includes(x)
 $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items))
 $.findObjProperty = (obj, propertyName) => Object.prototype.hasOwnProperty.call(obj, propertyName) // 更新方法 2022/03/23
 $.sum = (...args) => { // 更新方法 2025/04/10 調整為通用多載
-  const [item, callBack, initialVal] = args
+  const [item, callback, initialVal] = args
   return initialVal
-    ? item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr), initialVal)
-    : item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr))
+    ? item.reduce((a, b, index, arr) => callback.call(callback, a, b, index, arr), initialVal)
+    : item.reduce((a, b, index, arr) => callback.call(callback, a, b, index, arr))
 }
 $.mergeArray = (item, mergeItem, callBack) => callBack ? callBack.call(callBack, item.concat(mergeItem)) : item.concat(mergeItem) // 更新方法 2022/03/23
 $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name // 更新方法 2021/10/26
 $.console = (type, ...item) => console[type](...item) // 更新方法 2021/10/26
-$.localData = (action, keyName, item) => { if (action === 'get') { return ($.convert(localStorage.getItem(keyName), 'json') || []) } else { localStorage.setItem(keyName, $.convert(item, 'stringify')) } } // 更新方法 2021/11/29
+$.localData = (action, keyName, item) => { // 更新方法 2025/10/29
+  if (action === 'get') {
+    try {
+      return ($.convert(localStorage.getItem(keyName), 'json') || [])
+    } catch (e) {
+      return localStorage.getItem(keyName)
+    }
+  }
+
+  localStorage.setItem(keyName, $.convert(item, 'stringify'))
+}
 $.getNumberOfDecimal = (num, digits) => parseInt(num.toFixed(digits)) // 更新方法 2022/09/28
 $.createCustomEvent = (eventName, setEventResposeContext) => setEventResposeContext ? new CustomEvent(eventName, { detail: setEventResposeContext }) : new CustomEvent(eventName) // 更新方法 2022/07/13
 $.registerCustomEvent = (eventName, fn) => { window.addEventListener(eventName, fn) } // 更新方法 2022/07/13
@@ -337,6 +346,16 @@ $.formatDateTime = (format = { formatDate: '', formatType: '' }) => { // 更新�
 }
 
 $.rebuildObject = (obj, callback) => Object.fromEntries(Object.entries(obj).map(([keyName, value]) => callback.call(callback, keyName, value))) // 更新方法內容 2023/09/12
+
+$.useEventSource = (url, config) => { // 更新方法 2025/10/28
+  const events = new EventSource(url, config)
+  return {
+    events,
+    getStreamResults: callback => events.onmessage = event => { callback($.convert(event.data, 'json'), event) },
+    getStreamError: callback => events.onerror = event => { callback(event) },
+    closeStream: () => { events.close() }
+  }
+}
 
 class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
   static #baseUrl = ''
