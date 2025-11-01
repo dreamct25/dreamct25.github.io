@@ -71,7 +71,7 @@
     "skillDescGroup": {
         "coreLang":"核心語言",
         "UILibrary": "UI 庫",
-        "moduleBundler": "模組打包",
+        "buildTool": "建構工具",
         "frontend":"前端",
         "backend":"後端",
         "database":"資料庫",

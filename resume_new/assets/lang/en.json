@@ -71,7 +71,7 @@
     "skillDescGroup": {
         "coreLang":"Core Language",
         "UILibrary": "UI Library",
-        "moduleBundler": "Module Bundler",
+        "buildTool": "Build Tool",
         "frontend":"Frontend",
         "backend":"Backend",
         "database":"Database",

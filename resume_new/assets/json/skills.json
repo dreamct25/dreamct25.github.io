@@ -12,16 +12,16 @@
       "Material UI", "Bootstrap4"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.moduleBundler",
-    "category":"moduleBundler",
+    "categoryTitle":"skillDescGroup.buildTool",
+    "category":"buildTool",
     "categorySkill": [
-      "Webpack","Parcel","Vite","Rollup","ESBuild"
+      "Webpack","Parcel","Vite","Rollup","ESBuild","Babel"
     ]
   }, {
     "categoryTitle":"skillDescGroup.frontend",
     "category":"frontend",
     "categorySkill": [
-      "React","Redux","Vue","Vuex","pinia","Svelte","jQuery","Scss","RWD","i18n","i18next",
+      "React","Redux","Vue","Vuex","Pinia","Svelte","Pug","jQuery","Scss","RWD","i18n","i18next",
       "AJAX","Axios","Json Server",
       "Electron", "Chrome Extenstion"
     ]
@@ -29,13 +29,13 @@
     "categoryTitle":"skillDescGroup.backend",
     "category":"backend",
     "categorySkill": [
-      "Node.js","Express.js","WebSocket","RESTful API"
+      "Node.js","Express.js","WebSocket","RESTful API","Pkg"
     ]
   }, {
     "categoryTitle":"skillDescGroup.database",
     "category":"database",
     "categorySkill": [
-      "MSSQL","MySQL","Postgres","SQLite"
+      "MSSQL","MySQL","PostgreSQL","SQLite"
     ]
   }, {
     "categoryTitle":"skillDescGroup.encryptionTechnology",
