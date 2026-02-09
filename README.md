@@ -75,6 +75,9 @@
 ### resume_new
  - 個人履歷
  - [前往畫面](https://dreamct25.github.io/resume_new)
+### simple-translate
+ - 簡易語系轉換工具
+ - [前往畫面](https://dreamct25.github.io/simple-translate)
 ### stars
  - 占星小站
  - [前往畫面](https://dreamct25.github.io/stars)
