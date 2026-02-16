@@ -1,16 +1,11 @@
-// CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - Typescript Ver 1.6.9
-// Work Environment Typescript v5.9.3、ESlint v8.57.1
+// CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - Typescript Ver 1.7.0
+// Work Environment Typescript v5.9.3、ESlint v10.0.0
 //
 // Use in ESModule
 // export default $
 
-/* eslint-disable @typescript-eslint/no-invalid-void-type */
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable no-return-assign */
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
-/* eslint-disable @typescript-eslint/no-redeclare */
-/* eslint-disable @typescript-eslint/method-signature-style */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // String tips when use method
 type objDetailsMethod = 'keys' | 'values' | 'entries'
@@ -90,9 +85,9 @@ export interface Self extends HTMLElement {
   addClass(classText: string): any
   removeClass(classText: string): any
   toggleClass(classText: string): boolean
-  on(eventType: string, fn: (self: any, t: Event) => void): void
-  listener(eventType: string, fn: (event: any) => void): void
-  removeListener(eventType: string, fn: (event: any) => void): void
+  on<K extends keyof (WindowEventMap & DocumentEventMap)>(eventType: K, callBack: (event:  (WindowEventMap & DocumentEventMap)[K]) => void): void
+  listener<K extends keyof (WindowEventMap & DocumentEventMap)>(eventType: K, callBack: (event: (WindowEventMap & DocumentEventMap)[K]) => void): void
+  removeListener<K extends keyof (WindowEventMap & DocumentEventMap)>(eventType: K, callBack: (event: (WindowEventMap & DocumentEventMap)[K]) => void): void
   val(valTemp?: string): string | undefined
   attr(props: string, val?: string): string | void | null
   props(props: string, val?: any): any
@@ -143,7 +138,8 @@ declare interface $ { // 更新 2022/06/29
   objDetails<T, R extends objDetailsMethod, V extends T>(obj: T, method: R): R extends 'keys' ? Array<keyof T> : R extends 'values' ? Array<V[keyof T]> : R extends 'entries' ? [keyof T, V[keyof T]] : undefined
   createArray<R, T, TypeName = createArrayType>({ type, item }: { type: TypeName, item: T | { random: number } }, repack?: ((y: number) => R) | undefined): TypeName extends string ? R[] : undefined
   convert<T>(val: any, type: convertType): T
-  createDom(tag: string, props: Record<string, any>): HTMLElement
+  createDom<K extends keyof HTMLElementTagNameMap, N extends HTMLElement[]>(options: Partial<HTMLElementTagNameMap[K]> & { elementTag: K, treeNodes?: [...N] }, selfHandler?: (elementSelf: HTMLElementTagNameMap[K]) => void): HTMLElementTagNameMap[K]
+  createDom<K extends keyof HTMLElementTagNameMap, N extends HTMLElement[]>(options: Partial<HTMLElementTagNameMap[K]> & { elementTag: undefined, treeNodes?: [...N] }, selfHandler?: (elementSelf: HTMLElementTagNameMap[K]) => void): undefined
   currencyTranser(formatNumber: number, currencyType: string, withCurrencyStyle: boolean): string | undefined
   isObjectTheSame<T1, T2>(objI: T1, obj: T2): boolean
   useSleep(sleepTime: number): Promise<void>
@@ -189,11 +185,10 @@ const $: $ = (target) => {
   self.addClass = (classText) => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.removeClass = (classText) => { self.classList.remove(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.toggleClass = (classText) => self.classList.toggle(classText) // 更新方法 2021/09/20
-  self.on = (eventType, fn) => { (self as Record<string, any>)[['on', eventType].join('')] = (t: Event) => { fn.call(fn, self, t) } } // 更新方法 2021/09/20
-  self.listener = (eventType, fn) => { self.addEventListener(eventType, fn) }
-  self.removeListener = (eventType, fn) => { self.removeEventListener(eventType, fn) } // 更新方法 2022/01/04
+  self.on = (eventType, callBack) => { (self as Record<string, any>)[['on', eventType].join('')] = callBack } // 更新方法 2021/09/20
+  self.listener = (eventType, callBack) => { self.addEventListener(eventType, callBack as any) }
+  self.removeListener = (eventType, callBack) => { self.removeEventListener(eventType, callBack as any) } // 更新方法 2022/01/04
   self.val = (valTemp) => { if (valTemp !== undefined) { (self as unknown as HTMLInputElement).value = valTemp } else { return (self as unknown as HTMLInputElement).value } }
-  // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
   self.attr = (props, val) => { val !== undefined ? self.setAttribute(props, val) : self.getAttribute(props) }
   self.props = (props, val) => val ? (self as Record<string, any>)[props] = val : (self as Record<string, any>)[props]
   self.sibling = (num) => (self as unknown as HTMLElement[])[num] // 更新方法 2021/08/31
@@ -204,7 +199,7 @@ const $: $ = (target) => {
   self.appendDom = (el) => { self.append(el) } // 更新方法 2021/09/12
   self.removeDom = () => { self.remove() } // 更新方法 2021/09/12
   self.removeChildDom = childDom => { self.removeChild(childDom) } // 更新方法 2025/10/28
-  self.appendDomText = (el) => self.appendChild(el) // 更新方法 2021/09/12
+  self.appendDomText = (el) => self.appendDomText(el) // 更新方法 2021/09/12
   self.easyAppendDom = (orderBy, domStr) => { self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) } // 更新方法 2021/11/25
   self.styles = (method, cssType, cssParameter) => {
     // 更新方法 2021/10/26
@@ -282,7 +277,7 @@ const $: $ = (target) => {
     const vm = self
     if (typeof self === 'object') {
       if ($.typeOf(vm, 'HTMLDocument')) {
-        vm.listener('readystatechange', ({ target }: { target: HTMLDocument }) => { target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target) })
+        vm.listener('readystatechange', ({ target }) => { (target as HTMLDocument).readyState === 'interactive' && willMountCallBack.call(willMountCallBack, (target as HTMLDocument)) })
       } else {
         $.console('error', 'UseWillMount hook just use when selector document.')
       }
@@ -295,7 +290,7 @@ const $: $ = (target) => {
     const vm = self
     if (typeof self === 'object') {
       if ($.typeOf(vm, 'HTMLDocument')) {
-        vm.listener('readystatechange', ({ target }: { target: HTMLDocument }) => { target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target) })
+        vm.listener('readystatechange', ({ target }) => { (target as HTMLDocument).readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, (target as HTMLDocument)) })
       } else {
         $.console('error', 'UseMounted Hook just use when selector document.')
       }
@@ -330,7 +325,7 @@ $.localData = (action, keyName, item) => { // 更新方法 2025/10/29
   if (action === 'get') {
     try {
       return ($.convert<any>(localStorage.getItem(keyName), 'json') || [])
-    } catch (e) {
+    } catch {
       return localStorage.getItem(keyName)
     }
   }
@@ -454,20 +449,33 @@ $.convert = (val, type) => {
   return (returnItem as Record<string, any>)[type]
 }
 
-$.createDom = (tag, props) => { // 更新方法 2021/09/12
-  const el: HTMLElement & Record<string, any> = document.createElement(tag)
-  const propsArr: Array<[string, any]> = Object.entries(props)
-  $.each(propsArr, (getProps: [string, any]) => {
-    const [propertyI, valueI]: [string, any] = getProps
-    if ($.typeOf(valueI, 'Object')) { // 更新方法 2021/12/07，解析 data-* 建構屬性內容
-      const [propertyII, obj]: [string, Record<string, any>] = getProps
-      const [[key, valueII]]: Array<[string, any]> = Object.entries(obj)
-      el[propertyII][key] = valueII
-    } else {
-      el[propertyI] = $.typeOf(valueI, 'String') ? valueI.trim() : valueI
-    }
-  })
-  return el
+$.createDom = (options, elementSelfHandler) => { // 更新方法v2 2026/02/15
+
+  if(options?.elementTag) {
+
+    const elementTag = options.elementTag
+
+    delete (options as Record<string, any>).elementTag
+
+    const element = document.createElement(elementTag)
+
+    $.each(Object.entries(options), ([properties, value]) => {
+      
+      if(properties === 'treeNodes') return
+      
+      (element as Record<string, any>)[properties] = value
+    })
+
+    if(options?.treeNodes) $.each(options.treeNodes, row => $(element as HTMLElement).appendDom(row))
+
+    if(elementSelfHandler) elementSelfHandler.call(elementSelfHandler, element)
+
+    return element
+  }
+
+  $.console('error', 'Need elementTag key in options, and value will like div or else .')
+
+  return undefined
 }
 
 $.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
@@ -555,7 +563,6 @@ $.useEventSource = (url, config) => { // 更新方法 2025/10/28
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
   private static baseUrl: string = ''
   private static baseHeaders: Record<string, any> = {}
@@ -690,8 +697,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 
     if (usePromise) {
       // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-      return await new Promise<fetchClassReturnType<T>>(async (resolve, reject) => {
+      return await new Promise<fetchClassReturnType<T>>(async (resolve) => {
         if (res.status >= 200 && res.status < 400) {
           const result: T = await (res as Record<string, any>)[returnTypeUse]()
 
@@ -711,7 +717,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
         }
 
         const result: T = await (res as Record<string, any>)[returnTypeUse]()
-        // eslint-disable-next-line prefer-promise-reject-errors
+
         resolve({
           bodyUsed: res.bodyUsed,
           headers: res.headers,
@@ -743,7 +749,6 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
           data: result
         } as fetchClassReturnType<T>)
 
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
         excuteDone && excuteDone.call(excuteDone)
 
         return

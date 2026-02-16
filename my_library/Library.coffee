@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - CoffeeScript Ver 1.6.9
+# CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - CoffeeScript Ver 1.7.0
 # Work Environment CoffeeScript only
 
 $ = (target) -> 
@@ -34,19 +34,16 @@ $ = (target) ->
         self.classList.toggle classText
         return
 
-    self.on = (eventType, fn) -> # 更新方法 2021/09/20
-        self[['on', eventType].join ''] = 
-        () -> 
-            fn.call fn, self
-            return
+    self.on = (eventType, callBack) -> # 更新方法 2021/09/20
+        self[['on', eventType].join ''] = callBack
         return
 
-    self.listener = (eventType, fn) -> 
-        self.addEventListener eventType, fn
+    self.listener = (eventType, callBack) -> 
+        self.addEventListener eventType, callBack
         return
 
-    self.removeListener = (eventType, fn) -> # 更新方法 2022/01/04
-        self.removeEventListener eventType, fn
+    self.removeListener = (eventType, callBack) -> # 更新方法 2022/01/04
+        self.removeEventListener eventType, callBack
         return
 
     self.val = (valTemp) -> 
@@ -408,20 +405,42 @@ $.convert = (val, type) ->  # 更新方法 2024/12/14
 
     returnItem[type]
 
-$.createDom = (tag, props) -> # 更新方法 2021/09/12
-    newEl = document.createElement tag
-    propsArr = Object.entries props
-    $.each propsArr, (getProps) ->
-        [propertyI, valueI] = getProps
-        if $.typeOf valueI, 'Object' # 更新方法 2021/12/07，解析 data-* 建構屬性內容
-            [propertyII, obj] = getProps
-            [[key, valueII]] = Object.entries obj
-            newEl[propertyII][key] = valueII
+$.createDom = (options, elementSelfHandler) -> # 更新方法v2 2026/02/15
+    
+    if options?.elementTag
+
+        elementTag = options.elementTag
+
+        delete options.elementTag
+
+        element = document.createElement elementTag
+
+        $.each(Object.entries(options) , ([properties, value]) -> 
+        
+            if properties is 'treeNodes'
+                
+                return
+            
+            element[properties] = value
+
             return
-        else
-            newEl[propertyI] = if $.typeOf valueI, 'String' then valueI.trim() else valueI
-            return
-    newEl
+        )
+
+        if options?.treeNodes
+        
+            $.each(options.treeNodes, (row) -> 
+                $(element).appendDom(row)
+                return
+            )
+
+        if elementSelfHandler 
+            elementSelfHandler.call(elementSelfHandler, element)
+
+        return element
+
+    $.console('error', 'Need elementTag key in options, and value will like div or else .')
+
+    undefined
 
 $.currencyTranser = (formatNumber,currencyType,withCurrencyStyle) -> # 更新方法 2022/06/24
     if $.typeOf formatNumber,'Number'
@@ -593,6 +612,7 @@ class FetchClass # 更新 FetchClass 類封裝方法內容 2022/03/24
         if usePromise 
         # 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
             return new Promise (resolve, reject) -> 
+
                 if res.status >= 200 and res.status < 400
                     result = await res[returnTypeUse]()
                     resolve({

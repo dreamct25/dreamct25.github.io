@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2025-10 Alex Chen. Library Language - Javascript Ver 1.6.9
-// Work Environment Javascript ES6 or latest、ESlint v8.57.1
+// CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - Javascript Ver 1.7.0
+// Work Environment Javascript ES6 or latest、ESlint v10.0.0
 //
 // Use in CommonJS
 // module.exports = $
@@ -8,7 +8,8 @@
 // export default $
 
 /* eslint-disable no-async-promise-executor */
-/* eslint-disable no-return-assign */
+/* eslint-disable no-undef */
+/* eslint-disable no-constant-binary-expression */
 
 'use strict'
 const $ = target => {
@@ -18,9 +19,9 @@ const $ = target => {
   self.addClass = (classText) => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.toggleClass = (classText) => self.classList.toggle(classText) // 更新方法 2021/09/20
-  self.on = (eventType, fn) => { self[['on', eventType].join('')] = () => { fn.call(fn, self) } } // 更新方法 2021/09/20
-  self.listener = (eventType, fn) => { self.addEventListener(eventType, fn) }
-  self.removeListener = (eventType, fn) => { self.removeEventListener(eventType, fn) } // 更新方法 2022/01/04
+  self.on = (eventType, callBack) => { self[['on', eventType].join('')] = callBack } // 更新方法 2021/09/20
+  self.listener = (eventType, callBack) => { self.addEventListener(eventType, callBack) }
+  self.removeListener = (eventType, callBack) => { self.removeEventListener(eventType, callBack) } // 更新方法 2022/01/04
   self.val = (valTemp) => { if (valTemp !== undefined) { self.value = valTemp } else { return self.value } }
   self.attr = (props, val) => val !== undefined ? self.setAttribute(props, val) : self.getAttribute(props)
   self.props = (props, val) => val ? self[props] = val : self[props] // 更新方法 2021/08/31
@@ -151,7 +152,7 @@ $.localData = (action, keyName, item) => { // 更新方法 2025/10/29
   if (action === 'get') {
     try {
       return ($.convert(localStorage.getItem(keyName), 'json') || [])
-    } catch (e) {
+    } catch {
       return localStorage.getItem(keyName)
     }
   }
@@ -260,20 +261,33 @@ $.convert = (val, type) => { // 更新方法 2024/12/14
   return returnItem[type]
 }
 
-$.createDom = (tag, props) => { // 更新方法 2021/09/12
-  const el = document.createElement(tag)
-  const propsArr = Object.entries(props)
-  $.each(propsArr, getProps => {
-    const [propertyI, valueI] = getProps
-    if ($.typeOf(valueI, 'Object')) { // 更新方法 2021/12/07，解析 data-* 建構屬性內容
-      const [propertyII, obj] = getProps
-      const [[key, valueII]] = Object.entries(obj)
-      el[propertyII][key] = valueII
-    } else {
-      el[propertyI] = $.typeOf(valueI, 'String') ? valueI.trim() : valueI
-    }
-  })
-  return el
+$.createDom = (options, elementSelfHandler) => { // 更新方法v2 2026/02/15
+    
+  if(options?.elementTag) {
+
+    const elementTag = options.elementTag
+
+    delete options.elementTag
+
+    const element = document.createElement(elementTag)
+
+    $.each(Object.entries(options), ([properties, value]) => {
+      
+      if(properties === 'treeNodes') return
+      
+      element[properties] = value
+    })
+
+    if(options?.treeNodes) $.each(options.treeNodes, row => $(element).appendDom(row))
+
+    if(elementSelfHandler) elementSelfHandler.call(elementSelfHandler, element)
+
+    return element
+  }
+
+  $.console('error', 'Need elementTag key in options, and value will like div or else .')
+
+  return undefined
 }
 
 $.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
@@ -487,7 +501,8 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 
       if (usePromise) {
         // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
+          
           if (res.status >= 200 && res.status < 400) {
             const result = await res[returnTypeUse]()
             resolve({
