@@ -3,7 +3,7 @@
 - 此倉庫為個人作品發佈頁
 - [個人作品集開發源碼庫點此](https://github.com/dreamct25/develop_rep)
 ## Collect（作品集）
-|作品名稱|路徑名稱|GitHub Page
+|作品名稱|目錄名稱|GitHub Page
 |-------|------|----
 |BMI 計算機|BMI_Calculator|[前往畫面](https://dreamct25.github.io/BMI_Calculator)
 |計算機|Calculator|[前往畫面](https://dreamct25.github.io/Calculator)
