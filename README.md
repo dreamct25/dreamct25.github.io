@@ -3,87 +3,33 @@
 - 此倉庫為個人作品發佈頁
 - [個人作品集開發源碼庫點此](https://github.com/dreamct25/develop_rep)
 ## Collect（作品集）
-### BMI_Calculator
- - BMI 計算機
- - [前往畫面](https://dreamct25.github.io/BMI_Calculator)
-### Calculator
- - 計算機
- - [前往畫面](https://dreamct25.github.io/Calculator)
-### Canvas
- - 多功能畫布
- - [前往畫面](https://dreamct25.github.io/Canvas)
-### Clock
- - 世界時鐘
- - [前往畫面](https://dreamct25.github.io/Clock)
-### Image_Controller
- - 圖片控制器
- - [前往畫面](https://dreamct25.github.io/Image_Controller)
-### Media_player
- - 媒體播放器
- - [前往畫面](https://dreamct25.github.io/Media_player)
-### Memory_Card_Game
- - 翻牌記憶遊戲
- - [前往畫面](https://dreamct25.github.io/Memory_Card_Game)
-### Mind
- - 人格測驗
- - [前往畫面](https://dreamct25.github.io/Mind)
-### Music
- - 鍵盤聲音
- - [前往畫面](https://dreamct25.github.io/Music)
-### Puzzle_Game
- - 拼圖遊戲
- - [前往畫面](https://dreamct25.github.io/Puzzle_Game)
-### To_Do_List
- - 待辦清單
- - [前往畫面](https://dreamct25.github.io/To_Do_List)
-### Travel
- - 旅遊網
- - [前往畫面](https://dreamct25.github.io/Travel)
-### Weather
- - 天氣預報
- - [前往畫面](https://dreamct25.github.io/Weather)
-### almanac
- - 年曆
- - [前往畫面](https://dreamct25.github.io/almanac)
-### blog
- - 個人部落格
- - [前往畫面](https://dreamct25.github.io/blog)
-### cash
- - 個人記帳系統
- - [前往畫面](https://dreamct25.github.io/cash)
-### color_converter
- - 多項色彩轉換器
- - [前往畫面](https://dreamct25.github.io/color_converter)
- ### fashion_shop
- - Fashion Shop (模擬電商)
- - [前往畫面](https://dreamct25.github.io/fashion_shop)
-### count-down
- - 跨年倒數
- - [前往畫面](https://dreamct25.github.io/count-down)
-### hotels
- - Hotels
- - [前往畫面](https://dreamct25.github.io/hotels)
-### invoice-check
- - 統一發票號碼查詢
- - [前往畫面](https://dreamct25.github.io/invoice-check)
-### movies
- - Movies
- - [前往畫面](https://dreamct25.github.io/movies)
-### my_library
- - 個人開發函式庫
- - [前往畫面](https://dreamct25.github.io/my_library)
-### resume_new
- - 個人履歷
- - [前往畫面](https://dreamct25.github.io/resume_new)
-### simple-translate
- - 簡易語系轉換工具
- - [前往畫面](https://dreamct25.github.io/simple-translate)
-### stars
- - 占星小站
- - [前往畫面](https://dreamct25.github.io/stars)
-### store
- - Store
- - [前往畫面](https://dreamct25.github.io/store)
-### videos
- - 影音小站
- - [前往畫面](https://dreamct25.github.io/videos)
+|作品名稱|路徑名稱|GitHub Page
+|-------|------|----
+|BMI 計算機|BMI_Calculator|[前往畫面](https://dreamct25.github.io/BMI_Calculator)
+|計算機|Calculator|[前往畫面](https://dreamct25.github.io/Calculator)
+|多功能畫布|Canvas|[前往畫面](https://dreamct25.github.io/Canvas)
+|世界時鐘|Clock|[前往畫面](https://dreamct25.github.io/Clock)
+|圖片控制器|Image_Controller|[前往畫面](https://dreamct25.github.io/Image_Controller)
+|媒體播放器|Media_player|[前往畫面](https://dreamct25.github.io/Media_player)
+|翻牌記憶遊戲|Memory_Card_Game|[前往畫面](https://dreamct25.github.io/Memory_Card_Game)
+|人格測驗|Mind|[前往畫面](https://dreamct25.github.io/Mind)
+|鍵盤聲音|Music|[前往畫面](https://dreamct25.github.io/Music)
+|拼圖遊戲|Puzzle_Game|[前往畫面](https://dreamct25.github.io/Puzzle_Game)
+|待辦清單|To_Do_List|[前往畫面](https://dreamct25.github.io/To_Do_List)
+|旅遊網|Travel|[前往畫面](https://dreamct25.github.io/Travel)
+|天氣預報|Weather|[前往畫面](https://dreamct25.github.io/Weather)
+|年曆|almanac|[前往畫面](https://dreamct25.github.io/almanac)
+|個人部落格|blog|[前往畫面](https://dreamct25.github.io/blog)
+|個人記帳系統|cash|[前往畫面](https://dreamct25.github.io/cash)
+|多項色彩轉換器|color_converter|[前往畫面](https://dreamct25.github.io/color_converter)
+|Fashion Shop (模擬電商)|fashion_shop|[前往畫面](https://dreamct25.github.io/fashion_shop)
+|跨年倒數|count-down|[前往畫面](https://dreamct25.github.io/count-down)
+|Hotels|hotels|[前往畫面](https://dreamct25.github.io/hotels)
+|統一發票號碼查詢|invoice-check|[前往畫面](https://dreamct25.github.io/invoice-check)
+|Movies|movies|[前往畫面](https://dreamct25.github.io/movies)
+|個人開發函式庫|my_library|[前往畫面](https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library)
+|個人履歷|resume_new|[前往畫面](https://dreamct25.github.io/resume_new)
+|簡易語系轉換工具|simple-translate|[前往畫面](https://dreamct25.github.io/simple-translate)
+|占星小站|stars|[前往畫面](https://dreamct25.github.io/stars)
+|Store|store|[前往畫面](https://dreamct25.github.io/store)
+|影音小站|videos|[前往畫面](https://dreamct25.github.io/videos)
