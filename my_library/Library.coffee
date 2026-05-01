@@ -1,4 +1,4 @@
-# CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - CoffeeScript Ver 1.7.0
+# CopyRight © 2021-08 - 2026-05 Alex Chen. Library Language - CoffeeScript Ver 1.7.1
 # Work Environment CoffeeScript only
 
 $ = (target) -> 
@@ -442,13 +442,18 @@ $.createDom = (options, elementSelfHandler) -> # 更新方法v2 2026/02/15
 
     undefined
 
-$.currencyTranser = (formatNumber,currencyType,withCurrencyStyle) -> # 更新方法 2022/06/24
-    if $.typeOf formatNumber,'Number'
-        currencyOptionalObj = if not withCurrencyStyle then {} else { style: 'currency', currency: currencyType }
-        new Intl.NumberFormat((currencyType or 'TWN'), currencyOptionalObj).format formatNumber
+$.currencyTranser = (formatNumber, withCurrencyStyle, currencyLocale ,currencyType) -> 
+    # 更新方法 2022/06/24
+    # 更新方法 2026/04/27
+    if $.typeOf(formatNumber, 'Number')
+    
+        formatNumber.toLocaleString(
+            currencyLocale || 'zh-TW', 
+            if !withCurrencyStyle then undefined else { style: 'currency', currency: currencyType || 'TWN' }
+        )
+
     else
-        $.console 'error', 'First argument formatNumber type must use number.'
-        return
+        $.console('error', 'First argument formatNumber type must use number.')
 
 $.formatDateTime = (format = { formatDate: '', formatType: '' }) -> # 更新方法 2021/12/01
     if !($.findObjProperty format,'formatDate') or $.findObjProperty format,'formatType'
@@ -514,6 +519,43 @@ $.useEventSource = (url, config) -> # 更新方法 2025/10/28
     ,
     closeStream: () -> 
         events.close()
+        return
+  }
+
+$.elementObserver = (elements, setting, callback) -> # 更新方法 2026/04/27
+
+  repackSetting = {}
+
+  if setting?.triggerPos then repackSetting.rootMargin = setting.triggerPos
+  if setting?.threshold then repackSetting.threshold = setting.threshold
+
+  observer = new IntersectionObserver((entries) -> 
+    $.each(
+      entries,
+      (wathSingleElement, elementArrayIndex) -> 
+        callback.call callback, wathSingleElement, elementArrayIndex
+        return
+    )
+    return
+  ,{
+    root: setting.watchRootElement,
+    ...repackSetting
+  })
+  
+  {
+    allWatch: () ->
+        $.each(elements, (el) -> 
+            observer.observe(el)
+            return
+        )
+        return
+    ,
+    unWatchSingleElement: (element) ->
+        observer.unobserve element
+        return
+    ,
+    allUnWatch: () ->
+        observer.disconnect()
         return
   }
 

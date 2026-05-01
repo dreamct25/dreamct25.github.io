@@ -27,7 +27,7 @@
 |Hotels|hotels|1.0.7|2024-10-04|[前往畫面](https://dreamct25.github.io/hotels)
 |統一發票號碼查詢|invoice-check|1.0.2|2024-10-04|[前往畫面](https://dreamct25.github.io/invoice-check)
 |Movies|movies|1.0.1|2021-11-19|[前往畫面](https://dreamct25.github.io/movies)
-|個人開發函式庫|my_library|1.7.0|2026-02-16|[前往畫面](https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library)
+|個人開發函式庫|my_library|1.7.1|2026-05-01|[前往畫面](https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library)
 |個人履歷|resume_new|3.3.2|2026-01-25|[前往畫面](https://dreamct25.github.io/resume_new)
 |簡易語系轉換工具|simple-translate|1.0.0|2026-02-10|[前往畫面](https://dreamct25.github.io/simple-translate)
 |占星小站|stars|3.0.0|2025-05-12|[前往畫面](https://dreamct25.github.io/stars)

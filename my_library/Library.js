@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - Javascript Ver 1.7.0
-// Work Environment Javascript ES6 or latest、ESlint v10.0.0
+// CopyRight © 2021-08 - 2026-05 Alex Chen. Library Language - Javascript Ver 1.7.1
+// Work Environment Javascript ES6 or latest、ESlint v10.2.1
 //
 // Use in CommonJS
 // module.exports = $
@@ -17,7 +17,7 @@ const $ = target => {
   self.texts = (txt) => { if (txt !== undefined) { self.textContent = txt } else { return self.textContent } }
   self.html = (dom) => { if (dom !== undefined) { self.innerHTML = dom } else { return self.innerHTML } }
   self.addClass = (classText) => { self.classList.add(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
-  self.removeClass = (classTxt) => { self.classList.remove(classTxt); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
+  self.removeClass = (classText) => { self.classList.remove(classText); return self } // 更新方法 2022/03/12 變形為可鏈式寫法
   self.toggleClass = (classText) => self.classList.toggle(classText) // 更新方法 2021/09/20
   self.on = (eventType, callBack) => { self[['on', eventType].join('')] = callBack } // 更新方法 2021/09/20
   self.listener = (eventType, callBack) => { self.addEventListener(eventType, callBack) }
@@ -32,8 +32,8 @@ const $ = target => {
   self.parent = () => self.parentNode // 更新方法 2021/08/31
   self.appendDom = (el) => { self.append(el) } // 更新方法 2021/09/12
   self.removeDom = () => { self.remove() } // 更新方法 2021/09/12
-  self.removeChildDom = (childDom) => { self.removeChild(childDom) } // 更新方法 2021/10/25
-  self.appendDomText = (el) => self.appendChild(el) // 更新方法 2021/09/12
+  self.removeChildDom = childDom => { self.removeChild(childDom) } // 更新方法 2025/10/28
+  self.appendDomText = (el) => self.appendDomText(el) // 更新方法 2021/09/12
   self.easyAppendDom = (orderBy, domStr) => { self.insertAdjacentHTML(orderBy !== 'afterDom' ? 'afterbegin' : 'beforeend', domStr) } // 更新方法 2021/11/25
   self.styles = (method, cssType, cssParameter) => {
     // 更新方法 2021/10/26
@@ -102,10 +102,11 @@ const $ = target => {
     })()
   }
 
-  self.useWillMount = willMountCallBack => { // 更新方法 2022/03/19
+  self.useWillMount = (willMountCallBack) => { // 更新方法 2022/03/19
+    const vm = self
     if (typeof self === 'object') {
-      if ($.typeOf(self, 'HTMLDocument')) {
-        self.listener('readystatechange', ({ target }) => { target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target) })
+      if ($.typeOf(vm, 'HTMLDocument')) {
+        vm.listener('readystatechange', ({ target }) => { target.readyState === 'interactive' && willMountCallBack.call(willMountCallBack, target) })
       } else {
         $.console('error', 'UseWillMount hook just use when selector document.')
       }
@@ -114,10 +115,11 @@ const $ = target => {
     }
   }
 
-  self.useMounted = useMountedCallBack => { // 更新方法 2022/03/19
+  self.useMounted = (useMountedCallBack) => { // 更新方法 2022/03/19
+    const vm = self
     if (typeof self === 'object') {
-      if ($.typeOf(self, 'HTMLDocument')) {
-        self.listener('readystatechange', ({ target }) => { target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target) })
+      if ($.typeOf(vm, 'HTMLDocument')) {
+        vm.listener('readystatechange', ({ target }) => { target.readyState === 'complete' && useMountedCallBack.call(useMountedCallBack, target) })
       } else {
         $.console('error', 'UseMounted Hook just use when selector document.')
       }
@@ -132,19 +134,19 @@ const $ = target => {
 // public function
 $.each = (item, callBack) => { item.forEach((items, index) => { callBack.call(callBack, items, index) }) }
 $.maps = (item, callBack) => item.map((items, index) => callBack.call(callBack, items, index))
-$.filter = (item, callBack) => item.filter((items) => callBack.call(callBack, items))
+$.filter = (item, callBack) => item.filter(items => callBack.call(callBack, items))
 $.find = (item, callBack) => item.find(items => callBack.call(callBack, items)) // 更新方法 2022/03/12
 $.sort = (item, callBack) => item.sort((a, b) => callBack.call(callBack, a, b))
+$.sum = (...args) => { // 更新方法 2025/04/10 調整為通用多載
+  const [item, callBack, initialVal] = args
+  return initialVal
+    ? item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr), initialVal)
+    : item.reduce((a, b, index, arr) => callBack.call(callBack, a, b, index, arr))
+}
 $.indexOf = (item, x) => item.indexOf(x)
 $.includes = (item, x) => item.includes(x)
 $.findIndexOfObj = (item, callBack) => item.findIndex((items) => callBack.call(callBack, items))
 $.findObjProperty = (obj, propertyName) => Object.prototype.hasOwnProperty.call(obj, propertyName) // 更新方法 2022/03/23
-$.sum = (...args) => { // 更新方法 2025/04/10 調整為通用多載
-  const [item, callback, initialVal] = args
-  return initialVal
-    ? item.reduce((a, b, index, arr) => callback.call(callback, a, b, index, arr), initialVal)
-    : item.reduce((a, b, index, arr) => callback.call(callback, a, b, index, arr))
-}
 $.mergeArray = (item, mergeItem, callBack) => callBack ? callBack.call(callBack, item.concat(mergeItem)) : item.concat(mergeItem) // 更新方法 2022/03/23
 $.typeOf = (item, classType) => classType ? item.constructor.name === classType : item.constructor.name // 更新方法 2021/10/26
 $.console = (type, ...item) => console[type](...item) // 更新方法 2021/10/26
@@ -165,8 +167,8 @@ $.registerCustomEvent = (eventName, fn) => { window.addEventListener(eventName, 
 $.useCustomEvent = (eventObj) => window.dispatchEvent(eventObj) // 更新方法 2022/07/13
 $.removeCustomEvent = (eventName, fn) => { window.removeEventListener(eventName, fn) } // 更新方法 2022/07/13
 $.createPromise = async (callBack) => await new Promise((resolve, reject) => { callBack.call(callBack, resolve, reject) }) // 更新方法 2022/07/14
-$.createPromiseAll = async (...paramaters) => await Promise.all(paramaters) // 更新方法 2022/07/14
-$.createDomText = (text) => document.createTextNode(text) // 更新方法 2021/09/12
+$.createPromiseAll = async (paramaters) => await Promise.all(paramaters) // 更新方法 2022/07/14
+$.createDomText = text => document.createTextNode(text) // 更新方法 2021/09/12
 $.objDetails = (obj, method) => { if (method && $.includes(['keys', 'values', 'entries'], method)) { return Object[method](obj) } else { $.console('error', "please enter secode prameter 'keys' or 'values' or 'entries' in type string") } } // 更新方法 2021/09/12
 $.isObjectTheSame = (objI, objII) => $.convert(objI, 'stringify') === $.convert(objII, 'stringify') // 更新方法 2023/05/31
 $.useSleep = async sleepTime => { await new Promise((resolve) => setTimeout(() => { resolve() }, sleepTime)) } // 更新方法 2024/06/29
@@ -228,19 +230,26 @@ $.createArray = ({ type, item }, repack) => { // 更新方法 2022/03/14
    * @returns {Array}
    */
   // #endregion
+
+  const itemTemp = item
+
   if (type === 'fake') {
-    if ('random' in item && $.typeOf(item.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
-      return Array.from({ length: item.random }, (_, items) => repack.call(repack, items))
+    if ('random' in itemTemp && $.typeOf(itemTemp.random, 'Number') && repack !== undefined && $.typeOf(repack, 'Function')) {
+      return Array.from({ length: itemTemp.random }, (_, items) => repack.call(repack, items))
     } else {
       $.console('error', 'item property must have random in object and radom type must be number,with call back function in secode parameters.')
     }
-  } else if (type === 'new' && !('random' in item)) {
+  } else if (type === 'new' && !('random' in itemTemp)) {
     return Array.from(item)
   }
+
+  return undefined
 }
 
-$.convert = (val, type) => { // 更新方法 2024/12/14
-  if (!val || !type || !$.includes(['string', 'number', 'float', 'boolean', 'json', 'stringify'], type)) {
+$.convert = (val, type) => {
+  // 更新泛型回傳值 2022/03/19
+  // 更新方法 2024/12/14
+  if (!val || !type) {
     $.console('error', "Please enter first parameters value who want to convert and seconde paramters value is convert type 'string' or 'number' or 'float' or 'boolean' or 'json' or 'stringify'.")
     return
   } else if ($.typeOf(val, 'Object') && $.includes(['string', 'number', 'float', 'boolean'], type)) {
@@ -290,10 +299,16 @@ $.createDom = (options, elementSelfHandler) => { // 更新方法v2 2026/02/15
   return undefined
 }
 
-$.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
+$.currencyTranser = (formatNumber, withCurrencyStyle, currencyLocale ,currencyType) => { 
+  // 更新方法 2022/06/24
+  // 修正方法 2026/04/27
   if ($.typeOf(formatNumber, 'Number')) {
-    const currencyOptionalObj = !withCurrencyStyle ? {} : { style: 'currency', currency: currencyType }
-    return new Intl.NumberFormat(currencyType || 'TWN', currencyOptionalObj).format(formatNumber)
+    
+    return formatNumber.toLocaleString(
+      currencyLocale || 'zh-TW', 
+      !withCurrencyStyle ? undefined : { style: 'currency', currency: currencyType || 'TWN' }
+    )
+
   } else {
     $.console('error', 'First argument formatNumber type must use number.')
   }
@@ -368,6 +383,36 @@ $.useEventSource = (url, config) => { // 更新方法 2025/10/28
     getStreamResults: callback => events.onmessage = event => { callback($.convert(event.data, 'json'), event) },
     getStreamError: callback => events.onerror = event => { callback(event) },
     closeStream: () => { events.close() }
+  }
+}
+
+$.elementObserver = (elements, setting, callback) => { // 更新方法 2026/04/27
+
+  const repackSetting = {}
+
+  if(setting?.triggerPos) repackSetting.rootMargin = setting.triggerPos
+  if(setting?.threshold) repackSetting.threshold = setting.threshold
+
+  const observer = new IntersectionObserver((entries) => {
+    $.each(
+      entries,
+      (wathSingleElement, elementArrayIndex) => callback.call(callback, wathSingleElement, elementArrayIndex)
+    )
+  }, {
+    root: setting.watchRootElement,
+    ...repackSetting
+  })
+  
+  return {
+    allWatch: () => {
+      $.each(elements, el => observer.observe(el))
+    },
+    unWatchSingleElement: element => {
+      observer.unobserve(element)
+    },
+    allUnWatch: () => {
+      observer.disconnect()
+    }
   }
 }
 
@@ -757,6 +802,8 @@ String.prototype.format = function (formatStr, ...values) { // 更新方法 2022
   } else {
     $.console('error', 'First paramter must use type string,if use string must like this ex：abc {0} efg {1}.')
   }
+
+  return undefined
 }
 
 String.toChartCode = (str) => $.createArray({ type: 'fake', item: { random: str.length } }, (index) => str.charCodeAt(index)) // 更新方法 2023/05/31
@@ -777,12 +824,6 @@ Date.prototype.calculateFullDateTime = function (year, month, day, hour, minute,
   if (second) calFullDateTime.setSeconds(this.getSeconds() + second)
 
   return calFullDateTime
-}
-
-Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
-
-Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
-  if (timeZone) { return new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() } else { $.console('error', 'Lost one parameter in function.') } // 更新方法 2021/03/23
 }
 
 Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
@@ -808,13 +849,19 @@ Date.formatCountingTime = function ({ formatTimesTemp, formatType }) {
   return formatType.replace(/dd/g, addZero(dayFix)).replace(/HH/g, addZero(hourFix)).replace(/mm/g, addZero(minuteFix)).replace(/ss/g, addZero(secondesFix))
 }
 
+Date.prototype.getLocalTimeZone = function () { return Math.abs(this.getTimezoneOffset() / 60) } // 更新方法 2023/02/07
+
+Date.prototype.toOptionTimeZoneForISO = function (timeZone) {
+  if (timeZone) { return new Date(+this + (timeZone * 60 * 60 * 1000)).toISOString() } else { $.console('error', 'Lost one parameter in function.') } // 更新方法 2021/03/23
+}
+
 Array.prototype.append = function (item) { this.push(item) } // 更新方法 2021/03/23
 
 Array.prototype.appendFirst = function (item) { this.unshift(item); return this } // 更新方法 2021/03/23
 
-Array.prototype.range = function (startPos, endPos) { return this.slice(startPos, endPos) }
-
 Array.prototype.remove = function (pos) { this.splice(pos, 1); return this } // 更新方法 2021/03/23
+
+Array.prototype.range = function (startPos, endPos) { return this.slice(startPos, endPos) } // 更新方法 2021/03/23
 
 Array.prototype.removeFirst = function () { this.shift(); return this } // 更新方法 2021/03/23
 

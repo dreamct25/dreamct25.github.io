@@ -1,5 +1,5 @@
-// CopyRight © 2021-08 - 2026-02 Alex Chen. Library Language - Typescript Ver 1.7.0
-// Work Environment Typescript v5.9.3、ESlint v10.0.0
+// CopyRight © 2021-08 - 2026-05 Alex Chen. Library Language - Typescript Ver 1.7.1
+// Work Environment Typescript v6.0.2、ESlint v10.2.1
 //
 // Use in ESModule
 // export default $
@@ -140,7 +140,7 @@ declare interface $ { // 更新 2022/06/29
   convert<T>(val: any, type: convertType): T
   createDom<K extends keyof HTMLElementTagNameMap, N extends HTMLElement[]>(options: Partial<HTMLElementTagNameMap[K]> & { elementTag: K, treeNodes?: [...N] }, selfHandler?: (elementSelf: HTMLElementTagNameMap[K]) => void): HTMLElementTagNameMap[K]
   createDom<K extends keyof HTMLElementTagNameMap, N extends HTMLElement[]>(options: Partial<HTMLElementTagNameMap[K]> & { elementTag: undefined, treeNodes?: [...N] }, selfHandler?: (elementSelf: HTMLElementTagNameMap[K]) => void): undefined
-  currencyTranser(formatNumber: number, currencyType: string, withCurrencyStyle: boolean): string | undefined
+  currencyTranser(formatNumber: number, withCurrencyStyle: boolean, currencyLocale?: Intl.LocalesArgument, currencyType?: string): string | undefined
   isObjectTheSame<T1, T2>(objI: T1, obj: T2): boolean
   useSleep(sleepTime: number): Promise<void>
   useBase64(method: codeType, str: string): string
@@ -153,7 +153,17 @@ declare interface $ { // 更新 2022/06/29
     getStreamResults: (callback: (result: T, event: MessageEvent) => void) => void
     getStreamError: (callback: (result: MessageEvent) => void) => void
     closeStream: () => void
+  },
+  elementObserver<E, W>(
+    elements: E[],
+    setting: { watchRootElement: W, triggerPos?: string, threshold?: number },
+    callback: (singleElement: IntersectionObserverEntry, elementArrayIndex: number) => void
+  ): {
+    allWatch(): void,
+    unWatchSingleElement<UWE>(element: UWE): void,
+    allUnWatch(): void
   }
+
   /**
   * This is a super fix type useing be carefully.
   */
@@ -466,7 +476,7 @@ $.createDom = (options, elementSelfHandler) => { // 更新方法v2 2026/02/15
       (element as Record<string, any>)[properties] = value
     })
 
-    if(options?.treeNodes) $.each(options.treeNodes, row => $(element as HTMLElement).appendDom(row))
+    if(options?.treeNodes) $.each(options.treeNodes, row => $<HTMLElement>(element).appendDom(row))
 
     if(elementSelfHandler) elementSelfHandler.call(elementSelfHandler, element)
 
@@ -478,10 +488,16 @@ $.createDom = (options, elementSelfHandler) => { // 更新方法v2 2026/02/15
   return undefined
 }
 
-$.currencyTranser = (formatNumber, currencyType, withCurrencyStyle) => { // 更新方法 2022/06/24
+$.currencyTranser = (formatNumber, withCurrencyStyle, currencyLocale ,currencyType) => { 
+  // 更新方法 2022/06/24
+  // 修正方法 2026/04/27
   if ($.typeOf(formatNumber, 'Number')) {
-    const currencyOptionalObj: Intl.NumberFormatOptions = !withCurrencyStyle ? {} : { style: 'currency', currency: currencyType }
-    return new Intl.NumberFormat(currencyType || 'TWN', currencyOptionalObj).format(formatNumber)
+    
+    return formatNumber.toLocaleString(
+      currencyLocale || 'zh-TW', 
+      !withCurrencyStyle ? undefined : { style: 'currency', currency: currencyType || 'TWN' }
+    )
+
   } else {
     $.console('error', 'First argument formatNumber type must use number.')
   }
@@ -560,6 +576,36 @@ $.useEventSource = (url, config) => { // 更新方法 2025/10/28
     getStreamResults: callback => events.onmessage = event => { callback($.convert<any>(event.data, 'json'), event) },
     getStreamError: callback => events.onerror = event => { callback(event as any) },
     closeStream: () => { events.close() }
+  }
+}
+
+$.elementObserver = (elements, setting, callback) => { // 更新方法 2026/04/27
+
+  const repackSetting: Record<string, any> = {}
+
+  if(setting?.triggerPos) repackSetting.rootMargin = setting.triggerPos
+  if(setting?.threshold) repackSetting.threshold = setting.threshold
+
+  const observer = new IntersectionObserver((entries) => {
+    $.each(
+      entries,
+      (wathSingleElement, elementArrayIndex) => callback.call(callback, wathSingleElement, elementArrayIndex)
+    )
+  }, {
+    root: setting.watchRootElement as Element,
+    ...repackSetting
+  })
+  
+  return {
+    allWatch: () => {
+      $.each(elements as Element[], el => observer.observe(el))
+    },
+    unWatchSingleElement: element => {
+      observer.unobserve(element as Element)
+    },
+    allUnWatch: () => {
+      observer.disconnect()
+    }
   }
 }
 
@@ -697,6 +743,7 @@ class FetchClass { // 更新 FetchClass 類封裝方法內容 2022/03/24
 
     if (usePromise) {
       // 更新 Promise 導出 Request 成功與錯誤回傳內容 2022/05/01
+      // eslint-disable-next-line no-async-promise-executor
       return await new Promise<fetchClassReturnType<T>>(async (resolve) => {
         if (res.status >= 200 && res.status < 400) {
           const result: T = await (res as Record<string, any>)[returnTypeUse]()
@@ -883,7 +930,7 @@ declare global {
   }
 
   interface String {
-    format(formatStr: string, value: any[]):(string | undefined)
+    format(formatStr: string, value: any[]): (string | undefined)
     appendText(txt: string): string
     appendDirection(direction: padDirection, pos: number, txt: string): string
     range(startPos: number, endPos: number): string
