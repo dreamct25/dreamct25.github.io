@@ -18,7 +18,7 @@
 |待辦清單|To_Do_List|3.0.0|2022-10-29|[前往畫面](https://dreamct25.github.io/To_Do_List)
 |旅遊網|Travel|3.1.2|2024-10-04|[前往畫面](https://dreamct25.github.io/Travel)
 |天氣預報|Weather|3.1.0|2025-01-22|[前往畫面](https://dreamct25.github.io/Weather)
-|年曆 (PWA)|almanac|1.5.0|2026-05-11|[前往畫面](https://dreamct25.github.io/almanac)
+|年曆 (PWA)|almanac|1.5.1|2026-05-16|[前往畫面](https://dreamct25.github.io/almanac)
 |個人部落格|blog|3.0.8|2024-10-04|[前往畫面](https://dreamct25.github.io/blog)
 |個人記帳系統|cash|3.0.3|2024-10-04|[前往畫面](https://dreamct25.github.io/cash)
 |多項色彩轉換器|color_converter|1.0.5|2023-06-13|[前往畫面](https://dreamct25.github.io/color_converter)
