@@ -32,5 +32,5 @@
 |個人履歷|resume_new|3.3.2|2026-01-25|[前往畫面](https://dreamct25.github.io/resume_new)
 |簡易語系轉換工具|simple-translate|1.0.0|2026-02-10|[前往畫面](https://dreamct25.github.io/simple-translate)
 |占星小站|stars|3.0.0|2025-05-12|[前往畫面](https://dreamct25.github.io/stars)
-|Store|store|3.0.0|2026-05-30|[前往畫面](https://dreamct25.github.io/store)
+|Store|store|3.0.1|2026-06-16|[前往畫面](https://dreamct25.github.io/store)
 |影音小站|videos|3.0.2|2022-11-08|[前往畫面](https://dreamct25.github.io/videos)
