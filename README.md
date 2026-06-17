@@ -26,7 +26,7 @@
 |Fashion Shop (模擬電商)|fashion_shop|3.0.3|2024-10-04|[前往畫面](https://dreamct25.github.io/fashion_shop)
 |Hotels|hotels|1.0.7|2024-10-04|[前往畫面](https://dreamct25.github.io/hotels)
 |統一發票號碼查詢|invoice-check|1.0.2|2024-10-04|[前往畫面](https://dreamct25.github.io/invoice-check)
-|Movies|movies|1.0.1|2021-11-19|[前往畫面](https://dreamct25.github.io/movies)
+|Movies|movies|2.0.0|2026-06-17|[前往畫面](https://dreamct25.github.io/movies)
 |個人開發函式庫|my_library|1.7.1|2026-05-01|[前往畫面](https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library)
 |個人開發函式庫 (Npm Pack Version)|self-libraries|1.7.1|2026-05-18|[前往畫面](https://github.com/dreamct25/self-libraries)
 |個人履歷|resume_new|3.3.2|2026-01-25|[前往畫面](https://dreamct25.github.io/resume_new)
