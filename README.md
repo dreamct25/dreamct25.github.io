@@ -14,7 +14,7 @@
 |翻牌記憶遊戲|Memory_Card_Game|3.1.3|2024-10-04|[前往畫面](https://dreamct25.github.io/Memory_Card_Game)
 |人格測驗|Mind|3.1.2|2024-10-04|[前往畫面](https://dreamct25.github.io/Mind)
 |鍵盤聲音|Music|無|2020-05-31|[前往畫面](https://dreamct25.github.io/Music)
-|拼圖遊戲|Puzzle_Game|0.995|2020-07-18|[前往畫面](https://dreamct25.github.io/Puzzle_Game)
+|拼圖遊戲|Puzzle_Game|3.0.0|2026-06-19|[前往畫面](https://dreamct25.github.io/Puzzle_Game)
 |待辦清單|To_Do_List|3.0.0|2022-10-29|[前往畫面](https://dreamct25.github.io/To_Do_List)
 |旅遊網|Travel|3.1.2|2024-10-04|[前往畫面](https://dreamct25.github.io/Travel)
 |天氣預報|Weather|3.1.0|2025-01-22|[前往畫面](https://dreamct25.github.io/Weather)
