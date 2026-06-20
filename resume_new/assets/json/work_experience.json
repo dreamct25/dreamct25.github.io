@@ -125,5 +125,12 @@
         "jobRole":"workExperienceGroup.wRoleFrontend",
         "jobContent":"workExperienceGroup.w18Desc",
         "useSkills":"Html、CSS、Javascript、JQuery"
+    }, {
+        "title":"workExperienceGroup.w19Title",
+        "jobTimeStart":"2025-12",
+        "jobTimeEnd":"Now",
+        "jobRole":"workExperienceGroup.wRoleFrontend",
+        "jobContent":"workExperienceGroup.w19Desc",
+        "useSkills":"Html、CSS、SCSS、Javascript、Vue"
     }
 ]

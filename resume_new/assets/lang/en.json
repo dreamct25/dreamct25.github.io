@@ -121,7 +121,9 @@
         "w17Title":"Institute for Information Industry - Sports Passbook Terminal trigger Program",
         "w17Desc":"Mainly send event sources through the mobile web page to control the local program and use puppeteer to automatically control the process of displaying the riding views of the exercise bike game through crawling.",
         "w18Title":"Hua Nan Bank - Video Chorus System",
-        "w18Desc":"Mainly assist in designing customized UI and views interaction animations for new functions."
+        "w18Desc":"Mainly assist in designing customized UI and views interaction animations for new functions.",
+        "w19Title":"XForce Entertainment Co., Ltd.",
+        "w19Desc":"Responsible for maintaining legacy web platforms such as Y5, H5, and Wakool.Games, including bug fixes, UI/UX improvements, and feature development. Developed event landing pages with Google Analytics integration for engagement tracking, and created Looker Studio reports to analyze user behavior, regional traffic, and device distribution to support business optimization."
     },
     "experienceModal": {
         "title":["Work Role","Work Details","Use Skill"]

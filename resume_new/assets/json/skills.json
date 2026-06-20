@@ -1,63 +1,63 @@
 [
   {
-    "categoryTitle":"skillDescGroup.coreLang",
-    "category":"coreLang",
+    "categoryTitle": "skillDescGroup.coreLang",
+    "category": "coreLang",
     "categorySkill": [
-      "JavaScript","JavaScript ES6+","TypeScript","C#","SQL"
+      "JavaScript", "JavaScript ES6+", "TypeScript", "C#", "SQL"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.UILibrary",
-    "category":"UILibrary",
+    "categoryTitle": "skillDescGroup.UILibrary",
+    "category": "UILibrary",
     "categorySkill": [
       "Material UI", "Bootstrap4"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.buildTool",
-    "category":"buildTool",
+    "categoryTitle": "skillDescGroup.buildTool",
+    "category": "buildTool",
     "categorySkill": [
-      "Webpack","Parcel","Vite","Rollup","ESBuild","Babel"
+      "Webpack", "Parcel", "Vite", "Rollup", "ESBuild", "Babel"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.frontend",
-    "category":"frontend",
+    "categoryTitle": "skillDescGroup.frontend",
+    "category": "frontend",
     "categorySkill": [
-      "React","Redux","Vue","Vuex","Pinia","Svelte","Pug","jQuery","Scss","RWD","i18n","i18next",
-      "AJAX","Axios","Json Server",
+      "React", "Redux", "Vue", "Vuex", "Pinia", "Zustand","Svelte", "Pug", "jQuery", "Scss", "RWD", "i18n", "i18next",
+      "AJAX", "Axios", "Json Server", "Linaria", "PWA", "vue-router", "@tanstack/react-router", "react-router-dom",
       "Electron", "Chrome Extenstion"
     ]
   }, {
     "categoryTitle":"skillDescGroup.backend",
     "category":"backend",
     "categorySkill": [
-      "Node.js","Express.js","WebSocket","RESTful API","Pkg"
+      "Node.js", "Express.js", "WebSocket", "RESTful API", "Pkg", "Node.js IO"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.database",
-    "category":"database",
+    "categoryTitle": "skillDescGroup.database",
+    "category": "database",
     "categorySkill": [
-      "MSSQL","MySQL","PostgreSQL","SQLite"
+      "MSSQL", "MySQL", "PostgreSQL", "SQLite"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.encryptionTechnology",
-    "category":"encryptionTechnology",
+    "categoryTitle": "skillDescGroup.encryptionTechnology",
+    "category": "encryptionTechnology",
     "categorySkill": [
       "SHA-256", "RSA"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.microService",
-    "category":"microService",
+    "categoryTitle": "skillDescGroup.microService",
+    "category": "microService",
     "categorySkill": [
       "Docker", "Docker Compose"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.devTool",
-    "category":"devTool",
+    "categoryTitle": "skillDescGroup.devTool",
+    "category": "devTool",
     "categorySkill": [
       "Visual Studio", "Visual Studio Code"
     ]
   }, {
-    "categoryTitle":"skillDescGroup.versionControll",
-    "category":"versionControll",
+    "categoryTitle": "skillDescGroup.versionControll",
+    "category": "versionControll",
     "categorySkill": [
       "Github", "GitLab"
     ]
