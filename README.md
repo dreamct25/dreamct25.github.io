@@ -8,7 +8,7 @@
 |BMI 計算機|BMI_Calculator|3.0.3|2024-08-30|[前往畫面](https://dreamct25.github.io/BMI_Calculator)
 |計算機|Calculator|3.0.0|2022-10-17|[前往畫面](https://dreamct25.github.io/Calculator)
 |多功能畫布|Canvas|3.0.0|2022-10-20|[前往畫面](https://dreamct25.github.io/Canvas)
-|世界時鐘|Clock|3.0.1|2022-10-18|[前往畫面](https://dreamct25.github.io/Clock)
+|世界時鐘|Clock|3.0.5|2026-06-22|[前往畫面](https://dreamct25.github.io/Clock)
 |圖片控制器|Image_Controller|無|2020-06-02|[前往畫面](https://dreamct25.github.io/Image_Controller)
 |媒體播放器|Media_player|3.0.0|2022-10-29|[前往畫面](https://dreamct25.github.io/Media_player)
 |翻牌記憶遊戲|Memory_Card_Game|3.1.3|2024-10-04|[前往畫面](https://dreamct25.github.io/Memory_Card_Game)
