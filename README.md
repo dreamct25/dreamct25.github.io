@@ -29,7 +29,7 @@
 |Movies|movies|2.0.0|2026-06-17|[前往畫面](https://dreamct25.github.io/movies)
 |個人開發函式庫|my_library|1.7.1|2026-05-01|[前往畫面](https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library)
 |個人開發函式庫 (Npm Pack Version)|self-libraries|1.7.1|2026-05-18|[前往畫面](https://github.com/dreamct25/self-libraries)
-|個人履歷|resume_new|3.3.2|2026-01-25|[前往畫面](https://dreamct25.github.io/resume_new)
+|個人履歷|resume_new|3.4.0|2026-06-24|[前往畫面](https://dreamct25.github.io/resume_new)
 |簡易語系轉換工具|simple-translate|1.0.0|2026-02-10|[前往畫面](https://dreamct25.github.io/simple-translate)
 |占星小站|stars|3.0.0|2025-05-12|[前往畫面](https://dreamct25.github.io/stars)
 |Store|store|3.0.1|2026-06-16|[前往畫面](https://dreamct25.github.io/store)

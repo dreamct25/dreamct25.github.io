@@ -19,7 +19,7 @@
       "collectWeb": "https://dreamct25.github.io/Canvas/",
       "collectDesc": "collectDescGroup.multipurposeCanvas",
       "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
-      "collectPlugin": "Pug"
+      "collectPlugin": "Parcel、Pug"
     },
     {
       "collectNum": 3,
@@ -29,19 +29,8 @@
         "https://github.com/dreamct25/develop_rep/tree/master/design/clock",
       "collectWeb": "https://dreamct25.github.io/Clock/",
       "collectDesc": "collectDescGroup.globalClock",
-      "collectSkill": "HTML5、CSS3、JavaScript ( ES6 )、RWD",
-      "collectPlugin": "None"
-    },
-    {
-      "collectNum": 4,
-      "collectName": "collectTitleGroup.imageController",
-      "collectImgUrl": "img/image-controler.jpg",
-      "collectCode":
-        "https://github.com/dreamct25/dreamct25.github.io/tree/master/Image_Controller",
-      "collectWeb": "https://dreamct25.github.io/Image_Controller/",
-      "collectDesc": "collectDescGroup.imageController",
-      "collectSkill": "HTML5、CSS3、JavaScript ( ES6 )",
-      "collectPlugin": "None"
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD",
+      "collectPlugin": "Parcel、Pug"
     },
     {
       "collectNum": 5,
@@ -67,50 +56,28 @@
     },
     {
       "collectNum": 7,
-      "collectName": "collectTitleGroup.keyBoardSound",
-      "collectImgUrl": "img/music.jpg",
-      "collectCode":
-        "https://github.com/dreamct25/dreamct25.github.io/tree/master/Music",
-      "collectWeb": "https://dreamct25.github.io/Music/",
-      "collectDesc": "collectDescGroup.keyBoardSound",
-      "collectSkill": "HTML5、CSS3、JavaScript ( ES6 )",
-      "collectPlugin": "None"
-    },
-    {
-      "collectNum": 8,
-      "collectName": "collectTitleGroup.mediaPlayer",
-      "collectImgUrl": "img/player.jpg",
-      "collectCode":
-        "https://github.com/dreamct25/develop_rep/tree/master/design/media-player",
-      "collectWeb": "https://dreamct25.github.io/Media_player/",
-      "collectDesc": "collectDescGroup.mediaPlayer",
-      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
-      "collectPlugin": "Pug、Parcel"
-    },
-    {
-      "collectNum": 9,
       "collectName": "collectTitleGroup.puzzleGame",
       "collectImgUrl": "img/puzzle.jpg",
       "collectCode":
-        "https://github.com/dreamct25/dreamct25.github.io/tree/master/Puzzle_Game",
+        "https://github.com/dreamct25/develop_rep/tree/master/design/puzzle-game",
       "collectWeb": "https://dreamct25.github.io/Puzzle_Game/",
       "collectDesc": "collectDescGroup.puzzleGame",
-      "collectSkill": "HTML5、SCSS、JavaScript ( ES6 )、RWD",
-      "collectPlugin": "None"
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD",
+      "collectPlugin": "Vite、Pug"
     },
     {
-      "collectNum": 10,
+      "collectNum": 8,
       "collectName": "collectTitleGroup.toDoList",
       "collectImgUrl": "img/to-do-list.jpg",
       "collectCode":
-        "https://github.com/dreamct25/dreamct25.github.io/tree/master/To_Do_List",
+        "https://github.com/dreamct25/develop_rep/tree/master/design/to-do-list",
       "collectWeb": "https://dreamct25.github.io/To_Do_List/",
       "collectDesc": "collectDescGroup.toDoList",
-      "collectSkill": "HTML5、SCSS、JavaScript ( ES6 )",
-      "collectPlugin": "None"
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
+      "collectPlugin": "Parcel、Pug"
     },
     {
-      "collectNum": 11,
+      "collectNum": 9,
       "collectName": "collectTitleGroup.travelSite",
       "collectImgUrl": "img/travel.jpg",
       "collectCode":
@@ -121,18 +88,18 @@
       "collectPlugin": "Leaflet、Parcel、Pug"
     },
     {
-      "collectNum": 12,
+      "collectNum": 10,
       "collectName": "collectTitleGroup.weather",
       "collectImgUrl": "img/weather.jpg",
       "collectCode":
         "https://github.com/dreamct25/develop_rep/tree/master/design/weather",
       "collectWeb": "https://dreamct25.github.io/Weather/",
       "collectDesc": "collectDescGroup.weather",
-      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD",
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD、TSX",
       "collectPlugin": "React、Esbuild、Linaria"
     },
     {
-      "collectNum": 13,
+      "collectNum": 11,
       "collectName": "collectTitleGroup.BMICalculator",
       "collectImgUrl": "img/weight.jpg",
       "collectCode":
@@ -143,65 +110,65 @@
       "collectPlugin": "Pug、Boostrap 4"
     },
     {
-      "collectNum": 14,
+      "collectNum": 12,
       "collectName": "collectTitleGroup.fashionShop",
       "collectImgUrl": "img/shop.jpg",
       "collectCode":
         "https://github.com/dreamct25/develop_rep/tree/master/Vue/shop-ts",
       "collectWeb": "https://dreamct25.github.io/fashion_shop",
       "collectDesc": "collectDescGroup.fashionShop",
-      "collectSkill": "HTML5、SCSS、JavaScript ( ES6 )、RWD",
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD",
       "collectPlugin":
-        "Boostrap 4、Vite、Babel、Vue-Router、Express、Body-parser、Cors、Morgan、PostgreSQL"
+        "Boostrap 4、Vite、Babel、Vite、Vue 3、Vue-Router、Pinia、Pug、Express、Body-parser、Cors、Morgan、PostgreSQL"
     },
     {
-      "collectNum": 15,
+      "collectNum": 13,
       "collectName": "collectTitleGroup.blog",
       "collectImgUrl": "img/blog.jpg",
       "collectCode":
         "https://github.com/dreamct25/develop_rep/tree/master/React/blog",
       "collectWeb": "https://dreamct25.github.io/blog/#/",
       "collectDesc": "collectDescGroup.blog",
-      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、RWD",
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )、TSX、RWD",
       "collectPlugin": "React、React Router Dom、Redux、Pug、Bootstrap 5、Markdown-it、Parcel"
     },
     {
-      "collectNum": 16,
+      "collectNum": 14,
       "collectName": "collectTitleGroup.astrologySite",
       "collectImgUrl": "img/stars.jpg",
       "collectCode":
-        "https://github.com/dreamct25/develop_rep/tree/master/Vue/stars_origin",
+        "https://github.com/dreamct25/develop_rep/tree/master/Vue/stars-pwa-ts",
       "collectWeb": "https://dreamct25.github.io/stars/#/",
       "collectDesc": "collectDescGroup.astrologySite",
       "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
-      "collectPlugin": "Vue、Vue Router、@ionic/vue、@ionic/vue-route、Pinia、Vite、PWA"
+      "collectPlugin": "Vue 3、Vue Router、@ionic/vue、@ionic/vue-route、Pinia、Vite、PWA"
     },
     {
-      "collectNum": 17,
+      "collectNum": 15,
       "collectName": "collectTitleGroup.mediaSite",
       "collectImgUrl": "img/videos.jpg",
       "collectCode":
         "https://github.com/dreamct25/develop_rep/tree/master/Vue/videos",
       "collectWeb": "https://dreamct25.github.io/videos/#/",
       "collectDesc": "collectDescGroup.mediaSite",
-      "collectSkill": "HTML5、SCSS、JavaScript ( ES6 )",
+      "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
       "collectPlugin":
         "Vue 3、Pug、Vue Router、Boostrap 4、video.js、videojs-youtube、vue-i18n、youtube Data 3 Api、Parcel"
     },
     {
-      "collectNum": 18,
+      "collectNum": 16,
       "collectName": "collectTitleGroup.store",
       "collectImgUrl": "img/store.jpg",
       "collectCode":
-        "https://github.com/dreamct25/develop_rep/tree/master/React/store_origin",
+        "https://github.com/dreamct25/develop_rep/tree/master/React/store-ts",
       "collectWeb": "https://dreamct25.github.io/store/#/",
       "collectDesc": "collectDescGroup.store",
-      "collectSkill": "HTML5、SCSS、RWD、JavaScript ( ES6 )、JSX",
+      "collectSkill": "HTML5、SCSS、RWD、TypeScript ( ES6 )、TSX",
       "collectPlugin":
-        "Boostrap 4、React、Redux、React Router Dom、Redux Immutable、Styled Components、Axios、Redux Thunk、Rss Parser"
+        "React、Zustand、@tanstack/react-router、Immer、Linaria、self-libraries、Vite"
     },
     {
-      "collectNum": 19,
+      "collectNum": 17,
       "collectName": "collectTitleGroup.hotels",
       "collectImgUrl": "img/hotels.jpg",
       "collectCode":
@@ -212,19 +179,19 @@
       "collectPlugin": "Boostrap 5、Angular 12"
     },
     {
-      "collectNum": 20,
+      "collectNum": 18,
       "collectName": "collectTitleGroup.movies",
       "collectImgUrl": "img/movies.jpg",
       "collectCode":
-        "https://github.com/dreamct25/develop_rep/tree/master/React/movies_origin",
+        "https://github.com/dreamct25/develop_rep/tree/master/React/movies-ts",
       "collectWeb": "https://dreamct25.github.io/movies/",
       "collectDesc": "collectDescGroup.movies",
       "collectSkill": "HTML5、SCSS、RWD、TSX、TypeScript ( ES6 )",
       "collectPlugin":
-        "React、React Router Dom、Redux、Redux Immutable、Redux Saga、Immutable、Styled Components、Opencc.js、Video.js、Axios、Boostrap 5"
+        "React、@tanstack/react-router、Zustand、Immer、Linaria、OpenCC、Video.js"
     },
     {
-      "collectNum": 21,
+      "collectNum": 19,
       "collectName": "collectTitleGroup.radio",
       "collectImgUrl": "img/radio.jpg",
       "collectCode": "https://github.com/dreamct25/develop_rep/tree/master/Electron/radio_app",
@@ -235,7 +202,7 @@
         "Electron-Forge、React、React Router Dom、Sqlite3、hinet-hichannel-taiwan-radio、i18next、Express、video.js"
     },
     {
-      "collectNum": 22,
+      "collectNum": 20,
       "collectName": "collectTitleGroup.countDown",
       "collectImgUrl": "img/count-down.jpg",
       "collectCode": "https://github.com/dreamct25/develop_rep/tree/master/design/count-down",
@@ -246,7 +213,7 @@
         "React、i18next、React-Particles、Tsparticles、Parcel"
     },
     {
-      "collectNum": 23,
+      "collectNum": 21,
       "collectName": "collectTitleGroup.invoiceCheck",
       "collectImgUrl": "img/invoice-check.jpg",
       "collectCode": "https://github.com/dreamct25/develop_rep/tree/master/Vue/invoice-check-ts",
@@ -254,10 +221,10 @@
       "collectDesc": "collectDescGroup.invoiceCheck",
       "collectSkill": "HTML5、SCSS、TypeScript ( ES6 )",
       "collectPlugin": 
-        "Vue、Pug、Esbuild"
+        "Vue 3、Pug、Esbuild"
     },
     {
-      "collectNum": 24,
+      "collectNum": 22,
       "collectName": "collectTitleGroup.colorConverter",
       "collectImgUrl": "img/color-converter.jpg",
       "collectCode": "https://github.com/dreamct25/develop_rep/tree/master/React/color-converter",
@@ -265,7 +232,29 @@
       "collectDesc": "collectDescGroup.colorConverter",
       "collectSkill": "HTML5、SCSS、TSX、TypeScript ( ES6 )",
       "collectPlugin":
-        "React、React Router Dom、i18next、Vite、Fortawesome"
+        "React、React Router Dom、Styled Components、i18next、Vite、Fontawesome"
+    },
+    {
+      "collectNum": 23,
+      "collectName": "collectTitleGroup.almanac",
+      "collectImgUrl": "img/almanac.jpg",
+      "collectCode":
+        "https://github.com/dreamct25/develop_rep/tree/master/React/almanac",
+      "collectWeb": "https://dreamct25.github.io/almanac",
+      "collectDesc": "collectDescGroup.almanac",
+      "collectSkill": "HTML5、SCSS、TSX、TypeScript ( ES6 )、TSX",
+      "collectPlugin": "React、React Icons、Vite、Vite Plugin PWA"
+    },
+    {
+      "collectNum": 24,
+      "collectName": "collectTitleGroup.simpleLanguageTranslate",
+      "collectImgUrl": "img/simple-translate.jpg",
+      "collectCode":
+        "https://github.com/dreamct25/develop_rep/tree/master/React/simple-translate",
+      "collectWeb": "https://dreamct25.github.io/simple-translate",
+      "collectDesc": "collectDescGroup.simpleLanguageTranslate",
+      "collectSkill": "HTML5、TSX、TypeScript ( ES6 )、TSX",
+      "collectPlugin": "React、OpenCC、Lucide React、Tailwindcss、Vite"
     },
     {
       "collectNum": 25,
@@ -273,9 +262,11 @@
       "collectImgUrl": "img/my_library.jpg",
       "collectCode":
         "https://github.com/dreamct25/dreamct25.github.io/tree/master/my_library",
+      "collectCode2":
+        "https://github.com/dreamct25/self-libraries",
       "collectWeb": "",
       "collectDesc": "collectDescGroup.DevelopmentLibrary",
       "collectSkill": "Javscript ( ES6+ )、TypeScript ( ES6+ )、CoffeeScript",
-      "collectPlugin": "None"
+      "collectPlugin": "Vite Library Pack (only for npm pack version)"
     }
 ]

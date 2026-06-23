@@ -1,5 +1,5 @@
 {
-    "zh":"中文 (zh-TW)",
+    "zh":"繁體 (zh-TW)",
     "en":"English (en-US)",
     "selfInfoTitle":"個人資訊",
     "educationTitle":"學歷",
@@ -18,11 +18,8 @@
         "calculator":"計算機",
         "multipurposeCanvas":"多功能畫布",
         "globalClock":"世界時鐘",
-        "imageController":"圖片控制器",
         "memoryCardGame":"翻牌記憶遊戲",
         "personalityTest":"人格測驗",
-        "keyBoardSound":"鍵盤聲音",
-        "mediaPlayer":"媒體播放器",
         "puzzleGame":"拼圖遊戲",
         "toDoList":"待辦清單",
         "travelSite":"旅遊網",
@@ -39,17 +36,16 @@
         "countDown":"跨年倒數",
         "invoiceCheck":"統一發票號碼",
         "colorConverter":"多項色彩轉換器",
+        "almanac": "年曆 (PWA)",
+        "simpleLanguageTranslate": "簡易語系轉換工具",
         "DevelopmentLibrary":"開發函式庫"
     },
     "collectDescGroup":{
         "calculator":"為原創作品，還有一些自己加的動畫，此作品純為練習作品集用，無任何商業用途",
         "multipurposeCanvas":"畫布，還有一些自己加的動畫，有將原內容做大幅度的更動，為 js 30 days 練習題目，自己有在內容上作一些變化，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
         "globalClock":"時鐘，還有一些自己加的動畫，為 js 30 days 練習題目，自己有在內容上作一些變化，更改為世界時鐘，串接 Word Time Api，並使用個人函式庫撰寫，介面動畫與新增內容皆為原創，此作品純為練習作品集用，無任何商業用途",
-        "imageController":"為 js 30 days 練習題目，還有一些自己加的動畫，有將原內容做大幅度的更動，自己有在內容上作一些變化，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
         "memoryCardGame":"單純翻牌小遊戲，還有一些自己加的動畫，另有用 Vercel PostgreSQL + Express 服務後端可記錄排行榜內容，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
         "personalityTest":"性格測驗，還有一些自己加的動畫，所有動畫、版面設計與功能均為原創，測驗內容與最後解析結果則擷取自網路上資料，此作品純為練習作品集用，無任何商業用途",
-        "keyBoardSound":"鍵盤音樂，還有一些自己加的動畫，按下鍵盤對應按鍵會有聲與互動效果，右側可調節音量，為 js 30 days 練習題目，自己有在內容上作一些變化，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
-        "mediaPlayer":"媒體播放器，還有一些自己加的動畫，有將原內容做大幅度的更動，為 js 30 days 練習題目，有在內容上作大量的變化，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
         "puzzleGame":"拼圖遊戲，還有一些自己加的動畫，此為網路上的拼圖遊戲範例，並將原內容做大幅度的更動，與原本完全不同，此作品純為練習作品集用，無使用任何框架，無任何商業用途。",
         "toDoList":"私人待辦事項，還有一些自己加的動畫，有將原內容做超大幅度的更動，與原本完全不同，為 js 30 days 練習題目，此作品純為練習作品集用，無使用任何框架，無任何商業用途",
         "travelSite":"旅遊網，還有一些自己加的動畫，此作品純為練習作品集用，有使用 bootstrap 框架，無任何商業用途",
@@ -66,7 +62,9 @@
         "countDown":"跨年倒數，到當年結束時會施放煙火 5 分鐘，有包含多國語言，此作品純為練習作品集用，無任何商業用途。",
         "invoiceCheck":"統一發票號碼，單純撈資料顯示統一發票號碼，此作品純為練習作品集用，無任何商業用途。",
         "colorConverter":"多項色彩轉換器，包含多項轉換，以及常用色卡甚至是有檢色功能，此作品純為練習作品集用，無任何商業用途。",
-        "DevelopmentLibrary":"此為個人開發的常用函式庫，類似 jQurey，有分為 Javascript、TypeScript、CoffeeScript 三種版本，內容持續更新中，目前版本號 1.6.8"
+        "almanac": "為原創作品，雖為一般的年曆，但此年曆支援 PWA 功能，能夠離線使用，並支持日期備忘錄紀錄與提醒功能，提醒功能設透過 chrome 瀏覽器提醒功能，並可匯出與匯入備忘錄，無任何商業用途",
+        "simpleLanguageTranslate": "為原創作品，可透過 OpenCC 做簡易的繁簡互轉，並支持大量文本轉換，無任何商業用途",
+        "DevelopmentLibrary":"此為個人開發的常用函式庫，類似 jQurey，有分為 Javascript、TypeScript、CoffeeScript 三種版本，以及包含 Npm Library 版本，內容持續更新中，目前版本號 1.7.1"
     },
     "skillDescGroup": {
         "coreLang":"核心語言",
@@ -123,7 +121,7 @@
         "w18Title":"華南銀行-視訊合聲系統",
         "w18Desc":"主要協助設計新功能客製化 UI 與畫面交互動畫。",
         "w19Title":"異軍互動娛樂股份有限公司",
-        "w19Desc":"主要協助設計新功能客製化 UI 與畫面交互動畫。"
+        "w19Desc":"現有 Legacy 專案網站平台維護包含 Y5、H5、Wakool.Games 等功能修正與 UI UX 美化、新功能開發，同時開發新相關活動網頁並在活動頁中埋 GA 統計活動頁區塊活躍狀況、以及透過 GA 資料建立 LookerStudio 相關報表，比如各國使用者的情況與設備裝置的分佈率等便於統計，透過資料動態調整相關決策。"
     },
     "experienceModal": {
         "title":["- 工作角色","- 工作內容","- 使用技術"]
@@ -133,5 +131,22 @@
     "previewWeb":"預覽網頁",
     "abountCollect":"關於作品",
     "onlyWebScreenShot":"僅網頁截圖",
-    "previewSourceCode":"查看原始碼"
+    "previewSourceCode":"查看原始碼",
+    "stillWorking": "在職中",
+    "sendMail": {
+        "title": "聯絡我",
+        "send": "送信",
+        "cancel": "取消",
+        "mailFromWho": "你的名子",
+        "mailSubject": "電子郵件主旨",
+        "mailContent": "電子郵件內容",
+        "emptyMailFromWho": "請輸入你的名子 !",
+        "emptyMailSubject": "請輸入你的電子郵件主旨 !",
+        "emptyMailContent": "請輸入你的電子郵件內容 !",
+        "sendingStatus": [
+            "發送中 ...",
+            "發送成功 !",
+            "發送失敗 !"
+        ]
+    }
 }

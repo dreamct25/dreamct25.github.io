@@ -1,5 +1,5 @@
 {
-    "zh":"中文 (zh-TW)",
+    "zh":"繁體 (zh-TW)",
     "en":"English (en-US)",
     "selfInfoTitle":"Self Info",
     "educationTitle":"Education",
@@ -18,11 +18,8 @@
         "calculator":"Calculator",
         "multipurposeCanvas":"Multipurpose Canvas",
         "globalClock":"Global Clock",
-        "imageController":"Image Controller",
         "memoryCardGame":"MemoryCard Game",
         "personalityTest":"Personality Test",
-        "keyBoardSound":"KeyBoard Sound",
-        "mediaPlayer":"Media Player",
         "puzzleGame":"Puzzle Game",
         "toDoList":"Todo List",
         "travelSite":"Travel Site",
@@ -39,17 +36,16 @@
         "countDown":"New Year Count Down",
         "invoiceCheck":"Invoice Check",
         "colorConverter":"Color Converter",
+        "almanac": "Almanac (PWA)",
+        "simpleLanguageTranslate": "Simple Lang Translate",
         "DevelopmentLibrary":"Development Library"
     },
     "collectDescGroup":{
         "calculator":"It is an original work,and there are some animations added by myself.This works is purely for practice portfolios,without any commercial use.",
         "multipurposeCanvas":"Canvas, and some animations added by myself.Some of the original content have been greatly changed.It is a js 30-day practice topic.I have made some changes in the content.This works is purely for practice portfolios,without any commercial use.",
         "globalClock":"The clock, and some animations added by myself,are practice questions for js 30 days,I have made some changes in the content,changed it to the world clock,connected Word Time Api, and used the personal develop library to write,interface animation and new additions The content is original,this works is purely for practice portfolio,without any commercial use",
-        "imageController":"For js 30 days practice questions,there are also some animations added by myself.Some of the original content has been greatly changed,and some changes have been made in the content.This works is purely for practice, without using any framework,without any business use",
         "memoryCardGame":"A simple flop game,and some animations added by myself, and use Vercel PostgreSQL + Express backend service to save rank history.This works is purely for practice,without any framework or commercial use.",
         "personalityTest":"Personality test,and some animations added by myself.All animations,layout design and functions are original.The content of the test and the final analysis results are extracted from the Internet.This works is purely for practice portfolios and has no commercial use.",
-        "keyBoardSound":"Keyboard music, as well as some animations added by myself,press the corresponding keys on the keyboard,there will be sound and interactive effects,the volume can be adjusted on the right side,it is a js 30 days practice topic,I have made some changes in the content,this works is purely a practice use,without using any framework,without any commercial use.",
-        "mediaPlayer":"The media player,and some animations added by myself,some greatly changed the original content,it's js 30 days practice questions,some made a lot of changes in content,this works is purely for practice portfolios,no use of any frame,without any commercial use.",
         "puzzleGame":"Jigsaw puzzle game,and some animations added by myself.This is an example of a jigsaw puzzle game on the Internet,and the original content has been greatly changed.It is completely different from the original.This works is purely for practice without any commercial use.",
         "toDoList":"To-do list,and some animations added by myself.Some of the original content has been greatly changed.It is completely different from the original.It is a js 30-day practice topic.This works is purely for practice.No framework is used,no any commercial use",
         "travelSite":"Travel Site,and some animations added by myself.This works is purely for practice.Bootstrap framework is used,and there is no commercial use.",
@@ -66,7 +62,9 @@
         "countDown":"New Year count down, with fireworks released at the end of the year for five minutes, including multiple languages. This project is purely for portfolio practice purposes and has no commercial use.",
         "invoiceCheck":"Uniform Invoice Number Display, Simply retrieves and displays uniform invoice numbers. This project is solely for portfolio practice purposes and has no commercial use.",
         "colorConverter":"Multi-color Converter: Includes various color conversions, as well as commonly used color palettes and even color checking functions. This project is solely for portfolio practice purposes and has no commercial use.",
-        "DevelopmentLibrary":"This is a commonly used function library developed by individuals,similar to jQurey.There are three versions of Javascript、TypeScript、CoffeeScript.The content is continuously updated.The current version is 1.6.8"
+        "almanac": "It is an original calendar application that goes beyond a standard yearly calendar by supporting PWA functionality for offline access. It includes memo recording by date, reminder notifications through Chrome browser notifications, and memo import/export features for easy data management. This project is intended for non-commercial use only.",
+        "simpleLanguageTranslate": "It is an original text conversion tool powered by OpenCC, enabling efficient conversion between Traditional and Simplified Chinese. Supports large-volume text processing and is developed solely for non-commercial purposes.",
+        "DevelopmentLibrary":"This is a commonly used function library developed by individuals,similar to jQurey.There are three versions of Javascript、TypeScript、CoffeeScript and includes Npm pack library version.The content is continuously updated.The current version is 1.7.1"
     },
     "skillDescGroup": {
         "coreLang":"Core Language",
@@ -134,5 +132,22 @@
     "previewWeb":"Preview Web",
     "abountCollect":"Abount Collet",
     "onlyWebScreenShot":"Only Web ScreenShot",
-    "previewSourceCode":"Preview Source Code"
+    "previewSourceCode":"Preview Source Code",
+    "stillWorking": "Present",
+    "sendMail": {
+        "title": "Contact Me",
+        "send": "Send Email",
+        "cancel": "Cancel",
+        "mailFromWho": "Your Name",
+        "mailSubject": "Email Subject",
+        "mailContent": "Email Content",
+        "emptyMailFromWho": "Please typing your name !",
+        "emptyMailSubject": "Please typing your Email subject !",
+        "emptyMailContent": "Please typing your Email content !",
+        "sendingStatus": [
+            "Sending ...",
+            "Send Success !",
+            "Send Fail !"
+        ]
+    }
 }
