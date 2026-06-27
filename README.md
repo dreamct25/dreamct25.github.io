@@ -21,7 +21,7 @@
 |年曆 (PWA)|almanac|1.5.2|2026-05-18|[前往畫面](https://dreamct25.github.io/almanac)
 |個人部落格|blog|3.0.8|2024-10-04|[前往畫面](https://dreamct25.github.io/blog)
 |個人記帳系統|cash|3.0.3|2024-10-04|[前往畫面](https://dreamct25.github.io/cash)
-|多項色彩轉換器|color_converter|1.0.5|2023-06-13|[前往畫面](https://dreamct25.github.io/color_converter)
+|多項色彩轉換器|color_converter|1.1.0|2026-06-26|[前往畫面](https://dreamct25.github.io/color_converter)
 |跨年倒數|count-down|1.0.8|2024-01-02|[前往畫面](https://dreamct25.github.io/count-down)
 |Fashion Shop (模擬電商)|fashion_shop|3.0.3|2024-10-04|[前往畫面](https://dreamct25.github.io/fashion_shop)
 |Hotels|hotels|1.0.7|2024-10-04|[前往畫面](https://dreamct25.github.io/hotels)
