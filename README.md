@@ -16,7 +16,7 @@
 |鍵盤聲音|Music|無|2020-05-31|[前往畫面](https://dreamct25.github.io/Music)
 |拼圖遊戲|Puzzle_Game|3.0.0|2026-06-19|[前往畫面](https://dreamct25.github.io/Puzzle_Game)
 |待辦清單|To_Do_List|3.0.0|2022-10-29|[前往畫面](https://dreamct25.github.io/To_Do_List)
-|旅遊網|Travel|3.1.2|2024-10-04|[前往畫面](https://dreamct25.github.io/Travel)
+|旅遊地圖|Travel|3.2.0|2026-08-27|[前往畫面](https://dreamct25.github.io/Travel)
 |天氣預報|Weather|3.1.0|2025-01-22|[前往畫面](https://dreamct25.github.io/Weather)
 |年曆 (PWA)|almanac|1.5.2|2026-05-18|[前往畫面](https://dreamct25.github.io/almanac)
 |個人部落格|blog|3.0.8|2024-10-04|[前往畫面](https://dreamct25.github.io/blog)
